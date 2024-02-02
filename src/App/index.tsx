@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./index.css";
 import {
   PieChart,
@@ -11,7 +11,6 @@ import {
   Send,
   Smile,
   Paperclip,
-  SeparatorHorizontal,
   ChevronUp
 } from "lucide-react";
 
@@ -23,6 +22,13 @@ export default function App() {
     if(targetHeight === 500) return setTargetHeight(160)
     setTargetHeight(500)
   }
+
+  useEffect(() => {
+    if(window !== undefined) {
+      const html: any = document.querySelector('html')
+      window.scrollTo(0, html.offsetHeight)
+    }
+  } , [])
 
   return (
     <main className="flex min-h-screen">
