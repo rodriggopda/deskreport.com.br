@@ -1,20 +1,29 @@
+import { useRef, useState } from "react";
 import "./index.css";
 import {
   PieChart,
   Settings,
   CheckCircle,
   Bell,
-  UserPlus2,
-  Plus,
   Search,
   Filter,
-  ChevronDown,
-  ExternalLink,
   MessageCircle,
-  Zap,
+  Send,
+  Smile,
+  Paperclip,
+  SeparatorHorizontal,
+  ChevronUp
 } from "lucide-react";
 
 export default function App() {
+  const inputMessageBox = useRef<any>(null)
+  const [targetHeight, setTargetHeight] = useState(160)
+
+  function handleApplyTargetHeight() {
+    if(targetHeight === 500) return setTargetHeight(160)
+    setTargetHeight(500)
+  }
+
   return (
     <main className="flex min-h-screen">
       <nav className="max-h-screen flex flex-col sticky top-0 bottom-0 w-0 overflow-hidden lg:w-[16rem] border-r border-neutral-800/50">
@@ -82,22 +91,6 @@ export default function App() {
         </div>
       </nav>
       <div className="flex-1">
-        {/* <div className=''>
-            <div>
-              <h3 className='text-xl'>Sprint 1</h3>
-              <p className='text-sm opacity-50'>This sprint objective is create and delivery a feature to best scrum app</p>
-            </div>
-            <div className='mt-5 flex items-center -space-x-2'>
-              {
-                [1,2,3,4,5,6].map((item) => (
-                  <img className={`rounded-full ${item === 1 ? 'bg-indigo-400' : 'bg-purple-800'} transition-transform hover:scale-110 border-2 border-neutral-950 w-8 h-8 mr-3`} width={32} height={32} src={`https://robohash.org/${item}.png?set=set5&size=126x126`} />
-                ))
-              }
-              <button className='hover:bg-neutral-700 bg-neutral-900 p-1.5 rounded-full'>
-                <UserPlus2 size={20} />
-              </button>
-            </div>
-          </div> */}
         <div className="py-3 border-b border-neutral-800/50 w-fullm flex items-center justify-between px-10">
           <h1 className="text-xl items-center">Joana Marques - <span className='text-xs opacity-50 text-indigo-400'>Agile Report</span></h1>
           <div className="flex gap-4 items-center">
@@ -125,24 +118,7 @@ export default function App() {
               />
             </div>
             <span className="h-2 w-px bg-neutral-100/40 mx-3 " />
-            {/* <div className="flex items-center gap-2">
-              <span className="text-sm">Equipe:</span>
-              <div className="flex items-center -space-x-2">
-                {[1, 2, 3, 4, 5, 6].map((item) => (
-                  <img
-                    className={`rounded-full ${
-                      item === 1 ? "bg-indigo-400" : "bg-purple-800"
-                    } transition-transform hover:scale-110 border-2 border-neutral-950 w-8 h-8 mr-3`}
-                    width={32}
-                    height={32}
-                    src={`https://robohash.org/${item}.png?set=set5&size=126x126`}
-                  />
-                ))}
-                <button className="hover:bg-neutral-700 bg-neutral-900 p-1.5 rounded-full">
-                  <UserPlus2 size={20} />
-                </button>
-              </div>
-            </div> */}
+            
           </div>
           <div className="flex items-center gap-3">
             <span className="ml-3 h-2 w-px bg-neutral-100/40" />
@@ -154,53 +130,44 @@ export default function App() {
               <Settings className="" size={16} />
               <span>Preferências</span>
             </button>
-            {/* <button className='p-3 bg-neutral-900 hover:bg-neutral-700 rounded-lg active:outline-indigo-400'>
-              <Kanban className='' size={16} />
-            </button> */}
           </div>
         </div>
-        <div className="pt-5 flex flex-col space-y-5 mx-10 pb-20">
-          {/* <span className="text-xs opacity-50">2 sprints - 10 itens</span> */}
-
+        <div className="pt-5 flex flex-col space-y-5 mx-10">
           <div className="w-full rounded-t-lg rounded-b-lg overflow-hidden">
-            
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].reverse().map((item) => (
                 <div
                   key={item}
-                  className="border-t border-neutral-800/50 select-none bg-neutral-900/50 hover:bg-neutral-900 group"
+                  className={`${ item % 2 === 0 ? 'flex flex-col justify-center items-end' : '' } w-full mt-4 `}
                 >
-                  <td className="pl-4">
-                    <div>
-                      <div className="transition-all opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 relative w-4 h-4 bg-neutral-900 rounded group-hover:bg-neutral-700">
-                        <span></span>
-                        <input type="checkbox" hidden />
-                      </div>
-                    </div>
-                  </td>
-                  <td className="py-4 text-left">
-                    <p>Main Topic of Subject</p>
-                  </td>
-                  <td className="text-center">5/10</td>
-                  <td className="">
-                    <div className="flex w-max items-center gap-2 mx-auto">
-                      <div className="bg-indigo-400/20 w-20">
-                        <span className="block w-10 h-1 bg-indigo-400" />
-                      </div>
-                      <span className="text-xs">50%</span>
-                    </div>
-                  </td>
-                  <td className="text-center">
-                    <img
-                      src={`https://robohash.org/${item}.png?set=set5&size=126x126`}
-                      className="mx-auto rounded-full bg-purple-800 w-8 h-8"
-                      width={32}
-                      height={32}
-                    />
-                  </td>
-                  <td className="text-right pr-4 text-sm">26/01/2024</td>
+                  <div className={`${ item % 2 === 0 ? 'bg-indigo-600 rounded-b-2xl rounded-tl-2xl' : 'bg-neutral-800 rounded-b-2xl rounded-tr-2xl' } flex flex-col px-6 pt-5 pb-6 w-max max-w-[35rem] border border-neutral-800/50 group`}>
+                    <p>
+                      Lorem Ipsum dolor sit amet, jet amet
+                      Lorem Ipsum dolor sit amet, jet amet
+                      Lorem Ipsum dolor sit amet, jet amet
+                      Lorem Ipsum dolor sit amet, jet amet
+                      Lorem Ipsum dolor sit amet, jet amet
+                    </p>
+                  </div>
+                  <span className="block mx-6 py-2 text-sm opacity-50">01/02/2024 20:00</span>
                 </div>
               ))}
-
+          </div>
+          <div style={{ height: targetHeight }} ref={inputMessageBox} className=" transition-all flex flex-col sticky rounded-t-2xl bottom-0 bg-neutral-900 pt-2 px-6 pb-6">
+            <button onClick={handleApplyTargetHeight} draggable className='mx-auto opacity-50 hover:opacity-100 rounded-full hover:bg-neutral-800 px-10 py-1 mb-2'>
+              <ChevronUp size={16} />
+            </button>
+            <div className="flex-1 p-3 flex items-start rounded-lg bg-neutral-800 w-full">
+              <textarea className='w-full h-full bg-transparent outline-none pl-5 py-2' placeholder="Mensagem..." />
+              <button className="bg-transparent rounded-full p-3">
+                <Smile size={20} />
+              </button>
+              <button className="bg-transparent rounded-full p-3">
+                <Paperclip size={20} />
+              </button>
+              <button className="bg-indigo-600 rounded-full p-3">
+                <Send size={20} />
+              </button>
+            </div>
           </div>
         </div>
       </div>
