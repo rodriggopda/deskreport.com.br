@@ -105,7 +105,7 @@ export default function App() {
                 <input
                   className="bg-neutral-900 hover:bg-neutral-700 pl-10 py-2 rounded-lg text-sm outline-none ring-1 ring-transparent focus:ring-indigo-400"
                   type="text"
-                  placeholder="Pesquise na conversa"
+                  placeholder="Contatos..."
                 />
               </div>
               <span className="h-2 w-px bg-neutral-100/40 mx-3 " />
@@ -124,8 +124,8 @@ export default function App() {
           </div>
         </div>
         <div className='flex px-10'>
-          <div className='min-w-[260px] pr-4 border-r border-neutral-900'>
-            <ul style={{ height: scrollHeight + 'px' }} className="overflow-y-auto py-4 space-y-2 w-full text-sm">
+          <div className='min-w-[260px] border-r border-neutral-900'>
+            <ul style={{ height: scrollHeight + 'px' }} className="overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-neutral-900 py-4 space-y-2 w-full text-sm">
               {customers.data.map((customer) => (
                 <li key={customer.id} className="max-w-[260px] flex items-center gap-3 py-2 px-4 hover:bg-neutral-700 rounded-lg">
                   <img
@@ -136,12 +136,11 @@ export default function App() {
                   />
                   <span className="truncate">{customer.first_name + ' ' + customer.last_name }</span>
                 </li>
-
               ))}
             </ul>
           </div>
           <div className="flex-1 flex flex-col space-y-5 ml-10 -mr-10">
-            <div style={{ height: scrollHeight + 'px' }}  className="overflow-y-auto w-full rounded-t-lg rounded-b-lg overflow-hidden pb-56 pr-10">
+            <div style={{ height: scrollHeight + 'px' }}  className="overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-neutral-900 w-full rounded-t-lg rounded-b-lg overflow-hidden pb-56 pr-10">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].reverse().map((item) => (
                   <Message key={item} />
                 ))}

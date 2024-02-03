@@ -6,7 +6,9 @@ export function Message() {
       const chatMessages: any = document.querySelectorAll('.message')
       chatMessages.forEach((chatMessage, key) => {
         if (key + 1 === chatMessages.length) {
-          chatMessage.scrollIntoView()
+          chatMessage.scrollIntoView({
+            behavior: 'smooth'
+          })
         }
       })
 
