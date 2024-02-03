@@ -18,13 +18,13 @@ import customers from '../api/customers.json'
 import { Message } from "../components/chat/message";
 
 export default function App() {
-  const inputMessageBox = useRef<any>(null)
-  const [targetHeight, setTargetHeight] = useState(160)
+  const inputBoxHeight = 60
+  const [targetHeight, setTargetHeight] = useState(inputBoxHeight)
   const [scrollHeight, setScrollHeight] = useState(0)
 
   function handleApplyTargetHeight() {
-    if(targetHeight === scrollHeight - 160) return setTargetHeight(160)
-    setTargetHeight(scrollHeight - 160)
+    if(targetHeight === scrollHeight -inputBoxHeight) return setTargetHeight(inputBoxHeight)
+    setTargetHeight(scrollHeight - inputBoxHeight)
   }
 
   useEffect(() => {
@@ -139,25 +139,25 @@ export default function App() {
               ))}
             </ul>
           </div>
-          <div className="flex-1 flex flex-col space-y-5 ml-10 -mr-10">
-            <div style={{ height: scrollHeight + 'px' }}  className="overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-neutral-900 w-full rounded-t-lg rounded-b-lg overflow-hidden pb-56 pr-10">
+          <div className="flex-1 ml-10 -mr-10">
+            <div style={{ height: scrollHeight + 'px' }}  className="overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-neutral-900 w-full rounded-t-lg rounded-b-lg overflow-hidden pb-32 pr-10">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].reverse().map((item) => (
                   <Message key={item} />
                 ))}
             </div>
-            <div style={{ height: targetHeight }} ref={inputMessageBox} className="transition-all flex flex-col sticky rounded-t-2xl bottom-0 bg-neutral-900 pt-1 px-5 pb-4 mr-20">
+            <div style={{ height: targetHeight }} className="transition-all flex flex-col sticky rounded-t-2xl bottom-4 bg-neutral-900 pt-1 px-5 pb-4 mr-12">
               <button onClick={handleApplyTargetHeight} draggable className='mx-auto opacity-50 hover:opacity-100 rounded-full hover:bg-neutral-800 px-10 mb-1'>
                 <ChevronUp size={12} />
               </button>
               <div className="flex-1 p-3 flex items-start rounded-lg bg-neutral-800 w-full">
                 <textarea className='resize-none w-full h-10 bg-transparent outline-none pl-5 py-2' placeholder="Mensagem..." />
-                <button className="bg-transparent rounded-full p-3">
+                <button className="bg-transparent rounded-full p-2.5 opacity-50 hover:opacity-100 hover:bg-neutral-700">
                   <Smile size={20} />
                 </button>
-                <button className="bg-transparent rounded-full p-3">
+                <button className="mx-1 bg-transparent rounded-full p-2.5 opacity-50 hover:opacity-100 hover:bg-neutral-700">
                   <Paperclip size={20} />
                 </button>
-                <button className="bg-indigo-600 rounded-full p-3">
+                <button className="bg-indigo-600 rounded-full p-2.5 hover:bg-indigo-500">
                   <Send size={20} />
                 </button>
               </div>
