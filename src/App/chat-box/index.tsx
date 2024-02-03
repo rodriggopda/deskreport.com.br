@@ -16,21 +16,32 @@ import {
 import customers from '../../api/customers.json'
 import { Message } from "../../components/chat/message";
 
+import { useParams, NavLink } from 'react-router-dom'
+import { Contact } from "./contact";
+
 export default function ChatBox() {
   const inputBoxHeight = 100
   const [targetHeight, setTargetHeight] = useState(inputBoxHeight)
   const [scrollHeight, setScrollHeight] = useState(0)
+
+  const params = useParams()
+  const activeChatId = params['chatid']
 
   useEffect(() => {
     if(window !== undefined) {
       const toolbar = document.querySelector('.toolbar')
       if (toolbar) setScrollHeight(window.innerHeight - toolbar.clientHeight)
     }
-  } , [])
+  } , [params])
 
   function handleApplyTargetHeight() {
     if(targetHeight === scrollHeight -inputBoxHeight) return setTargetHeight(inputBoxHeight)
     setTargetHeight(scrollHeight - inputBoxHeight)
+  }
+
+  function displayCustomerFromActiveChatId() {
+    if (!activeChatId) return
+    return customers.data.filter((customer) => activeChatId === customer.id.toString())[0]
   }
 
   return (
@@ -102,12 +113,13 @@ export default function ChatBox() {
               <div className="relative flex items-center">
                 <Search className="absolute ml-3" size={16} />
                 <input
-                  className="bg-neutral-900 hover:bg-neutral-700 pl-10 py-2 rounded-lg text-sm outline-none ring-1 ring-transparent focus:ring-indigo-400"
+                  className="w-[230px] bg-neutral-900 hover:bg-neutral-700 pl-10 py-2 rounded-lg text-sm outline-none ring-1 ring-transparent focus:ring-indigo-400"
                   type="text"
                   placeholder="Contatos..."
                 />
               </div>
               <span className="h-2 w-px bg-neutral-100/40 mx-3 " />
+              <Contact data={displayCustomerFromActiveChatId()} />
             </div>
             <div className="flex items-center gap-3">
               <span className="ml-3 h-2 w-px bg-neutral-100/40" />
@@ -124,9 +136,9 @@ export default function ChatBox() {
         </div>
         <div className='flex px-10'>
           <div className='min-w-[260px] border-r border-neutral-900'>
-            <ul style={{ height: scrollHeight + 'px' }} className="overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-neutral-900 py-4 space-y-2 w-full text-sm">
+            <div style={{ height: scrollHeight + 'px' }} className="overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-neutral-900 py-4 space-y-2 w-full text-sm">
               {customers.data.map((customer) => (
-                <li key={customer.id} className="max-w-[260px] flex items-center gap-3 py-2 px-4 hover:bg-neutral-700 rounded-lg">
+                <NavLink to={'/chat/all/' + customer.id} key={customer.id} className={`${ activeChatId === customer.id.toString() ? 'bg-neutral-900 text-indigo-500' : '' } max-w-[260px] flex items-center gap-3 py-2 px-4 hover:bg-neutral-700 rounded-lg`}>
                   <img
                     className="rounded-full bg-indigo-400"
                     width={32}
@@ -134,9 +146,9 @@ export default function ChatBox() {
                     src={customer.avatar}
                   />
                   <span className="truncate">{customer.first_name + ' ' + customer.last_name }</span>
-                </li>
+                </NavLink>
               ))}
-            </ul>
+            </div>
           </div>
           <div className="flex-1 ml-10 -mr-10">
             <div style={{ height: scrollHeight + 'px' }}  className="overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-neutral-900 w-full rounded-t-lg rounded-b-lg overflow-hidden pb-32 pr-10">
