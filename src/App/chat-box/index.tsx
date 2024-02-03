@@ -123,10 +123,10 @@ export default function ChatBox() {
             </div>
             <div className="flex items-center gap-3">
               <span className="ml-3 h-2 w-px bg-neutral-100/40" />
-              <button className="flex items-center gap-1 px-3 py-2 text-sm bg-transparent  hover:bg-neutral-700 rounded-lg active:bg-neutral-900">
+              {/* <button className="flex items-center gap-1 px-3 py-2 text-sm bg-transparent  hover:bg-neutral-700 rounded-lg active:bg-neutral-900">
                 <Filter className="" size={16} />
                 <span>Filtros</span>
-              </button>
+              </button> */}
               <button className="flex items-center gap-1 px-3 py-2 text-sm bg-transparent hover:bg-neutral-700 rounded-lg active:bg-neutral-900">
                 <Settings className="" size={16} />
                 <span>Preferências</span>

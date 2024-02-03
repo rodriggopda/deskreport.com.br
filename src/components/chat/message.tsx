@@ -17,8 +17,8 @@ export function Message() {
   }, [])
 
   return (
-    <div className='message flex flex-col justify-center items-end w-full mt-4'>
-      <div className={`bg-indigo-600 rounded-b-2xl rounded-tl-2xl bg-neutral-800 rounded-b-2xl rounded-tr-2xl flex flex-col px-6 pt-5 pb-6 w-max max-w-[35rem] border border-neutral-800/50 group`}>
+    <div className='group message flex flex-col justify-center odd:items-end w-full mt-4'>
+      <div className={`group-odd:bg-indigo-600 group-odd:rounded-b-2xl group-odd:rounded-tl-2xl bg-neutral-800 rounded-b-2xl group-even:rounded-tr-2xl flex flex-col px-6 pt-5 pb-6 w-max max-w-[35rem] border border-neutral-800/50 group`}>
         <p>
           Lorem Ipsum dolor sit amet, jet amet
           Lorem Ipsum dolor sit amet, jet amet
