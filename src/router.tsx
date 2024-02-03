@@ -1,8 +1,8 @@
 import {
   createBrowserRouter
 } from 'react-router-dom'
-import ChatBox from './app/chat-box'
-import App from './app'
+import ChatBox from './pages/chat-box'
+import App from './pages'
 
 
 export const router = createBrowserRouter([
@@ -11,7 +11,11 @@ export const router = createBrowserRouter([
     element: <App />
   },
   {
-    path: '/chat/all/:chatid',
+    path: '/chat/:option',
+    element: <ChatBox />
+  },
+  {
+    path: '/chat/:option/:chatid',
     element: <ChatBox />
   }
 ])
