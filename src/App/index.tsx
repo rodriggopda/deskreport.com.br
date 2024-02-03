@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import customers from '../api/customers.json'
+import { Message } from "../components/chat/message";
 
 export default function App() {
   const inputMessageBox = useRef<any>(null)
@@ -30,8 +31,6 @@ export default function App() {
     if(window !== undefined) {
       const toolbar = document.querySelector('.toolbar')
       if (toolbar) setScrollHeight(window.innerHeight - toolbar.clientHeight)
-      const chatWindow: any = document.querySelector('.chat')
-      if (chatWindow) chatWindow.scrollTo(0, chatWindow.scrollHeight)
     }
   } , [])
 
@@ -80,7 +79,7 @@ export default function App() {
       </nav>
       <div className="flex-1 max-h-screen overflow-hidden">
         <div className='toolbar'>
-          <div className="py-3 border-b border-neutral-800/50 w-fullm flex items-center justify-between px-10">
+          <div className="py-3 border-b border-neutral-800/50 w-full flex items-center justify-between px-10">
             <h1 className="text-xl items-center">
               Central de atendimento
               {/*  - <span className='text-xs opacity-50 text-indigo-400'>Agile Report</span> */}
@@ -144,21 +143,7 @@ export default function App() {
           <div className="flex-1 flex flex-col space-y-5 ml-10 -mr-10">
             <div style={{ height: scrollHeight + 'px' }}  className="overflow-y-auto w-full rounded-t-lg rounded-b-lg overflow-hidden pb-56 pr-10">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].reverse().map((item) => (
-                  <div
-                    key={item}
-                    className={`chat ${ item % 2 === 0 ? 'flex flex-col justify-center items-end' : '' } w-full mt-4 `}
-                  >
-                    <div className={`${ item % 2 === 0 ? 'bg-indigo-600 rounded-b-2xl rounded-tl-2xl' : 'bg-neutral-800 rounded-b-2xl rounded-tr-2xl' } flex flex-col px-6 pt-5 pb-6 w-max max-w-[35rem] border border-neutral-800/50 group`}>
-                      <p>
-                        Lorem Ipsum dolor sit amet, jet amet
-                        Lorem Ipsum dolor sit amet, jet amet
-                        Lorem Ipsum dolor sit amet, jet amet
-                        Lorem Ipsum dolor sit amet, jet amet
-                        Lorem Ipsum dolor sit amet, jet amet
-                      </p>
-                    </div>
-                    <span className="block mx-6 py-2 text-sm opacity-50">01/02/2024 20:00</span>
-                  </div>
+                  <Message key={item} />
                 ))}
             </div>
             <div style={{ height: targetHeight }} ref={inputMessageBox} className="transition-all flex flex-col sticky rounded-t-2xl bottom-0 bg-neutral-900 pt-1 px-5 pb-4 mr-20">
