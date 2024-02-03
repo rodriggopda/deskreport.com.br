@@ -30,10 +30,19 @@ export default function ChatBox() {
 
   useEffect(() => {
     if(window !== undefined) {
-      const toolbar = document.querySelector('.toolbar')
-      if (toolbar) setScrollHeight(window.innerHeight - toolbar.clientHeight)
+      window.addEventListener('resize', () => {
+        setScrollHeightOnLoad(window.innerHeight)
+        return
+      })
+      setScrollHeightOnLoad(window.innerHeight)      
     }
   } , [params])
+
+  function setScrollHeightOnLoad(windowSize: number) {
+    const toolbar = document.querySelector('.toolbar')
+    if (toolbar) setScrollHeight(windowSize - toolbar.clientHeight)
+    window.removeEventListener('resize', () => {})
+  }
 
   function handleApplyTargetHeight() {
     if(targetHeight === scrollHeight -inputBoxHeight) return setTargetHeight(inputBoxHeight)
