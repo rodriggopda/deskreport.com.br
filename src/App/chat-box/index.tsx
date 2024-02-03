@@ -17,14 +17,9 @@ import customers from '../../api/customers.json'
 import { Message } from "../../components/chat/message";
 
 export default function ChatBox() {
-  const inputBoxHeight = 60
+  const inputBoxHeight = 100
   const [targetHeight, setTargetHeight] = useState(inputBoxHeight)
   const [scrollHeight, setScrollHeight] = useState(0)
-
-  function handleApplyTargetHeight() {
-    if(targetHeight === scrollHeight -inputBoxHeight) return setTargetHeight(inputBoxHeight)
-    setTargetHeight(scrollHeight - inputBoxHeight)
-  }
 
   useEffect(() => {
     if(window !== undefined) {
@@ -32,6 +27,11 @@ export default function ChatBox() {
       if (toolbar) setScrollHeight(window.innerHeight - toolbar.clientHeight)
     }
   } , [])
+
+  function handleApplyTargetHeight() {
+    if(targetHeight === scrollHeight -inputBoxHeight) return setTargetHeight(inputBoxHeight)
+    setTargetHeight(scrollHeight - inputBoxHeight)
+  }
 
   return (
     <main className="flex min-h-screen">
@@ -144,22 +144,24 @@ export default function ChatBox() {
                   <Message key={item} />
                 ))}
             </div>
-            <div style={{ height: targetHeight }} className="transition-all flex flex-col sticky rounded-t-2xl bottom-4 bg-neutral-900 pt-1 px-5 pb-4 mr-12">
+            <div style={{ height: targetHeight }} className="transition-all flex flex-col sticky rounded-t-2xl bottom-0 bg-neutral-900 pt-1 px-5 pb-4 mr-12">
               <button onClick={handleApplyTargetHeight} draggable className='mx-auto opacity-50 hover:opacity-100 rounded-full hover:bg-neutral-800 px-10 mb-1'>
                 <ChevronUp size={12} />
               </button>
-              <div className="flex-1 p-3 flex items-start rounded-lg bg-neutral-800 w-full">
-                <textarea className='resize-none w-full h-10 bg-transparent outline-none pl-5 py-2' placeholder="Mensagem..." />
-                <button className="bg-transparent rounded-full p-2.5 opacity-50 hover:opacity-100 hover:bg-neutral-700">
-                  <Smile size={20} />
-                </button>
-                <button className="mx-1 bg-transparent rounded-full p-2.5 opacity-50 hover:opacity-100 hover:bg-neutral-700">
-                  <Paperclip size={20} />
-                </button>
-                <button className="bg-indigo-600 rounded-full p-2.5 hover:bg-indigo-500">
-                  <Send size={20} />
-                </button>
-              </div>
+              <form className="flex-1 p-3 flex items-start rounded-lg bg-neutral-800">
+                <textarea style={{ height: targetHeight <= 100 ? '40px' : '100%'  }} className='scrollbar-thin scrollbar-thumb-neutral-700 scrollbar-track-neutral-800 resize-none flex-1 bg-transparent outline-none pl-3 py-2 border-r mr-2 border-neutral-700/50' placeholder="Mensagem..." />
+                <div className={ targetHeight <= 100 ? '' : 'flex flex-col-reverse items-center gap-2' }>
+                  <button type="button" className="bg-transparent rounded-lg p-2.5 opacity-50 hover:opacity-100 hover:bg-neutral-700">
+                    <Smile size={20} />
+                  </button>
+                  <button type="button" className="mx-1 bg-transparent rounded-lg p-2.5 opacity-50 hover:opacity-100 hover:bg-neutral-700">
+                    <Paperclip size={20} />
+                  </button>
+                  <button type="submit" className="bg-indigo-600 rounded-lg p-2.5 hover:bg-indigo-500">
+                    <Send size={20} />
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
