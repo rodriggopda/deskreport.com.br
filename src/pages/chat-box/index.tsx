@@ -20,6 +20,7 @@ export default function ChatBox() {
 
   useEffect(() => {
     if (window !== undefined) {
+      navigator.requestMediaKeySystemAccess
       window.addEventListener('resize', () => {
         setScrollHeightOnLoad(window.innerHeight);
         return;
@@ -31,7 +32,7 @@ export default function ChatBox() {
   function setScrollHeightOnLoad(windowSize: number) {
     const toolbar = document.querySelector('.toolbar');
     if (toolbar) setScrollHeight(windowSize - toolbar.clientHeight);
-    window.removeEventListener('resize', () => {});
+    window.removeEventListener('resize', () => { });
   }
 
   function handleApplyTargetHeight() {
@@ -73,9 +74,8 @@ export default function ChatBox() {
               <NavLink
                 to={'/chat/' + activeOption + '/' + customer.id}
                 key={customer.id}
-                className={`${
-                  activeChatId === customer.id.toString() ? 'bg-neutral-900 text-indigo-500' : ''
-                } max-w-[260px] flex items-center gap-3 py-2 px-4 hover:bg-neutral-700 rounded-lg`}
+                className={`${activeChatId === customer.id.toString() ? 'bg-neutral-900 text-indigo-500' : ''
+                  } max-w-[260px] flex items-center gap-3 py-2 px-4 hover:bg-neutral-700 rounded-lg`}
               >
                 <img className='rounded-full bg-indigo-400' width={32} height={32} src={customer.avatar} />
                 <span className='truncate'>{customer.first_name + ' ' + customer.last_name}</span>
@@ -87,7 +87,7 @@ export default function ChatBox() {
           <div className='flex-1 ml-10 -mr-10'>
             <div
               style={{ height: scrollHeight + 'px' }}
-              className='overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-neutral-900 w-full rounded-t-lg rounded-b-lg overflow-hidden pr-10'
+              className='overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-neutral-900 w-full overflow-hidden pr-10'
             >
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].reverse().map((item) => (
                 <Message key={item} />
