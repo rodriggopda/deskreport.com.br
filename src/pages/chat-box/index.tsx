@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Settings, Send, Smile, Paperclip, ChevronUp, ChevronDown, Filter } from 'lucide-react';
+import { Settings, Send, Smile, Paperclip, ChevronUp, ChevronDown, Filter, Search } from 'lucide-react';
 
 import customers from '../../api/customers.json';
 import { Message } from '../../components/chat/message';
@@ -50,16 +50,20 @@ export default function ChatBox() {
       <Topbar
         title='Central de atendimento'
         toolbarOptions={
-          <>
-            <button className='flex items-center gap-1 px-3 py-2 text-sm bg-transparent  hover:bg-neutral-700 rounded-lg active:bg-neutral-900'>
-              <Filter className='' size={16} />
-              <span>Filtros</span>
-            </button>
-            <button className='flex items-center gap-1 px-3 py-2 text-sm bg-transparent hover:bg-neutral-700 rounded-lg active:bg-neutral-900'>
+          activeChatId ? <>
+            <div className='relative flex items-center'>
+              <Search className='absolute ml-2.5 pointer-events-none' size={16} />
+              <input
+                className='cursor-pointer focus:cursor-text transition-all w-0 focus:w-[320px] bg-neutral-950 focus:bg-neutral-800 hover:bg-neutral-800 pl-9 py-2 rounded-lg text-sm outline-none ring-1 ring-transparent focus:ring-indigo-400'
+                type='text'
+                placeholder='Procurar mensagens'
+              />
+            </div>
+            <button className='flex items-center gap-1 px-3 py-2 text-sm bg-transparent hover:bg-neutral-800 rounded-lg focus:bg-neutral-900'>
               <Settings className='' size={16} />
               <span>Preferências</span>
             </button>
-          </>
+          </> : null
         }
       >
         <Contact data={displayCustomerFromActiveChatId()} />
