@@ -12,7 +12,7 @@ export function Toolbar({ children, toolbarOptions }: ToolbarProps) {
         <div className='relative flex items-center'>
           <Search className='absolute ml-3' size={16} />
           <input
-            className='w-[230px] bg-neutral-900 hover:bg-neutral-700 pl-10 py-2 rounded-lg text-sm outline-none ring-1 ring-transparent focus:ring-indigo-400'
+            className='w-[230px] bg-neutral-900 focus:bg-neutral-800 pl-10 py-2 rounded-lg text-sm outline-none ring-1 ring-transparent focus:ring-indigo-400'
             type='text'
             placeholder='Contatos...'
           />
@@ -20,8 +20,8 @@ export function Toolbar({ children, toolbarOptions }: ToolbarProps) {
         <span className='h-2 w-px bg-neutral-100/40 mx-3 ' />
         {children}
       </div>
-      <div className='flex items-center gap-3'>
-        <span className='ml-3 h-2 w-px bg-neutral-100/40' />
+      <div className='flex items-center gap-1'>
+        {/* <span className='ml-3 h-2 w-px bg-neutral-100/40' /> */}
         {toolbarOptions}
       </div>
     </div>
