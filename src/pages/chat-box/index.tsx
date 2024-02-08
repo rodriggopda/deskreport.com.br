@@ -125,7 +125,9 @@ export default function ChatBox() {
               </div>
             </div>
           </div>
-        ) : null}
+        ) : <div className='flex-1 flex items-center justify-center'>
+          <img src='/svg/empty-chat.svg' />
+        </div>}
       </div>
     </Page>
   );
