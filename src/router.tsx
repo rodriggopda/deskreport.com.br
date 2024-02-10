@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import ChatBox from './pages/chat-box';
-import App from './pages';
+import App from './pages/resume';
 import { Login } from './pages/auth/login';
 import { Layout } from './components/layout';
 
