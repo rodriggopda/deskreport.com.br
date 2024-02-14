@@ -10,7 +10,7 @@ export function Notification() {
         </div>
         <ul className='mt-4 text-xs'>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
-            <li onClick={() => alert(item)} className='px-4 py-3 flex items-start relative hover:bg-neutral-700/30' key={item}>
+            <li className='px-4 py-3 flex items-start relative hover:bg-neutral-700/30' key={item}>
               <span className='z-10 left-8 h-full absolute flex border-r border-neutral-800' />
               <div className='relative z-20 rounded-full bg-neutral-700 p-2 mr-3'>
                 <MessageCircle size={18} />
