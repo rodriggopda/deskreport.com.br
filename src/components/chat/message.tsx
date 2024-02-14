@@ -3,7 +3,7 @@ import { useEffect } from "react"
 export function Message() {
   useEffect(() => {
     if (window !== undefined) {
-      const chatMessages: any = document.querySelectorAll('.message')
+      const chatMessages = document.querySelectorAll('.message')
       chatMessages.forEach((chatMessage, key) => {
         if (key + 1 === chatMessages.length) {
           chatMessage.scrollIntoView({

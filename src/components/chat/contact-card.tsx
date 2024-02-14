@@ -1,8 +1,10 @@
+import { Contact } from "../../models/contact"
+
 type ContactProps = {
-  data: any 
+  data?: Contact
 }
 
-export function Contact({ data }: ContactProps) {
+export function ContactCard({ data }: ContactProps) {
   return data ? (
     <div className="flex items-center">
       <img className="rounded-full mr-3 bg-indigo-500" width={32} height={32} src={data.avatar} />

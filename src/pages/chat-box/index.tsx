@@ -5,9 +5,10 @@ import customers from '../../api/customers.json';
 import { Message } from '../../components/chat/message';
 
 import { useParams, NavLink } from 'react-router-dom';
-import { Contact } from '../../components/chat/contact';
+import { ContactCard } from '../../components/chat/contact-card';
 import { Topbar } from '../../components/layout/topbar';
 import { Page } from '../../components/layout/page';
+import type { Contact } from '../../models/contact';
 
 export default function ChatBox() {
   const inputBoxHeight = 100;
@@ -40,7 +41,7 @@ export default function ChatBox() {
     setTargetHeight(scrollHeight - inputBoxHeight);
   }
 
-  function displayCustomerFromActiveChatId() {
+  function displayCustomerFromActiveChatId(): Contact | undefined {
     if (!activeChatId) return;
     return customers.data.filter((customer) => activeChatId === customer.id.toString())[0];
   }
@@ -62,7 +63,7 @@ export default function ChatBox() {
           </>
         }
       >
-        <Contact data={displayCustomerFromActiveChatId()} />
+        <ContactCard data={displayCustomerFromActiveChatId()} />
       </Topbar>
       <div className='flex px-10'>
         <div className='min-w-[260px] border-r border-neutral-900'>
