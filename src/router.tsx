@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, redirect } from 'react-router-dom';
 import ChatBox from './pages/chat-box';
 import App from './pages/resume';
 import { Login } from './pages/auth/login';
@@ -15,6 +15,10 @@ export const router = createBrowserRouter([
       {
         path: '/',
         element: <App />,
+      },
+      {
+        path: '/chat',
+        loader: () => redirect('/chat/all'),
       },
       {
         path: '/chat/:option',
