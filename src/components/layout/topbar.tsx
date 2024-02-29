@@ -1,6 +1,8 @@
 import { Bell } from 'lucide-react';
 import { Toolbar } from './toolbar';
 import { Notification } from './notification';
+import { useSubmenuNavigation } from '../../store';
+import { SubNavLink } from './navbar';
 
 type TopbarProps = {
   title?: string;
@@ -10,21 +12,22 @@ type TopbarProps = {
 };
 
 export function Topbar({ title, children, toolbarOptions, inputSearch }: TopbarProps) {
+  const [navigation] = useSubmenuNavigation((state) => [state.navigation])
+
   return (
     <div className='toolbar'>
       <div className='py-3 border-b border-neutral-800/50 w-full flex items-center justify-between px-10'>
         <div className='flex items-center gap-3'>
-          <div className='flex justify-between items-center p-4'>
-            {/* <img src="logo.svg" width={160} /> */}
-            <div className='font-thin text-2xl'>
-              Desk<span className='font-black'>Report</span>
-            </div>
-            <span className='ml-3 text-[0.6rem] bg-purple-800 px-2 py-1 rounded-lg'>PRO</span>
-          </div>
-          <h1 className='text-xl items-center'>
+          <h1 className='text-xl items-center whitespace-nowrap'>
             {title}
-            {/*  - <span className='text-xs opacity-50 text-indigo-400'>Agile Report</span> */}
           </h1>
+          <div className='ml-10 flex space-x-2 w-full text-sm'>
+            {
+              navigation.map((subitem) => (
+                <SubNavLink key={subitem.to} name={subitem.name} to={subitem.to} />
+              ))
+            }
+          </div>
         </div>
         <div className='flex gap-4 items-center'>
           <button className='group relative p-2 hover:bg-neutral-700 focus:bg-neutral-900 rounded-lg'>

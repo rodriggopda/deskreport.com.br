@@ -3,9 +3,8 @@ import { Topbar } from '../../components/layout/topbar';
 
 export default function Resume() {
   return (
-    <Page>
+    <Page navigation={[]}>
       <Topbar title='Resumo' inputSearch='off' />
     </Page>
   );
-  // <div className='flex-1 max-h-screen overflow-hidden'></div>;
 }

@@ -9,6 +9,7 @@ import { ContactCard } from '../../components/chat/contact-card';
 import { Topbar } from '../../components/layout/topbar';
 import { Page } from '../../components/layout/page';
 import type { Contact } from '../../models/contact';
+import { SubmenuItem } from '../../store';
 
 export default function ChatBox() {
   const inputBoxHeight = 100;
@@ -46,10 +47,17 @@ export default function ChatBox() {
     return customers.data.filter((customer) => activeChatId === customer.id.toString())[0];
   }
 
+
+
   return (
-    <Page>
+    <Page navigation={[
+      { name: 'Todas', to: '/chat/all' },
+      { name: 'Em espera', to: '/chat/await' },
+      { name: 'Finalizadas', to: '/chat/finalized' },
+      { name: 'Spam', to: '/chat/spam' },
+    ]}>
       <Topbar
-        title='Central de atendimento'
+        title='Conversas'
         toolbarOptions={
           activeChatId ? <>
             <div className='relative flex items-center'>

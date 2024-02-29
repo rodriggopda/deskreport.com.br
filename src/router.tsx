@@ -3,6 +3,8 @@ import ChatBox from './pages/chat-box';
 import App from './pages/resume';
 import { Login } from './pages/auth/login';
 import { Layout } from './components/layout';
+import Settings from './pages/settings';
+import Tasks from './pages/tasks';
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +29,22 @@ export const router = createBrowserRouter([
       {
         path: '/chat/:option/:chatid',
         element: <ChatBox />,
+      },
+      {
+        path: '/tasks',
+        loader: () => redirect('/tasks/all'),
+      },
+      {
+        path: '/tasks/:option',
+        element: <Tasks />,
+      },
+      {
+        path: '/tasks/:option/:taskid',
+        element: <Tasks />,
+      },
+      {
+        path: '/settings',
+        element: <Settings />,
       },
     ],
   },
