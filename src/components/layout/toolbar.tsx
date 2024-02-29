@@ -17,7 +17,7 @@ export function Toolbar({ children, toolbarOptions, inputSearch }: ToolbarProps)
               <input
                 className='w-[230px] bg-neutral-900 focus:bg-neutral-800 pl-10 py-2 rounded-lg text-sm outline-none ring-1 ring-transparent focus:ring-indigo-400'
                 type='text'
-                placeholder='Contatos...'
+                placeholder='Pesquisa...'
               />
             </div>
             <span className='h-2 w-px bg-neutral-100/40 mx-3 ' />
@@ -26,7 +26,6 @@ export function Toolbar({ children, toolbarOptions, inputSearch }: ToolbarProps)
         {children}
       </div>
       <div className='flex items-center gap-1'>
-        {/* <span className='ml-3 h-2 w-px bg-neutral-100/40' /> */}
         {toolbarOptions}
       </div>
     </div>

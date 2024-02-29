@@ -9,7 +9,6 @@ import { ContactCard } from '../../components/chat/contact-card';
 import { Topbar } from '../../components/layout/topbar';
 import { Page } from '../../components/layout/page';
 import type { Contact } from '../../models/contact';
-import { SubmenuItem } from '../../store';
 
 export default function ChatBox() {
   const inputBoxHeight = 100;
@@ -19,6 +18,13 @@ export default function ChatBox() {
   const params = useParams();
   const activeChatId = params['chatid'];
   const activeOption = params['option'];
+
+  const navigation = [
+    { name: 'Todas', to: '/chat/all' },
+    { name: 'Em espera', to: '/chat/await' },
+    { name: 'Finalizadas', to: '/chat/finalized' },
+    { name: 'Spam', to: '/chat/spam' },
+  ]
 
   useEffect(() => {
     if (window !== undefined) {
@@ -47,15 +53,8 @@ export default function ChatBox() {
     return customers.data.filter((customer) => activeChatId === customer.id.toString())[0];
   }
 
-
-
   return (
-    <Page navigation={[
-      { name: 'Todas', to: '/chat/all' },
-      { name: 'Em espera', to: '/chat/await' },
-      { name: 'Finalizadas', to: '/chat/finalized' },
-      { name: 'Spam', to: '/chat/spam' },
-    ]}>
+    <Page navigation={navigation}>
       <Topbar
         title='Conversas'
         toolbarOptions={
@@ -88,7 +87,7 @@ export default function ChatBox() {
                 to={'/chat/' + activeOption + '/' + customer.id}
                 key={customer.id}
                 className={`${activeChatId === customer.id.toString() ? 'bg-neutral-900 text-indigo-500' : ''
-                  } max-w-[260px] flex items-center gap-3 py-2 px-4 hover:bg-neutral-700 rounded-lg`}
+                  } max-w-[260px] flex items-center gap-3 py-2 px-4 hover:bg-neutral-800 rounded-lg`}
               >
                 <img className='rounded-full bg-indigo-400' width={32} height={32} src={customer.avatar} />
                 <span className='truncate'>{customer.first_name + ' ' + customer.last_name}</span>
