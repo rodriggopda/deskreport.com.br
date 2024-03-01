@@ -44,17 +44,28 @@ export default function Tasks() {
     setTargetHeight(scrollHeight - inputBoxHeight);
   }
 
+  const boards = [
+    { title: 'Para fazer', flagColor: '#6e7681' },
+    { title: 'Em andamento', flagColor: '#1f6feb' },
+    { title: 'Aguardando revisão', flagColor: '#bd561d' },
+    { title: 'Finalizadas', flagColor: '#238636' }
+  ]
+
   return (
     <Page navigation={navigation}>
       <Topbar title='Demandas'>
         <span className='text-xs'>Há um total de 18 tarefas</span>
       </Topbar>
       <div className='flex px-10'>
-        {navigation.map((nav) => <div key={nav.to} className='min-w-[320px] mr-4 border-r border-neutral-900'>
+        {boards.map((board) => <div key={board.title} className='min-w-[320px] mr-4 border-r border-neutral-900'>
           <div
             style={{ height: scrollHeight + 'px' }}
-            className='overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-neutral-900 py-4 space-y-3 w-full text-sm'
+            className='relative overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-neutral-900 pb-4 space-y-3 w-full text-sm'
           >
+            <div className='py-2 flex items-center bg-neutral-950 sticky top-0 -mb-3'>
+              <span style={{ borderColor: board.flagColor }} className='ml-2 mr-3 w-3 h-3 flex rounded-full border-2' />
+              <span>{board.title}</span>
+            </div>
             {customers.data.map((customer) => (
               <NavLink
                 draggable
@@ -78,7 +89,6 @@ export default function Tasks() {
                       <img className='rounded-full bg-indigo-400' width={16} height={16} src={customer.avatar} />
                       <span className='truncate text-xs'>{customer.first_name + ' ' + customer.last_name}</span>
                     </div>
-
                   </div>
                 </div>
               </NavLink>
