@@ -1,4 +1,4 @@
-import { Search, Settings } from 'lucide-react';
+import { ChevronUp, ChevronsUp, Minus, Search, Settings } from 'lucide-react';
 import { Page } from '../../components/layout/page';
 import { Topbar } from '../../components/layout/topbar';
 import { useEffect, useState } from 'react';
@@ -66,7 +66,7 @@ export default function Tasks() {
               <span style={{ borderColor: board.flagColor }} className='ml-2 mr-3 w-3 h-3 flex rounded-full border-2' />
               <span>{board.title}</span>
             </div>
-            {customers.data.map((customer) => (
+            {customers.data.map((customer, index) => (
               <NavLink
                 draggable
                 to={'/tasks/' + activeOption + '/' + customer.id}
@@ -77,7 +77,11 @@ export default function Tasks() {
                 <div className='flex flex-col w-full'>
                   <div className='flex-1 flex justify-between'>
                     <span className='text-xs text-neutral-500'>Demanda #{customer.id}</span>
-                    <span className='text-xs'>Alta prioridade</span>
+                    <span className='text-xs'>
+                      {index == Math.round(Math.random() * 20) && <ChevronsUp size={16} color='red' />}
+                      {index == Math.round(Math.random() * 20) && <ChevronUp size={16} color='#bd561d' />}
+                      {index == Math.round(Math.random() * 20) && <Minus size={16} color='#1f6feb' />}
+                    </span>
                   </div>
                   <p className='my-3 text-sm break-words'>{customer.avatar} {customer.email} {customer.employment.key_skill}</p>
                   <div className='flex items-center justify-between'>
