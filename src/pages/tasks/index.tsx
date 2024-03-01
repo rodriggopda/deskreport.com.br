@@ -45,7 +45,7 @@ export default function Tasks() {
   }
 
   const boards = [
-    { title: 'Para fazer', flagColor: '#6e7681' },
+    { title: 'Em análise', flagColor: '#6e7681' },
     { title: 'Em andamento', flagColor: '#1f6feb' },
     { title: 'Aguardando revisão', flagColor: '#bd561d' },
     { title: 'Finalizadas', flagColor: '#238636' }
@@ -66,7 +66,7 @@ export default function Tasks() {
               <span style={{ borderColor: board.flagColor }} className='ml-2 mr-3 w-3 h-3 flex rounded-full border-2' />
               <span>{board.title}</span>
             </div>
-            {customers.data.map((customer, index) => (
+            {customers.data.map((customer, index) => Math.round(Math.random() * 20) == index && (
               <NavLink
                 draggable
                 to={'/tasks/' + activeOption + '/' + customer.id}
@@ -78,15 +78,16 @@ export default function Tasks() {
                   <div className='flex-1 flex justify-between'>
                     <span className='text-xs text-neutral-500'>Demanda #{customer.id}</span>
                     <span className='text-xs'>
-                      {index == Math.round(Math.random() * 20) && <ChevronsUp size={16} color='red' />}
+                      {index == Math.round(Math.random() * 20) && <ChevronsUp size={16} color='#ca1212' />}
                       {index == Math.round(Math.random() * 20) && <ChevronUp size={16} color='#bd561d' />}
                       {index == Math.round(Math.random() * 20) && <Minus size={16} color='#1f6feb' />}
                     </span>
                   </div>
-                  <p className='my-3 text-sm break-words'>{customer.avatar} {customer.email} {customer.employment.key_skill}</p>
+                  <p className='my-3 text-sm break-words'>{customer.address.street_address} {customer.email} {customer.employment.key_skill}</p>
                   <div className='flex items-center justify-between'>
                     <span className='text-xs text-neutral-500'>Vencimento: 20/04/2024</span>
-                    <span className='text-xs text-neutral-500 bg-neutral-800 px-2 rounded'>Pendente</span>
+
+                    {board.title == 'Finalizadas' ? <span className='text-xs text-white bg-green-600 px-2 rounded'>Finalizada</span> : <span className='text-xs text-neutral-300 bg-neutral-700 px-2 rounded'>Pendente</span>}
                   </div>
                   <div className='mt-5 flex border-t border-neutral-800 items-center flex-1 justify-between pt-2.5 pb-0.5'>
                     <div className='flex items-center gap-2'>
