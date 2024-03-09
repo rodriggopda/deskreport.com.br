@@ -16,9 +16,9 @@ export default function Tasks() {
 
   const navigation = [
     { name: 'Todas', to: '/tasks/all' },
-    { name: 'Em andamento', to: '/tasks/in-progress' },
+    /* { name: 'Em andamento', to: '/tasks/in-progress' }, */
     { name: 'Vencidas', to: '/tasks/over' },
-    { name: 'Finalizadas', to: '/tasks/finalized' },
+    { name: 'Finalizadas', to: '/tasks/finished' },
   ]
 
   const params = useParams();
@@ -67,19 +67,6 @@ export default function Tasks() {
         {boards.map((board) => <div key={board.title} className='min-w-max'>
           <div
             data-board={board.data}
-            onDragOver={(e) => {
-              setTargetBoard(e.currentTarget.attributes.getNamedItem('data-board')?.value)
-              e.currentTarget.classList.add('bg-neutral-900/50')
-              e.currentTarget.childNodes.forEach((node: any) => {
-                node.classList.add('pointer-events-none')
-              })
-            }}
-            onDragLeave={(e) => {
-              e.currentTarget.classList.remove('bg-neutral-900/50')
-              e.currentTarget.childNodes.forEach((node: any) => {
-                node.classList.remove('pointer-events-none')
-              })
-            }}
             style={{ height: scrollHeight + 'px' }}
             className='border-r border-neutral-900 px-4 w-80 relative overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-neutral-900 pb-4 space-y-4 text-sm'
           >
@@ -90,32 +77,6 @@ export default function Tasks() {
             {tasks.map((task: any, index: number) => task.status === board.data && (
               <NavLink
                 data-task={task.id}
-                draggable
-                onDragOver={(e) => {
-                  console.log(e.currentTarget)
-                  e.currentTarget.style.marginTop = '150px'
-                }}
-                onDragLeave={(e) => {
-                  e.currentTarget.style.marginTop = '16px'
-                }}
-                onDragStart={(card) => {
-                  const size = card.currentTarget.clientWidth + 2
-                  card.currentTarget.classList.add('opacity-30')
-                  card.currentTarget.style.maxWidth = `${size}px`
-                  console.dir(card.currentTarget)
-                }}
-                onDragEnd={(e) => {
-                  e.currentTarget.style.maxWidth = `100%`
-                  e.currentTarget.classList.remove('absolute', 'opacity-30')
-
-                  const taskId = e.currentTarget.attributes.getNamedItem('data-task')?.value
-                  setTasks([...tasks].map((ts) => {
-                    if (ts.id == taskId && targetBoard) {
-                      ts.status = targetBoard
-                    }
-                    return ts
-                  }))
-                }}
                 to={'/tasks/' + activeOption + '/' + task.id}
                 key={task.id}
                 className={`${activeChatId === task.id.toString() ? 'bg-neutral-900 text-indigo-500' : 'bg-neutral-900 border-neutral-800/50'
