@@ -1,18 +1,29 @@
-import { ChevronUp, ChevronsUp, Minus, Search, Settings } from 'lucide-react';
 import { Page } from '../../components/layout/page';
 import { Topbar } from '../../components/layout/topbar';
-import React, { useEffect, useState } from 'react';
-
-import tasksData from '../../api/tasks.json';
+import { useEffect, useState } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 
+type TaskBoardStatusProps = 'under-analysis' | 'in-progress' | 'awaiting-review' | 'finished'
+
+export type TaskCardProps = {
+  id: string;
+  title: string;
+  resume?: string;
+  dueDate?: string;
+  status: TaskBoardStatusProps;
+  signee: string;
+}
+
+import {  data  } from '../../api/tasks.json';
+const tasksData = data as TaskCardProps[]
+
 export default function Tasks() {
-  const inputBoxHeight = 100;
-  const [targetHeight, setTargetHeight] = useState(inputBoxHeight);
+  // const inputBoxHeight = 100;
+  // const [targetHeight, setTargetHeight] = useState(inputBoxHeight);
   const [scrollHeight, setScrollHeight] = useState(0);
 
-  const [tasks, setTasks] = useState([...tasksData.data])
-  const [targetBoard, setTargetBoard] = useState<string | undefined>('')
+  const [tasks] = useState<TaskCardProps[]>(tasksData)
+  // const [targetBoard, setTargetBoard] = useState<string | undefined>('')
 
   const navigation = [
     { name: 'Todas', to: '/tasks/all' },
@@ -42,10 +53,10 @@ export default function Tasks() {
     window.removeEventListener('resize', () => { });
   }
 
-  function handleApplyTargetHeight() {
-    if (targetHeight === scrollHeight - inputBoxHeight) return setTargetHeight(inputBoxHeight);
-    setTargetHeight(scrollHeight - inputBoxHeight);
-  }
+  // function handleApplyTargetHeight() {
+  //   if (targetHeight === scrollHeight - inputBoxHeight) return setTargetHeight(inputBoxHeight);
+  //   setTargetHeight(scrollHeight - inputBoxHeight);
+  // }
 
   const boards = [
     { title: 'Em análise', flagColor: '#6e7681', data: 'under-analysis' },
@@ -74,7 +85,7 @@ export default function Tasks() {
               <span style={{ borderColor: board.flagColor }} className='ml-2 mr-3 w-3 h-3 flex rounded-full border-2' />
               <span>{board.title}</span>
             </div>
-            {tasks.map((task: any, index: number) => task.status === board.data && (
+            {tasks.map((task) => task.status === board.data && (
               <NavLink
                 data-task={task.id}
                 to={'/tasks/' + activeOption + '/' + task.id}
@@ -92,10 +103,10 @@ export default function Tasks() {
                     </span> */}
                   </div>
                   <p className='my-3 text-sm break-words'>{task.title}</p>
-                  <div className='flex items-center justify-between'>
-                    <span className='text-xs text-neutral-500'>Vencimento: {task.dueDate}</span>
-                    {board.data == task.status && <span className='text-xs text-white px-2 rounded' style={{ background: board.flagColor }}>{task.status}</span>}
-                  </div>
+                  {/*<div className='flex items-center justify-between'>*/}
+                  {/*  <span className='text-xs text-neutral-500'>Vencimento: {task.dueDate}</span>*/}
+                  {/*  {board.data == task.status && <span className='text-xs text-white px-2 rounded' style={{ background: board.flagColor }}>{task.status}</span>}*/}
+                  {/*</div>*/}
                   <div className='mt-5 flex border-t border-neutral-800 items-center flex-1 justify-between pt-2.5 pb-0.5'>
                     <div className='flex items-center gap-2'>
                       <img className='rounded-full bg-indigo-400' width={16} height={16} src={`https://robohash.org/${task.signee.replace(' ', '').toLocaleLowerCase}.png?size=300x300\u0026set=set1`} />
