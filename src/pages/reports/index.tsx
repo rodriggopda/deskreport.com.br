@@ -3,6 +3,8 @@ import { Topbar } from '../../components/layout/topbar';
 import { useEffect, useState } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 import { Check, Plus, X } from 'lucide-react';
+import { api } from '../../api/fetcher';
+import useSWR from 'swr';
 
 type TaskBoardStatusProps = 'under-analysis' | 'in-progress' | 'awaiting-review' | 'finished' | string
 
@@ -15,11 +17,11 @@ export type TaskCardProps = {
   signee?: string;
 }
 
-export default function Tasks() {
+export function Reports() {
   const [scrollHeight, setScrollHeight] = useState(0);
 
   const [newReport, setNewReport] = useState<TaskCardProps>();
-  const [reports, setReports] = useState<TaskCardProps[]>([]);
+  const { data:reports, mutate } = useSWR<TaskCardProps[]>('/reports', api.get);
 
   const navigation = [
     { name: 'Todas', to: '/tasks/all' },
@@ -29,7 +31,7 @@ export default function Tasks() {
   ]
 
   const params = useParams();
-  const activeChatId = params['chatid'];
+  const activeReportId = params['task_id']
   const activeOption = params['option'];
 
   useEffect(() => {
@@ -40,17 +42,8 @@ export default function Tasks() {
         return;
       });
       setScrollHeightOnLoad(window.innerHeight);
-    }
-
-    getAllReports();
-    
+    }    
   }, []);
-  
-  function getAllReports() {
-    fetch('http://localhost:3000/tasks')
-      .then(async (response) => response.json())
-      .then((reports) => setReports(reports))
-  }
   
   function createNewReport(status: TaskBoardStatusProps) {
     setNewReport({
@@ -60,15 +53,11 @@ export default function Tasks() {
     })
   }
   
-  function saveNewReport() {
-    fetch('http://localhost:3000/tasks', {
-      method: 'post',
-      headers: {
-        'Content-type': 'Application/json'
-      }
-    })
+  function saveNewReport() {    
+    if (newReport == undefined) return;
+    api.post('/reports', newReport)
       .then(() => {
-        if (newReport) setReports((state) => [newReport, ...state]);
+        if (reports !== undefined) mutate([newReport, ...reports]);
         setNewReport(undefined);
       })
   }
@@ -89,7 +78,7 @@ export default function Tasks() {
   return (
     <Page navigation={navigation}>
       <Topbar title='Relatos'>
-        <span className='text-xs'>Há um total de {reports.length} problemas relatados</span>
+        <span className='text-xs'>Há um total de {reports?.length} problemas relatados</span>
       </Topbar>
       <div className='flex'>
         {boards.map((board) => <div key={board.title} className='min-w-max'>
@@ -121,12 +110,12 @@ export default function Tasks() {
                 </div>
               ) : null
             }
-            {reports.map((report) => report.status === board.data && (
+            {reports?.length && reports?.map((report) => report.status === board.data && (
               <NavLink
                 data-task={report.id}
                 to={'/reports/' + activeOption + '/' + report.id}
                 key={report.id}
-                className={`${activeChatId === report.id?.toString() ? 'bg-neutral-900 text-indigo-500' : 'bg-neutral-900 border-neutral-800/50'
+                className={`${activeReportId === report.id?.toString() ? 'bg-neutral-900 text-indigo-500' : 'bg-neutral-900 border-neutral-800/50'
                   } w-full flex items-center gap-3 py-2 px-4 hover:bg-neutral-800/75 rounded-lg border`}
               >
                 <div className='flex flex-col w-full'>

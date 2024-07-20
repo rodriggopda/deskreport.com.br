@@ -29,7 +29,7 @@ export function Navbar() {
                 <span className='ml-3'>Conversas</span>
               </div>
             </MenuNavLink>
-            <MenuNavLink to='/tasks'>
+            <MenuNavLink to='/reports'>
               <div className='pl-4 pr-8 py-2.5 flex items-center'>
                 <CheckCircle size={20} strokeWidth={2} />
                 <span className='ml-3'>Relatos</span>

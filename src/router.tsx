@@ -4,7 +4,7 @@ import App from './pages/resume';
 import { Login } from './pages/auth/login';
 import { Layout } from './components/layout';
 import Settings from './pages/settings';
-import Tasks from './pages/tasks';
+import { Reports } from './pages/reports';
 
 export const router = createBrowserRouter([
   {
@@ -31,16 +31,16 @@ export const router = createBrowserRouter([
         element: <ChatBox />,
       },
       {
-        path: '/tasks',
-        loader: () => redirect('/tasks/all'),
+        path: '/reports',
+        loader: () => redirect('/reports/all'),
       },
       {
-        path: '/tasks/:option',
-        element: <Tasks />,
+        path: '/reports/:option',
+        element: <Reports />,
       },
       {
-        path: '/tasks/:option/:taskid',
-        element: <Tasks />,
+        path: '/reports/:option/:report_id',
+        element: <Reports />,
       },
       {
         path: '/settings',
