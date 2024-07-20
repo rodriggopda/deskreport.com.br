@@ -32,7 +32,7 @@ export function Navbar() {
             <MenuNavLink to='/tasks'>
               <div className='pl-4 pr-8 py-2.5 flex items-center'>
                 <CheckCircle size={20} strokeWidth={2} />
-                <span className='ml-3'>Demandas</span>
+                <span className='ml-3'>Relatos</span>
               </div>
             </MenuNavLink>
             <MenuNavLink to='/settings'>
