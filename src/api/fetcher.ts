@@ -12,8 +12,9 @@ const apiInit: RequestInit = {
 }
 
 export const api = {
+  base: (uri: string) => apiBase + uri,
   get: (uri: string) => {
-    return fetch(apiBase + uri, {
+    return fetch(uri, {
       ...apiInit,
       method: http.GET
     })
@@ -21,7 +22,7 @@ export const api = {
       .then((data) => data);
   },
   post: (uri: string, body?: any) => {
-    return fetch(apiBase + uri, {
+    return fetch(uri, {
       ...apiInit,
       method: http.POST,
       body: JSON.stringify(body)
