@@ -8,36 +8,32 @@ export function Navbar() {
   return (
     <nav className={`max-h-screen flex flex-col sticky top-0 bottom-0 w-0 overflow-hidden lg:w-max border-r border-neutral-800/50`}>
       <div className='flex justify-between items-center px-5 py-[.725rem] bg-neutral-900'>
-        {/* <img src="logo.svg" width={160} /> */}
-        <div className='font-thin text-2xl'>
-          Desk<span className='font-black'>Report</span>
-        </div>
-        <span className='text-xs'>PRO</span>
+        <img className='mx-auto' src="/sentinela.svg" alt="Sentinela logo" />
       </div>
       <div className='flex-1 border-t border-neutral-800/50 flex'>
         <div className='flex justify-between flex-col py-4 px-4 items-center'>
           <ul className='space-y-2'>
             <MenuNavLink to='/'>
               <div className='pl-4 pr-8 py-2.5 flex items-center'>
-                <PieChart size={20} strokeWidth={2} />
+                <PieChart size={16} strokeWidth={2} />
                 <span className='ml-3'>Resumo</span>
               </div>
             </MenuNavLink>
             <MenuNavLink to='/chat'>
               <div className='pl-4 pr-8 py-2.5 flex items-center'>
-                <MessageCircle size={20} strokeWidth={2} />
+                <MessageCircle size={16} strokeWidth={2} />
                 <span className='ml-3'>Conversas</span>
               </div>
             </MenuNavLink>
             <MenuNavLink to='/reports'>
               <div className='pl-4 pr-8 py-2.5 flex items-center'>
-                <CheckCircle size={20} strokeWidth={2} />
-                <span className='ml-3'>Relatos</span>
+                <CheckCircle size={16} strokeWidth={2} />
+                <span className='ml-3'>Serviços</span>
               </div>
             </MenuNavLink>
             <MenuNavLink to='/settings'>
               <div className='pl-4 pr-8 py-2.5 flex items-center'>
-                <Settings size={20} strokeWidth={2} />
+                <Settings size={16} strokeWidth={2} />
                 <span className='ml-3'>Configurações</span>
               </div>
             </MenuNavLink>

@@ -77,7 +77,7 @@ export function Reports() {
   
   return (
     <Page navigation={navigation}>
-      <Topbar title='Relatos'>
+      <Topbar title='Serviços'>
         <span className='text-xs'>Há um total de {reports?.length} problemas relatados</span>
       </Topbar>
       <div className='flex'>
