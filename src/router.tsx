@@ -5,6 +5,9 @@ import { Login } from './pages/auth/login';
 import { Layout } from './components/layout';
 import Settings from './pages/settings';
 import { Reports } from './pages/reports';
+import Teams from './pages/teams';
+import Projects from './pages/projects';
+import Notifications from './pages/notifications';
 
 export const router = createBrowserRouter([
   {
@@ -45,6 +48,18 @@ export const router = createBrowserRouter([
       {
         path: '/settings/:tab?',
         element: <Settings />,
+      },
+      {
+        path: '/teams',
+        element: <Teams />,
+      },
+      {
+        path: '/projects',
+        element: <Projects />,
+      },
+      {
+        path: '/notifications',
+        element: <Notifications />,
       },
     ],
   },
