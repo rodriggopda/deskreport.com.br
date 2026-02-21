@@ -2,6 +2,7 @@ import { createBrowserRouter, redirect } from 'react-router-dom';
 import ChatBox from './pages/chat-box';
 import MessageTemplates from './pages/chat-box/views/templates';
 import AutoMessages from './pages/chat-box/views/automation';
+import BotBuilder from './pages/chat-box/views/bot-builder';
 import App from './pages/resume';
 import { Login } from './pages/auth/login';
 import { Layout } from './components/layout';
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
       {
         path: '/chat/automation',
         element: <AutoMessages />,
+      },
+      {
+        path: '/chat/builder',
+        element: <BotBuilder />,
       },
       {
         path: '/reports',

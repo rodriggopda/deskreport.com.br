@@ -7,6 +7,7 @@ export default function AutoMessages() {
         { name: 'Conversas', to: '/chat/conversations' },
         { name: 'Modelos de mensagens', to: '/chat/templates' },
         { name: 'Mensagens automáticas', to: '/chat/automation' },
+        { name: 'Construtor de Bots', to: '/chat/builder' },
     ];
 
     const automations = [
