@@ -9,35 +9,29 @@ export function UserHub() {
     ];
 
     return (
-        <div className="space-y-8 animate-slide-up pb-10">            {/* HEADER INFORMATIVO */}
-            <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-8 text-white shadow-lg shadow-emerald-500/20 relative overflow-hidden">
-                <div className="relative z-10 max-w-2xl">
-                    <h3 className="text-2xl font-bold mb-2 flex items-center gap-2">
-                        Minha Conta e Usuários
-                        <User size={24} className="text-emerald-200" />
-                    </h3>
-                    <p className="text-emerald-50 text-sm leading-relaxed">
-                        Atualize seu perfil pessoal e gerencie as permissões de acesso do seu time. Mantenha os dados de contato sempre atualizados para facilitar a comunicação.
-                    </p>
-                </div>
-                <Users2 size={120} className="absolute -right-10 -top-10 text-white/10 rotate-12" />
+        <div className="space-y-12 animate-slide-up pb-10">
+            {/* HEADER INFORMATIVO */}
+            <div className="mb-8 border-b border-neutral-200 dark:border-neutral-800 pb-6">
+                <h2 className="text-2xl font-semibold text-neutral-900 dark:text-white flex items-center gap-2 mb-2">
+                    Minha Conta e Usuários
+                </h2>
+                <p className="text-sm text-neutral-500 max-w-2xl">
+                    Atualize seu perfil pessoal e gerencie as permissões de acesso do seu time. Mantenha os dados de contato sempre atualizados para facilitar a comunicação.
+                </p>
             </div>
-
             {/* MEU PERFIL */}
-            <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-sm overflow-hidden">
-                <div className="p-6 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-sky-50 dark:bg-sky-900/20 rounded-lg text-sky-500">
-                            <User size={20} />
-                        </div>
-                        <h3 className="font-semibold text-neutral-800 dark:text-neutral-200 text-lg">Meu Perfil</h3>
+            <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h3 className="font-semibold text-neutral-900 dark:text-white text-lg">Meu Perfil</h3>
+                        <p className="text-xs text-neutral-500">Credenciais pessoais e foto de avatar</p>
                     </div>
-                    <button className="bg-sky-500 hover:bg-sky-600 text-white px-4 py-1.5 rounded-lg flex items-center gap-2 text-sm font-medium transition-colors">
+                    <button className="bg-sky-500 hover:bg-sky-600 focus:ring-2 focus:ring-sky-500/50 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium transition-colors shadow-sm">
                         <Save size={16} />
                         Salvar Alterações
                     </button>
                 </div>
-                <div className="p-8">
+                <div className="bg-transparent">
                     <div className="flex flex-col md:flex-row gap-8 items-start">
                         <div className="relative group">
                             <div className="w-24 h-24 rounded-full bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center overflow-hidden border-2 border-dashed border-sky-300 dark:border-sky-700">
@@ -71,18 +65,18 @@ export function UserHub() {
             </div>
 
             {/* TIME E REPRESENTANTES */}
-            <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-sm overflow-hidden">
-                <div className="p-6 border-b border-neutral-100 dark:border-neutral-800 flex justify-between items-center">
+            <div className="flex flex-col gap-4">
+                <div className="flex justify-between items-end border-b border-neutral-200 dark:border-neutral-800 pb-4">
                     <div>
-                        <h3 className="font-semibold text-neutral-800 dark:text-neutral-200 text-lg">Time e Representantes</h3>
-                        <p className="text-xs text-neutral-500 mt-0.5">Gerencie os acessos e permissões da sua equipe.</p>
+                        <h3 className="font-semibold text-neutral-900 dark:text-white text-lg">Time e Representantes</h3>
+                        <p className="text-xs text-neutral-500 mt-1">Gerencie os acessos e permissões da sua equipe.</p>
                     </div>
-                    <button className="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-xs font-bold transition-colors shadow-sm">
+                    <button className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-900 dark:text-white px-4 py-2 rounded-lg flex items-center gap-2 text-xs font-semibold transition-colors shadow-sm">
                         <Plus size={16} />
                         Convidar Novo
                     </button>
                 </div>
-                <div className="overflow-x-auto">
+                <div className="overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800">
                     <table className="w-full text-left">
                         <thead className="bg-neutral-50 dark:bg-neutral-800/50 text-[10px] uppercase text-neutral-400 font-bold border-b border-neutral-100 dark:border-neutral-800">
                             <tr>

@@ -23,99 +23,93 @@ export function PreferencesHub() {
         <div className="space-y-8 animate-slide-up pb-10">
 
             {/* HEADER INFORMATIVO */}
-            <div className="bg-gradient-to-r from-neutral-800 to-neutral-900 dark:from-neutral-800 dark:to-neutral-900 rounded-2xl p-8 text-white shadow-lg shadow-neutral-900/10 relative overflow-hidden">
-                <div className="relative z-10 max-w-2xl">
-                    <h3 className="text-2xl font-bold mb-2 flex items-center gap-2">
-                        Configurações e Preferências
-                        <Settings size={24} className="text-neutral-300" />
-                    </h3>
-                    <p className="text-neutral-300 text-sm leading-relaxed">
-                        Personalize sua experiência na plataforma DeskReport. Ajuste o tema visual, configure notificações e gerencie suas integrações.
-                    </p>
-                </div>
-                <Share2 size={120} className="absolute -right-10 -top-10 text-white/10 rotate-12" />
+            <div className="mb-8 border-b border-neutral-200 dark:border-neutral-800 pb-6">
+                <h2 className="text-2xl font-semibold text-neutral-900 dark:text-white flex items-center gap-2 mb-2">
+                    Configurações e Preferências
+                </h2>
+                <p className="text-sm text-neutral-500 max-w-2xl">
+                    Personalize sua experiência na plataforma DeskReport. Ajuste o tema visual, configure notificações e gerencie suas integrações.
+                </p>
             </div>
 
-            {/* TEMA / APARÊNCIA */}
-            <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-sm overflow-hidden">
-                <div className="p-6 border-b border-neutral-100 dark:border-neutral-800 flex items-center gap-3">
-                    <div className="p-2 bg-sky-50 dark:bg-sky-900/20 rounded-lg text-sky-500">
-                        <Sun size={20} className="dark:hidden" />
-                        <Moon size={20} className="hidden dark:block" />
-                    </div>
-                    <h3 className="font-semibold text-neutral-800 dark:text-neutral-200 text-lg">Aparência e Tema</h3>
-                </div>
-                <div className="p-8">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <ThemeOption
-                            id="light"
-                            name="Claro"
-                            active={theme === 'light'}
-                            onClick={() => setTheme('light')}
-                            icon={<Sun size={16} />}
-                        />
-                        <ThemeOption
-                            id="dark"
-                            name="Escuro"
-                            active={theme === 'dark'}
-                            onClick={() => setTheme('dark')}
-                            icon={<Moon size={16} />}
-                        />
-                        <ThemeOption
-                            id="system"
-                            name="Automático"
-                            active={theme === 'system'}
-                            onClick={() => setTheme('system')}
-                            icon={<Monitor size={16} />}
-                            description="Sincroniza com seu sistema"
-                        />
-                    </div>
-                </div>
-            </div>
-
-            {/* NOTIFICAÇÕES */}
-            <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-sm overflow-hidden">
-                <div className="p-6 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-rose-50 dark:bg-rose-900/20 rounded-lg text-rose-500">
-                            <Bell size={20} />
-                        </div>
-                        <h3 className="font-semibold text-neutral-800 dark:text-neutral-200 text-lg">Notificações do Navegador</h3>
-                    </div>
-                    {notificationPermission === 'default' && (
-                        <button
-                            onClick={requestNotificationPermission}
-                            className="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-lg text-xs font-bold transition-all shadow-sm flex items-center gap-2"
-                        >
-                            <BellRing size={16} />
-                            Habilitar Notificações
-                        </button>
-                    )}
-                </div>
-                <div className="p-8">
-                    <div className="flex items-center gap-4 p-4 bg-neutral-50 dark:bg-neutral-800/50 rounded-xl border border-neutral-200 dark:border-neutral-800 mb-6">
-                        <div className={`p-2 rounded-full ${notificationPermission === 'granted' ? 'bg-emerald-100 dark:bg-emerald-900/20 text-emerald-500' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-400'}`}>
-                            <AlertCircle size={20} />
-                        </div>
+            <div className="space-y-12 animate-slide-up pb-10">
+                {/* TEMA / APARÊNCIA */}
+                <div className="flex flex-col gap-4">
+                    <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-4">
                         <div>
-                            <span className="text-sm font-bold text-neutral-800 dark:text-neutral-100 block">
-                                Status: {notificationPermission === 'granted' ? 'Habilitadas' : notificationPermission === 'denied' ? 'Bloqueadas' : 'Não Configuradas'}
-                            </span>
-                            <span className="text-xs text-neutral-500">
-                                {notificationPermission === 'granted' ? 'Você receberá alertas de novos pedidos e atualizações importantes.' : 'Ative nas configurações do navegador para receber alertas.'}
-                            </span>
+                            <h3 className="font-semibold text-neutral-900 dark:text-white text-lg">Aparência e Tema</h3>
+                            <p className="text-xs text-neutral-500 mt-1">Escolha a cor predominante do sistema.</p>
                         </div>
                     </div>
+                    <div className="py-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <ThemeOption
+                                id="light"
+                                name="Claro"
+                                active={theme === 'light'}
+                                onClick={() => setTheme('light')}
+                                icon={<Sun size={16} />}
+                            />
+                            <ThemeOption
+                                id="dark"
+                                name="Escuro"
+                                active={theme === 'dark'}
+                                onClick={() => setTheme('dark')}
+                                icon={<Moon size={16} />}
+                            />
+                            <ThemeOption
+                                id="system"
+                                name="Automático"
+                                active={theme === 'system'}
+                                onClick={() => setTheme('system')}
+                                icon={<Monitor size={16} />}
+                                description="Sincroniza com seu sistema"
+                            />
+                        </div>
+                    </div>
+                </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <NotificationToggle label="Novos Pedidos" description="Receber alerta quando uma nova venda for iniciada." defaultChecked />
-                        <NotificationToggle label="Mensagens de Clientes" description="Alertar sobre novas conversas no WhatsApp." defaultChecked />
-                        <NotificationToggle label="Alertas do Sistema" description="Avisos sobre manutenções ou atualizações." />
-                        <NotificationToggle label="Estoque Baixo" description="Notificar quando produtos atingirem o limite mínimo." />
+                {/* NOTIFICAÇÕES */}
+                <div className="flex flex-col gap-4">
+                    <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-4">
+                        <div>
+                            <h3 className="font-semibold text-neutral-900 dark:text-white text-lg">Notificações do Navegador</h3>
+                            <p className="text-xs text-neutral-500 mt-1">Gerencie os alertas e popups de aviso do sistema.</p>
+                        </div>
+                        {notificationPermission === 'default' && (
+                            <button
+                                onClick={requestNotificationPermission}
+                                className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-900 dark:text-white px-4 py-2 rounded-lg text-xs font-semibold transition-colors shadow-sm flex items-center gap-2"
+                            >
+                                <BellRing size={16} />
+                                Habilitar Notificações
+                            </button>
+                        )}
+                    </div>
+                    <div className="py-4">
+                        <div className="flex items-center gap-4 p-4 bg-neutral-50 dark:bg-neutral-800/50 rounded-xl border border-neutral-200 dark:border-neutral-800 mb-6">
+                            <div className={`p-2 rounded-full ${notificationPermission === 'granted' ? 'bg-emerald-100 dark:bg-emerald-900/20 text-emerald-500' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-400'}`}>
+                                <AlertCircle size={20} />
+                            </div>
+                            <div>
+                                <span className="text-sm font-bold text-neutral-800 dark:text-neutral-100 block">
+                                    Status: {notificationPermission === 'granted' ? 'Habilitadas' : notificationPermission === 'denied' ? 'Bloqueadas' : 'Não Configuradas'}
+                                </span>
+                                <span className="text-xs text-neutral-500">
+                                    {notificationPermission === 'granted' ? 'Você receberá alertas de novos pedidos e atualizações importantes.' : 'Ative nas configurações do navegador para receber alertas.'}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <NotificationToggle label="Novos Pedidos" description="Receber alerta quando uma nova venda for iniciada." defaultChecked />
+                            <NotificationToggle label="Mensagens de Clientes" description="Alertar sobre novas conversas no WhatsApp." defaultChecked />
+                            <NotificationToggle label="Alertas do Sistema" description="Avisos sobre manutenções ou atualizações." />
+                            <NotificationToggle label="Estoque Baixo" description="Notificar quando produtos atingirem o limite mínimo." />
+                        </div>
                     </div>
                 </div>
             </div>
-
         </div>
     );
 }
