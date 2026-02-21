@@ -1,5 +1,7 @@
 import { createBrowserRouter, redirect } from 'react-router-dom';
 import ChatBox from './pages/chat-box';
+import MessageTemplates from './pages/chat-box/views/templates';
+import AutoMessages from './pages/chat-box/views/automation';
 import App from './pages/resume';
 import { Login } from './pages/auth/login';
 import { Layout } from './components/layout';
@@ -23,15 +25,19 @@ export const router = createBrowserRouter([
       },
       {
         path: '/chat',
-        loader: () => redirect('/chat/all'),
+        loader: () => redirect('/chat/conversations'),
       },
       {
-        path: '/chat/:option',
+        path: '/chat/conversations/:chatid?',
         element: <ChatBox />,
       },
       {
-        path: '/chat/:option/:chatid',
-        element: <ChatBox />,
+        path: '/chat/templates',
+        element: <MessageTemplates />,
+      },
+      {
+        path: '/chat/automation',
+        element: <AutoMessages />,
       },
       {
         path: '/reports',
