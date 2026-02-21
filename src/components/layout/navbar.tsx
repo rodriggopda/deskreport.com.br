@@ -8,7 +8,7 @@ export function Navbar() {
   return (
     <nav className={`max-h-screen flex flex-col sticky top-0 bottom-0 w-0 overflow-hidden lg:w-max border-r border-neutral-800/50`}>
       <div className='flex justify-between items-center px-5 py-[.725rem] bg-neutral-900'>
-        <img className='mx-auto' src="/sentinela.svg" alt="Sentinela logo" />
+        <img className='mx-auto h-8' src="/deskreport-simbol.svg" alt="DeskReport logo" />
       </div>
       <div className='flex-1 border-t border-neutral-800/50 flex'>
         <div className='flex justify-between flex-col py-4 px-4 items-center'>

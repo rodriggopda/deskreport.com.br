@@ -1,27 +1,41 @@
-import useSWR from 'swr';
 import { Page } from '../../components/layout/page';
 import { Topbar } from '../../components/layout/topbar';
-import { api } from '../../api/fetcher';
-import { Loader2 } from 'lucide-react';
+import { Building2, ShieldCheck, Share2, Settings2 } from 'lucide-react';
+import { useParams } from 'react-router-dom';
+import { CompanyHub } from './views/company-hub';
+import { UserHub } from './views/user-hub';
+import { ChannelsHub } from './views/channels-hub';
+import { PreferencesHub } from './views/preferences-hub';
 
 export default function Settings() {
-  const { data: qrcode, isLoading: isLoadingQrCode } = useSWR(`http://localhost:3000/settings/instance/scan-qrcode`, api.get);
-  const { data: instance, isLoading: isLoadingInstance } = useSWR(`http://localhost:3000/settings/instance/info`, api.get);
+  const { tab } = useParams();
+  const currentTab = tab || 'company';
+
+  const navigation = [
+    { name: 'Minha Empresa', to: '/settings/company', icon: <Building2 size={14} /> },
+    { name: 'Canais e Integrações', to: '/settings/channels', icon: <Share2 size={14} /> },
+    { name: 'Contas e Acessos', to: '/settings/accounts', icon: <ShieldCheck size={14} /> },
+    { name: 'Preferências', to: '/settings/preferences', icon: <Settings2 size={14} /> },
+  ];
+
+  const renderContent = () => {
+    switch (currentTab) {
+      case 'channels': return <ChannelsHub />;
+      case 'accounts': return <UserHub />;
+      case 'preferences': return <PreferencesHub />;
+      default: return <CompanyHub />;
+    }
+  };
 
   return (
-    <Page navigation={[]}>
-      <Topbar title='Configurações' inputSearch='off' />
-
-      <div className='flex px-10 py-4 overflow-y-auto'>
-        {!isLoadingQrCode ? (
-          <div className='w-64 h-64 p-4 bg-white rounded-xl'>
-            <img className='w-full bg-blend-screen' src={qrcode?.base64} />
+    <Page navigation={navigation}>
+      <div className="flex flex-col h-full w-full">
+        <Topbar title='Configurações' inputSearch='off' />
+        <div className='flex-1 overflow-y-auto bg-transparent p-6'>
+          <div className="max-w-4xl mx-auto">
+            {renderContent()}
           </div>
-        ) : (
-          <div className='flex items-center justify-center w-64 h-64 bg-white rounded-xl'>
-            <Loader2 className='animate-spin' />
-          </div>
-        )}
+        </div>
       </div>
     </Page>
   );

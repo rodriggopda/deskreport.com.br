@@ -43,7 +43,7 @@ export const router = createBrowserRouter([
         element: <Reports />,
       },
       {
-        path: '/settings',
+        path: '/settings/:tab?',
         element: <Settings />,
       },
     ],
