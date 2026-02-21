@@ -14,7 +14,7 @@ export function ChannelsHub() {
         <div className="space-y-8 animate-slide-up pb-10">
 
             {/* HEADER INFORMATIVO */}
-            <div className="bg-gradient-to-r from-purple-600 to-indigo-700 rounded-2xl p-8 text-white shadow-lg shadow-purple-500/20 relative overflow-hidden">
+            <div className="bg-gradient-to-r from-neutral-800 to-neutral-900 dark:from-neutral-800 dark:to-neutral-900 rounded-2xl p-8 text-white shadow-lg shadow-neutral-900/10 relative overflow-hidden">
                 <div className="relative z-10 max-w-2xl">
                     <h3 className="text-2xl font-bold mb-2 flex items-center gap-2">
                         Central de Integrações

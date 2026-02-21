@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Share2, AlertCircle, Sun, Moon, Monitor, Bell, BellRing, Settings, Zap } from 'lucide-react';
+import { useThemeStore } from '../../../store';
 
 export function PreferencesHub() {
-    const [theme, setTheme] = useState('light');
+    const { theme, setTheme } = useThemeStore();
     const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
 
     useEffect(() => {
@@ -22,13 +23,13 @@ export function PreferencesHub() {
         <div className="space-y-8 animate-slide-up pb-10">
 
             {/* HEADER INFORMATIVO */}
-            <div className="bg-gradient-to-r from-sky-600 to-indigo-700 rounded-2xl p-8 text-white shadow-lg shadow-sky-500/20 relative overflow-hidden">
+            <div className="bg-gradient-to-r from-neutral-800 to-neutral-900 dark:from-neutral-800 dark:to-neutral-900 rounded-2xl p-8 text-white shadow-lg shadow-neutral-900/10 relative overflow-hidden">
                 <div className="relative z-10 max-w-2xl">
                     <h3 className="text-2xl font-bold mb-2 flex items-center gap-2">
                         Configurações e Preferências
-                        <Settings size={24} className="text-sky-200" />
+                        <Settings size={24} className="text-neutral-300" />
                     </h3>
-                    <p className="text-sky-100 text-sm leading-relaxed">
+                    <p className="text-neutral-300 text-sm leading-relaxed">
                         Personalize sua experiência na plataforma DeskReport. Ajuste o tema visual, configure notificações e gerencie suas integrações.
                     </p>
                 </div>

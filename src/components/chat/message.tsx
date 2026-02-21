@@ -19,7 +19,7 @@ export function Message() {
   return (
     <div className='flex flex-col justify-center w-full mt-4 group message odd:items-end'>
       <div
-        className={`group-odd:bg-indigo-600 group-odd:rounded-b-2xl group-odd:rounded-tl-2xl bg-neutral-800 rounded-b-2xl group-even:rounded-tr-2xl flex flex-col px-6 pt-5 pb-6 w-max max-w-[35rem] border border-neutral-800/50 group`}
+        className={`group-odd:bg-neutral-200 dark:group-odd:bg-neutral-800 group-odd:text-neutral-900 dark:group-odd:text-neutral-100 group-odd:rounded-b-2xl group-odd:rounded-tl-2xl bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 rounded-b-2xl group-even:rounded-tr-2xl flex flex-col px-6 pt-5 pb-6 w-max max-w-[35rem] border border-neutral-200 dark:border-neutral-800/50 group transition-colors`}
       >
         <p>
           Lorem Ipsum dolor sit amet, jet amet Lorem Ipsum dolor sit amet, jet amet Lorem Ipsum dolor sit amet, jet amet Lorem Ipsum dolor sit amet, jet amet

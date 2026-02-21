@@ -62,12 +62,12 @@ export default function ChatBox() {
             <div className='relative flex items-center'>
               <Search className='absolute ml-2.5 pointer-events-none' size={16} />
               <input
-                className='cursor-pointer focus:cursor-text transition-all w-0 focus:w-[320px] bg-neutral-950 focus:bg-neutral-800 hover:bg-neutral-800 pl-9 py-2 rounded-lg text-sm outline-none ring-1 ring-transparent focus:ring-indigo-400'
+                className='cursor-pointer focus:cursor-text transition-all w-0 focus:w-[320px] bg-white dark:bg-neutral-950 focus:bg-neutral-100 dark:focus:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-800 pl-9 py-2 rounded-lg text-sm outline-none ring-1 ring-transparent focus:ring-neutral-400 dark:ring-neutral-500'
                 type='text'
                 placeholder='Procurar mensagens'
               />
             </div>
-            <button className='flex items-center gap-1 px-3 py-2 text-sm bg-transparent hover:bg-neutral-800 rounded-lg focus:bg-neutral-900'>
+            <button className='flex items-center gap-1 px-3 py-2 text-sm bg-transparent hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg focus:bg-neutral-200 dark:focus:bg-neutral-900'>
               <Settings className='' size={16} />
               <span>Preferências</span>
             </button>
@@ -77,19 +77,19 @@ export default function ChatBox() {
         <ContactCard data={displayCustomerFromActiveChatId()} />
       </Topbar>
       <div className='flex px-10'>
-        <div className='min-w-[260px] border-r border-neutral-900'>
+        <div className='min-w-[260px] border-r border-neutral-200 dark:border-neutral-900'>
           <div
             style={{ height: scrollHeight + 'px' }}
-            className='overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-neutral-900 py-4 space-y-2 w-full text-sm'
+            className='overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-neutral-300 dark:scrollbar-thumb-neutral-800 scrollbar-track-neutral-100 dark:scrollbar-track-neutral-900 py-4 space-y-2 w-full text-sm'
           >
             {customers.data.map((customer) => (
               <NavLink
                 to={'/chat/' + activeOption + '/' + customer.id}
                 key={customer.id}
-                className={`${activeChatId === customer.id.toString() ? 'bg-neutral-900 text-indigo-500' : ''
-                  } max-w-[260px] flex items-center gap-3 py-2 px-4 hover:bg-neutral-800 rounded-lg`}
+                className={`${activeChatId === customer.id.toString() ? 'bg-neutral-100 dark:bg-neutral-900 text-sky-600 dark:text-sky-500' : ''
+                  } max-w-[260px] flex items-center gap-3 py-2 px-4 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-colors`}
               >
-                <img className='rounded-full bg-indigo-400' width={32} height={32} src={customer.avatar} />
+                <img className='rounded-full bg-neutral-300 dark:bg-neutral-700' width={32} height={32} src={customer.avatar} />
                 <span className='truncate'>{customer.first_name + ' ' + customer.last_name}</span>
               </NavLink>
             ))}
@@ -99,33 +99,33 @@ export default function ChatBox() {
           <div className='flex-1 ml-10 -mr-10'>
             <div
               style={{ height: scrollHeight + 'px' }}
-              className='overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-neutral-900 w-full overflow-hidden pr-10'
+              className='overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 dark:scrollbar-thumb-neutral-800 scrollbar-track-neutral-100 dark:scrollbar-track-neutral-900 w-full overflow-hidden pr-10'
             >
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].reverse().map((item) => (
                 <Message key={item} />
               ))}
-              <div style={{ height: targetHeight }} className='mt-10 transition-all flex flex-col sticky rounded-t-2xl bottom-0 bg-neutral-900 pt-1 px-5 pb-4'>
+              <div style={{ height: targetHeight }} className='mt-10 transition-all flex flex-col sticky rounded-t-2xl bottom-0 bg-neutral-100 dark:bg-neutral-900 pt-1 px-5 pb-4'>
                 <button
                   onClick={handleApplyTargetHeight}
                   draggable
-                  className='mx-auto opacity-50 hover:opacity-100 rounded-full hover:bg-neutral-800 px-10 mb-1'
+                  className='mx-auto opacity-50 hover:opacity-100 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-800 px-10 mb-1 transition-colors'
                 >
                   {targetHeight <= 100 ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
                 </button>
-                <form className='flex-1 p-3 flex items-start rounded-lg bg-neutral-800'>
+                <form className='flex-1 p-3 flex items-start rounded-lg bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-transparent transition-colors'>
                   <textarea
                     style={{ height: targetHeight <= 100 ? '40px' : '100%' }}
-                    className='scrollbar-thin scrollbar-thumb-neutral-700 scrollbar-track-neutral-800 resize-none flex-1 bg-transparent outline-none pl-3 py-2 border-r mr-2 border-neutral-700/50'
+                    className='scrollbar-thin scrollbar-thumb-neutral-300 dark:scrollbar-thumb-neutral-700 scrollbar-track-neutral-100 dark:scrollbar-track-neutral-800 resize-none flex-1 bg-transparent outline-none pl-3 py-2 border-r mr-2 border-neutral-200 dark:border-neutral-700/50'
                     placeholder='Mensagem...'
                   />
                   <div className={targetHeight <= 100 ? '' : 'flex flex-col-reverse items-center gap-2'}>
-                    <button type='button' className='bg-transparent rounded-lg p-2.5 opacity-50 hover:opacity-100 hover:bg-neutral-700'>
+                    <button type='button' className='bg-transparent rounded-lg p-2.5 opacity-50 hover:opacity-100 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors'>
                       <Smile size={20} />
                     </button>
-                    <button type='button' className='mx-1 bg-transparent rounded-lg p-2.5 opacity-50 hover:opacity-100 hover:bg-neutral-700'>
+                    <button type='button' className='mx-1 bg-transparent rounded-lg p-2.5 opacity-50 hover:opacity-100 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors'>
                       <Paperclip size={20} />
                     </button>
-                    <button type='submit' className='bg-indigo-600 rounded-lg p-2.5 hover:bg-indigo-500'>
+                    <button type='submit' className='bg-sky-600 rounded-lg p-2.5 hover:bg-sky-500'>
                       <Send size={20} />
                     </button>
                   </div>

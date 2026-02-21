@@ -23,7 +23,7 @@ export function CompanyHub() {
             <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-sm overflow-hidden">
                 <div className="p-6 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg text-indigo-500">
+                        <div className="p-2 bg-neutral-100 dark:bg-neutral-800 rounded-lg text-neutral-400 dark:text-neutral-500">
                             <Palette size={20} />
                         </div>
                         <h3 className="font-semibold text-neutral-800 dark:text-neutral-200 text-lg">Aparência e URL</h3>
@@ -38,7 +38,7 @@ export function CompanyHub() {
                         <div className="space-y-4">
                             <label className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Logo do Catálogo</label>
                             <div className="border-2 border-dashed border-neutral-200 dark:border-neutral-800 rounded-xl p-8 flex flex-col items-center justify-center gap-3 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors cursor-pointer group">
-                                <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-full text-indigo-500 group-hover:scale-110 transition-transform">
+                                <div className="p-3 bg-neutral-100 dark:bg-neutral-800 rounded-full text-neutral-400 dark:text-neutral-500 group-hover:scale-110 transition-transform">
                                     <Plus size={24} />
                                 </div>
                                 <span className="text-xs text-neutral-500">Formato PNG ou SVG</span>
@@ -58,7 +58,7 @@ export function CompanyHub() {
                                         <span className="text-[10px] text-center font-bold text-neutral-500">Primária</span>
                                     </div>
                                     <div className="flex flex-col gap-2">
-                                        <div className="w-12 h-12 rounded-xl bg-indigo-600 shadow-lg border-2 border-white dark:border-neutral-800" />
+                                        <div className="w-12 h-12 rounded-xl bg-neutral-800 dark:bg-neutral-200 shadow-lg border-2 border-white dark:border-neutral-800" />
                                         <span className="text-[10px] text-center font-bold text-neutral-500">Acento</span>
                                     </div>
                                 </div>
