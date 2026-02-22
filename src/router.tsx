@@ -7,7 +7,7 @@ import App from './pages/resume';
 import { Login } from './pages/auth/login';
 import { Layout } from './components/layout';
 import Settings from './pages/settings';
-import { Reports } from './pages/reports';
+import { Tasks } from './pages/tasks';
 import Teams from './pages/teams';
 import Projects from './pages/projects';
 import Notifications from './pages/notifications';
@@ -45,16 +45,16 @@ export const router = createBrowserRouter([
         element: <BotBuilder />,
       },
       {
-        path: '/reports',
-        loader: () => redirect('/reports/all'),
+        path: '/tasks',
+        loader: () => redirect('/tasks/all'),
       },
       {
-        path: '/reports/:option',
-        element: <Reports />,
+        path: '/tasks/:option',
+        element: <Tasks />,
       },
       {
-        path: '/reports/:option/:report_id',
-        element: <Reports />,
+        path: '/tasks/:option/:report_id',
+        element: <Tasks />,
       },
       {
         path: '/settings/:tab?',

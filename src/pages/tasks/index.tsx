@@ -17,7 +17,7 @@ export type TaskCardProps = {
   signee?: string;
 }
 
-export function Reports() {
+export function Tasks() {
   const [scrollHeight, setScrollHeight] = useState(0);
 
   const [newReport, setNewReport] = useState<TaskCardProps>();
@@ -77,7 +77,7 @@ export function Reports() {
 
   return (
     <Page navigation={navigation}>
-      <Topbar title='Tarefas'>
+      <Topbar title='Tarefas' smartHeader>
         <span className='text-xs'>Há um total de {reports?.length} problemas relatados</span>
       </Topbar>
       <div className='flex'>

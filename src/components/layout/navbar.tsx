@@ -19,7 +19,7 @@ export function Navbar() {
               <MenuNavLink to='/chat' icon={<MessageCircle size={22} strokeWidth={2} />} label='Conversas' />
               <MenuNavLink to='/teams' icon={<Users size={22} strokeWidth={2} />} label='Equipes' />
               <MenuNavLink to='/projects' icon={<FolderDot size={22} strokeWidth={2} />} label='Projetos' />
-              <MenuNavLink to='/reports' icon={<CheckCircle size={22} strokeWidth={2} />} label='Tarefas' />
+              <MenuNavLink to='/tasks' icon={<CheckCircle size={22} strokeWidth={2} />} label='Tarefas' />
               <MenuNavLink to='/notifications' icon={<Bell size={22} strokeWidth={2} />} label='Avisos' />
               <MenuNavLink to='/settings' icon={<Settings size={22} strokeWidth={2} />} label='Configs' />
             </ul>
@@ -53,7 +53,7 @@ export function MenuNavLink({ to, icon, label }: { to: string, icon: React.React
 }
 
 export function SubNavLink({ name, to }: SubmenuItem) {
-  return <NavLink to={to} className={({ isActive }) => [isActive ? 'text-neutral-900 dark:text-neutral-100 bg-neutral-100 dark:bg-neutral-900 shadow-sm font-semibold border border-neutral-200 dark:border-transparent' : 'text-neutral-500 border border-transparent', ' flex items-center gap-3 pt-1 pb-1.5 px-4 rounded-lg transition-colors'].join('')}>
+  return <NavLink to={to} className={({ isActive }) => [isActive ? 'text-neutral-900 dark:text-neutral-100 bg-neutral-100 dark:bg-neutral-900 font-semibold border-neutral-200' : 'text-neutral-500', ' flex items-center gap-3 py-1 px-4 rounded transition-colors'].join('')}>
     <span>{name}</span>
   </NavLink>
 }
