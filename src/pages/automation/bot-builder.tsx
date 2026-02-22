@@ -20,24 +20,21 @@ import {
 import '@xyflow/react/dist/style.css';
 
 import {
-  Plus,
   Play,
   Save,
   MessageSquare,
   Zap,
   UserPlus,
-  GitBranch,
   Sparkles,
   MousePointer2,
-  Smartphone,
-  Search,
   MoreHorizontal,
-  X,
   Layers,
   Settings2 as SettingsIcon
 } from 'lucide-react';
-import { Page } from '../../../components/layout/page';
-import { Topbar } from '../../../components/layout/topbar';
+import { } from 'react-router-dom';
+import { Page } from '../../components/layout/page';
+import { Topbar } from '../../components/layout/topbar';
+import { useTenant } from '../../hooks/useTenant';
 
 // --- Custom Node Types ---
 
@@ -167,11 +164,12 @@ export default function BotBuilder() {
     []
   );
 
+  const { companyUrl } = useTenant();
+
   const navigation = [
-    { name: 'Conversas', to: '/chat/conversations' },
-    { name: 'Modelos de mensagens', to: '/chat/templates' },
-    { name: 'Mensagens automáticas', to: '/chat/automation' },
-    { name: 'Construtor de Bots', to: '/chat/builder' },
+    { name: 'Modelos de mensagens', to: companyUrl('automation/templates') },
+    { name: 'Mensagens automáticas', to: companyUrl('automation/flow') },
+    { name: 'Construtor de Bots', to: companyUrl('automation/list') },
   ];
 
   const sidebarNodeTypes = [
@@ -196,7 +194,7 @@ export default function BotBuilder() {
 
   return (
     <Page navigation={navigation}>
-      <Topbar title='Construtor de Bots' inputSearch='off' />
+      <Topbar title='Automações' inputSearch='off' />
 
       <div className='flex h-[calc(100vh-68px)] bg-white dark:bg-zinc-950 transition-colors overflow-hidden relative'>
 
@@ -233,7 +231,7 @@ export default function BotBuilder() {
             fitView
             className='bg-zinc-50 dark:bg-zinc-950'
           >
-            <Background color='#000' gap={40} size={1} opacity={0.05} />
+            <Background color='#000' gap={40} />
             <Controls className='!bg-white !dark:bg-zinc-900 !border-2 !border-zinc-900 !dark:border-zinc-100 !rounded-md !shadow-none' />
 
             <Panel position="top-center" className='z-40'>

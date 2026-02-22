@@ -1,8 +1,9 @@
 import { createBrowserRouter, redirect } from 'react-router-dom';
 import ChatBox from './pages/chat-box';
-import MessageTemplates from './pages/chat-box/views/templates';
-import AutoMessages from './pages/chat-box/views/automation';
-import BotBuilder from './pages/chat-box/views/bot-builder';
+import MessageTemplates from './pages/automation/templates';
+import AutoMessages from './pages/automation';
+import BotList from './pages/automation/bot-list';
+import BotBuilder from './pages/automation/bot-builder';
 import App from './pages/resume';
 import { Login } from './pages/auth/login';
 import { Layout } from './components/layout';
@@ -18,60 +19,93 @@ export const router = createBrowserRouter([
     element: <Login />,
   },
   {
+    path: '/',
+    loader: () => redirect('/4go'),
+  },
+  {
+    path: '/:company_id',
     element: <Layout />,
     children: [
       {
-        path: '/',
+        index: true,
+        loader: ({ params }) => redirect(`/${params.company_id}/resume`),
+      },
+      {
+        path: 'resume',
         element: <App />,
       },
       {
-        path: '/chat',
-        loader: () => redirect('/chat/conversations'),
+        path: 'chat',
+        children: [
+          {
+            index: true,
+            loader: ({ params }) => redirect(`/${params.company_id}/chat/conversations`),
+          },
+          {
+            path: 'conversations/:chatid?',
+            element: <ChatBox />,
+          },
+        ]
       },
       {
-        path: '/chat/conversations/:chatid?',
-        element: <ChatBox />,
+        path: 'automation',
+        children: [
+          {
+            index: true,
+            loader: ({ params }) => redirect(`/${params.company_id}/automation/list`),
+          },
+          {
+            path: 'templates',
+            element: <MessageTemplates />,
+          },
+          {
+            path: 'flow',
+            element: <AutoMessages />,
+          },
+          {
+            path: 'list',
+            element: <BotList />,
+          },
+          {
+            path: 'builder/:id?',
+            element: <BotBuilder />,
+          },
+        ]
       },
       {
-        path: '/chat/templates',
-        element: <MessageTemplates />,
-      },
-      {
-        path: '/chat/automation',
-        element: <AutoMessages />,
-      },
-      {
-        path: '/chat/builder',
-        element: <BotBuilder />,
-      },
-      {
-        path: '/tasks',
-        loader: () => redirect('/tasks/all'),
-      },
-      {
-        path: '/tasks/:option',
-        element: <Tasks />,
-      },
-      {
-        path: '/tasks/:option/:report_id',
-        element: <Tasks />,
-      },
-      {
-        path: '/settings/:tab?',
+        path: 'settings/:tab?',
         element: <Settings />,
       },
       {
-        path: '/teams',
+        path: 'teams',
         element: <Teams />,
       },
       {
-        path: '/projects',
+        path: 'projects',
         element: <Projects />,
       },
       {
-        path: '/notifications',
+        path: 'notifications',
         element: <Notifications />,
       },
     ],
+  },
+  {
+    path: '/:company_id/:project_id/tasks',
+    element: <Layout />,
+    children: [
+      {
+        index: true,
+        loader: ({ params }) => redirect(`/${params.company_id}/${params.project_id}/tasks/all`),
+      },
+      {
+        path: ':option',
+        element: <Tasks />,
+      },
+      {
+        path: ':option/:report_id',
+        element: <Tasks />,
+      },
+    ]
   },
 ]);

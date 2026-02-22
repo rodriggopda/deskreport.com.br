@@ -11,7 +11,7 @@ export function Page({ navigation, children }: PageProps) {
 
   useEffect(() => {
     if (navigation) setNavigation(navigation);
-  }, []);
+  }, [navigation, setNavigation]);
 
   return <div className='flex-1 max-h-screen overflow-hidden'>{children}</div>;
 }

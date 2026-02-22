@@ -1,10 +1,12 @@
 import React from 'react';
-import { CheckCircle, MessageCircle, PieChart, Settings, Bell, Users, FolderDot } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { CheckCircle, MessageCircle, PieChart, Settings, Bell, Users, FolderDot, Zap } from 'lucide-react';
+import { NavLink, useParams } from 'react-router-dom';
 import { SubmenuItem } from '../../store';
 
-
 export function Navbar() {
+  const { company_id, project_id } = useParams();
+  const cId = company_id || '4go';
+  const pId = project_id || 'deskreport';
 
   return (
     <div className="h-screen max-h-screen">
@@ -15,13 +17,14 @@ export function Navbar() {
         <div className='flex-1 flex'>
           <div className='flex flex-col py-2 w-full'>
             <ul className='space-y-3 w-full px-2'>
-              <MenuNavLink to='/' icon={<PieChart size={22} strokeWidth={2} />} label='Início' />
-              <MenuNavLink to='/chat' icon={<MessageCircle size={22} strokeWidth={2} />} label='Conversas' />
-              <MenuNavLink to='/teams' icon={<Users size={22} strokeWidth={2} />} label='Equipes' />
-              <MenuNavLink to='/projects' icon={<FolderDot size={22} strokeWidth={2} />} label='Projetos' />
-              <MenuNavLink to='/tasks' icon={<CheckCircle size={22} strokeWidth={2} />} label='Tarefas' />
-              <MenuNavLink to='/notifications' icon={<Bell size={22} strokeWidth={2} />} label='Avisos' />
-              <MenuNavLink to='/settings' icon={<Settings size={22} strokeWidth={2} />} label='Configs' />
+              <MenuNavLink to={`/${cId}/resume`} icon={<PieChart size={22} strokeWidth={2} />} label='Início' />
+              <MenuNavLink to={`/${cId}/chat`} icon={<MessageCircle size={22} strokeWidth={2} />} label='Conversas' />
+              <MenuNavLink to={`/${cId}/automation`} icon={<Zap size={22} strokeWidth={2} />} label='Automação' />
+              <MenuNavLink to={`/${cId}/teams`} icon={<Users size={22} strokeWidth={2} />} label='Equipes' />
+              <MenuNavLink to={`/${cId}/projects`} icon={<FolderDot size={22} strokeWidth={2} />} label='Projetos' />
+              <MenuNavLink to={`/${cId}/${pId}/tasks`} icon={<CheckCircle size={22} strokeWidth={2} />} label='Tarefas' />
+              <MenuNavLink to={`/${cId}/notifications`} icon={<Bell size={22} strokeWidth={2} />} label='Avisos' />
+              <MenuNavLink to={`/${cId}/settings`} icon={<Settings size={22} strokeWidth={2} />} label='Configs' />
             </ul>
           </div>
         </div>

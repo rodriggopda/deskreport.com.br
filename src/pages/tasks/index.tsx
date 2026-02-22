@@ -23,16 +23,19 @@ export function Tasks() {
   const [newReport, setNewReport] = useState<TaskCardProps>();
   const { data: reports, mutate } = useSWR<TaskCardProps[]>('/reports', api.get);
 
+  const { company_id, project_id, option, report_id } = useParams();
+  const cId = company_id || '4go';
+  const pId = project_id || 'deskreport';
+
   const navigation = [
-    { name: 'Todas', to: '/tasks/all' },
-    /* { name: 'Em andamento', to: '/tasks/in-progress' }, */
-    { name: 'Vencidas', to: '/tasks/over' },
-    { name: 'Finalizadas', to: '/tasks/finished' },
+    { name: 'Todas', to: `/${cId}/${pId}/tasks/all` },
+    /* { name: 'Em andamento', to: `/${cId}/${pId}/tasks/in-progress` }, */
+    { name: 'Vencidas', to: `/${cId}/${pId}/tasks/over` },
+    { name: 'Finalizadas', to: `/${cId}/${pId}/tasks/finished` },
   ]
 
-  const params = useParams();
-  const activeReportId = params['task_id']
-  const activeOption = params['option'];
+  const activeReportId = report_id;
+  const activeOption = option;
 
   useEffect(() => {
     if (window !== undefined) {
@@ -113,7 +116,7 @@ export function Tasks() {
             {reports?.length && reports?.map((report) => report.status === board.data && (
               <NavLink
                 data-task={report.id}
-                to={'/reports/' + activeOption + '/' + report.id}
+                to={`/${cId}/${pId}/tasks/${activeOption}/${report.id}`}
                 key={report.id}
                 className={`${activeReportId === report.id?.toString() ? 'bg-neutral-100 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100' : 'bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800/50'
                   } w-full flex items-center gap-3 py-2 px-4 hover:bg-neutral-50 dark:hover:bg-neutral-800/75 rounded-lg border shadow-sm transition-colors`}
