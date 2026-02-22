@@ -42,13 +42,13 @@ export function Navbar() {
 export function MenuNavLink({ to, icon, label }: { to: string, icon: React.ReactNode, label: string }) {
   return (
     <li className="relative group">
-      <NavLink to={to} className={({ isActive }) => [isActive ? 'text-white font-black' : 'text-slate-400 font-medium hover:text-slate-200', 'flex flex-col items-center justify-center gap-1.5 transition-all duration-200 py-1'].join('')}>
+      <NavLink to={to} className={({ isActive }) => [isActive ? 'text-white font-black' : 'text-zinc-400 font-medium hover:text-zinc-200', 'flex flex-col items-center justify-center gap-1.5 transition-all duration-200 py-1'].join('')}>
         {({ isActive }) => (
-          <div className='flex flex-col items-center justify-center gap-1.5 transition-all duration-200 py-1'>
-            {isActive && (
+          <div className='flex flex-col items-center justify-center gap-1 transition-all duration-200 py-1'>
+            {/* {isActive && (
               <div className='absolute right-0 top-0 bottom-0 w-[3px] bg-white rounded-l-full'></div>
-            )}
-            <div className={`p-2 rounded-lg transition-all duration-200 flex items-center justify-center ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-white'}`}>
+            )} */}
+            <div className={`p-1 rounded-lg transition-all duration-200 flex items-center justify-center ${isActive ? 'text-white' : 'text-zinc-400 group-hover:text-white'}`}>
               {icon}
             </div>
             <span className='text-[10px] font-medium'>{label}</span>
