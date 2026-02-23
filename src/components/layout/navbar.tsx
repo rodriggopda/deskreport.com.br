@@ -10,10 +10,10 @@ export function Navbar() {
 
   return (
     <div className="h-screen max-h-screen">
-      <nav className="h-full flex flex-col w-[74px] overflow-hidden bg-gradient-to-b from-sky-800 via-zinc-950 to-black z-50 transition-colors">
+      <nav className="h-full flex flex-col w-[74px] overflow-hidden bg-zinc-900 border-r border-zinc-800 z-50 transition-colors">
         <div className='flex justify-center items-center py-6 relative'>
           <div className='absolute top-0 left-0 w-full h-24 bg-[#2BCC56]/10 blur-3xl rounded-full'></div>
-          <img className='h-8 relative z-10' src="/white-simbolo.svg" alt="DeskReport logo" />
+          <img className='h-8 relative z-10' src="/deskreport-simbol.svg" alt="DeskReport logo" />
         </div>
         <div className='flex-1 flex'>
           <div className='flex flex-col py-2 w-full'>

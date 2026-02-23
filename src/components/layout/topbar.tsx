@@ -26,6 +26,7 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
   ];
 
   const projects = [
+    { id: 'all', name: 'Projeto' },
     { id: 'deskreport', name: 'DeskReport' },
     { id: 'marketing', name: 'Marketing' },
     { id: 'vendas', name: 'Vendas' }

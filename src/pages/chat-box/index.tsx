@@ -22,7 +22,7 @@ export default function ChatBox() {
 
   return (
     <Page navigation={navigation}>
-      <Topbar title='Conversas' inputSearch='off' smartHeader={false} />
+      <Topbar title='Conversas' inputSearch='off' />
 
       <div className='flex h-[calc(100vh-68px)] overflow-hidden bg-zinc-50/50 dark:bg-zinc-950/50 transition-colors'>
         {/* Sidebar de Contatos */}
