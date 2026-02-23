@@ -7,6 +7,7 @@ import { useTaskStore } from './use-task-store';
 import { useTaskFilters } from './use-task-filters';
 import { TaskFiltersComponent } from './task-filters-component';
 import { TaskDetailDrawer } from './task-detail-drawer';
+import { TaskFormModal } from './task-form-modal';
 import { Button } from '../../components/ui/button';
 import { useState } from 'react';
 
@@ -17,6 +18,8 @@ export function TaskList() {
 
   const { tasks } = useTaskStore();
   const [selectedTask, setSelectedTask] = useState<TaskCardProps | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [taskToEdit, setTaskToEdit] = useState<TaskCardProps | null>(null);
 
   const {
     search,
@@ -78,7 +81,7 @@ export function TaskList() {
             onClear={clearFilters}
           />
           <div className='w-px h-3.5 bg-zinc-200 dark:bg-zinc-800' />
-          <Button size="md" className='gap-1.5'>
+          <Button size="md" className='gap-1.5' onClick={() => { setTaskToEdit(null); setIsFormOpen(true); }}>
             <Plus size={12} />
             Tarefa
           </Button>
@@ -110,7 +113,9 @@ export function TaskList() {
                   onClick={() => setSelectedTask(task)}
                   className='hover:bg-zinc-50 dark:hover:bg-white/[0.02] transition-colors group cursor-pointer'
                 >
-                  <td className='py-1.5 px-4 text-[10px] font-bold text-zinc-400 border-r border-zinc-200 dark:border-zinc-800 text-center'>#{task.id}</td>
+                  <td className='py-1.5 px-4 text-[10px] font-bold text-zinc-400 border-r border-zinc-200 dark:border-zinc-800 text-center'>
+                    #{String(task.shortId || 0).padStart(3, '0')}
+                  </td>
                   <td className='py-1.5 px-4 border-r border-zinc-200 dark:border-zinc-800'>
                     <div className='flex items-center gap-2'>
                       <div className={`shrink-0 w-4 h-4 rounded-full border border-emerald-500/40 flex items-center justify-center bg-emerald-500/5`}>
@@ -160,6 +165,19 @@ export function TaskList() {
         task={selectedTask}
         isOpen={!!selectedTask}
         onClose={() => setSelectedTask(null)}
+        onEdit={() => {
+          setTaskToEdit(selectedTask);
+          setSelectedTask(null);
+          setIsFormOpen(true);
+        }}
+      />
+      <TaskFormModal
+        isOpen={isFormOpen}
+        onClose={() => {
+          setIsFormOpen(false);
+          setTaskToEdit(null);
+        }}
+        task={taskToEdit}
       />
     </Page>
   );

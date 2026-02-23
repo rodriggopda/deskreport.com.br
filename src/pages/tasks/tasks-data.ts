@@ -3,6 +3,7 @@ export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
 
 export type TaskCardProps = {
     id: string;
+    shortId?: number;
     title: string;
     project: string;
     status: TaskStatus;

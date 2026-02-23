@@ -8,9 +8,10 @@ interface TaskDetailDrawerProps {
     task: TaskCardProps | null;
     isOpen: boolean;
     onClose: () => void;
+    onEdit?: () => void;
 }
 
-export function TaskDetailDrawer({ task, isOpen, onClose }: TaskDetailDrawerProps) {
+export function TaskDetailDrawer({ task, isOpen, onClose, onEdit }: TaskDetailDrawerProps) {
     const [displayTask, setDisplayTask] = useState<TaskCardProps | null>(null);
     const [comment, setComment] = useState('');
 
@@ -43,11 +44,13 @@ export function TaskDetailDrawer({ task, isOpen, onClose }: TaskDetailDrawerProp
                                 <div className='flex-1'>
                                     <h2 className='text-2xl font-bold leading-tight group flex items-center gap-3'>
                                         {displayTask.title}
-                                        <span className='text-zinc-400 dark:text-zinc-600 font-medium text-xl'>#{displayTask.id}</span>
+                                        <span className='text-zinc-400 dark:text-zinc-600 font-medium text-xl'>
+                                            #{String(displayTask.shortId || 0).padStart(3, '0')}
+                                        </span>
                                     </h2>
                                 </div>
                                 <div className='flex items-center gap-1.5 shrink-0'>
-                                    <Button size="sm">
+                                    <Button size="sm" onClick={onEdit}>
                                         Editar
                                     </Button>
                                     <Button size="icon" variant="ghost"><MoreHorizontal size={18} /></Button>
