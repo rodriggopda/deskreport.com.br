@@ -8,10 +8,11 @@ import App from './pages/resume';
 import { Login } from './pages/auth/login';
 import { Layout } from './components/layout';
 import Settings from './pages/settings';
-import { Tasks } from './pages/tasks';
+import { TaskList } from './pages/tasks/list';
 import Teams from './pages/teams';
 import Projects from './pages/projects';
 import Notifications from './pages/notifications';
+import { TaskBoards } from './pages/tasks/boards';
 
 export const router = createBrowserRouter([
   {
@@ -96,16 +97,20 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        loader: ({ params }) => redirect(`/${params.company_id}/${params.project_id}/tasks/all`),
+        loader: ({ params }) => redirect(`/${params.company_id}/${params.project_id}/tasks/boards`),
       },
       {
-        path: ':option',
-        element: <Tasks />,
+        path: 'boards',
+        element: <TaskBoards />,
       },
       {
-        path: ':option/:report_id',
-        element: <Tasks />,
+        path: 'list',
+        element: <TaskList />,
       },
+      // {
+      //   path: ':option/:report_id',
+      //   element: <Tasks />,
+      // },
     ]
   },
 ]);

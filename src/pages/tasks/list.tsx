@@ -17,7 +17,7 @@ export type TaskCardProps = {
   signee?: string;
 }
 
-export function Tasks() {
+export function TaskList() {
   const [scrollHeight, setScrollHeight] = useState(0);
 
   const [newReport, setNewReport] = useState<TaskCardProps>();
@@ -28,10 +28,10 @@ export function Tasks() {
   const pId = project_id || 'deskreport';
 
   const navigation = [
-    { name: 'Todas', to: `/${cId}/${pId}/tasks/all` },
+    { name: 'Quadros', to: `/${cId}/${pId}/tasks/boards` },
     /* { name: 'Em andamento', to: `/${cId}/${pId}/tasks/in-progress` }, */
-    { name: 'Vencidas', to: `/${cId}/${pId}/tasks/over` },
-    { name: 'Finalizadas', to: `/${cId}/${pId}/tasks/finished` },
+    { name: 'Em Lista', to: `/${cId}/${pId}/tasks/list` },
+    // { name: 'Finalizadas', to: `/${cId}/${pId}/tasks/finished` },
   ]
 
   const activeReportId = report_id;
