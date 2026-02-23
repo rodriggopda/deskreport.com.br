@@ -47,7 +47,7 @@ export default function BotList() {
     <Page navigation={navigation}>
       <Topbar title='Automações' inputSearch='off' />
 
-      <div className='p-8 bg-zinc-50 dark:bg-zinc-950 min-h-[calc(100vh-68px)] transition-colors'>
+      <div className='flex-1 p-8 overflow-auto transition-colors'>
         <div className='max-w-6xl mx-auto'>
           <div className='flex items-center justify-between mb-8'>
             <div>

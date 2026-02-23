@@ -1,152 +1,146 @@
 import { Page } from '../../components/layout/page';
 import { Topbar } from '../../components/layout/topbar';
-import { useEffect, useState } from 'react';
-import { NavLink, useParams } from 'react-router-dom';
-import { Check, Plus, X } from 'lucide-react';
-import { api } from '../../api/fetcher';
-import useSWR from 'swr';
+import { useParams } from 'react-router-dom';
+import { Plus, MoreHorizontal } from 'lucide-react';
 
-type TaskBoardStatusProps = 'under-analysis' | 'in-progress' | 'awaiting-review' | 'finished' | string
+type TaskStatus = 'backlog' | 'todo' | 'in-progress' | 'review' | 'done' | 'release';
 
 export type TaskCardProps = {
-  id?: string;
+  id: string;
   title: string;
-  resume?: string;
-  dueDate?: string;
-  status: TaskBoardStatusProps;
-  signee?: string;
+  project: string;
+  status: TaskStatus;
+  assignee?: {
+    name: string;
+    avatar: string;
+  };
+  tags?: { label: string; color: string }[];
 }
 
+const MOCK_TASKS: TaskCardProps[] = [
+  { id: '101', title: 'Permissões e Perfis', project: 'oneteam', status: 'in-progress', tags: [{ label: 'Feature', color: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' }, { label: 'Módulo Ticket', color: 'bg-purple-500/10 text-purple-500 border-purple-500/20' }, { label: 'Módulo WhatsApp', color: 'bg-cyan-500/10 text-cyan-500 border-cyan-500/20' }] },
+  { id: '286', title: 'Adicionar alerta de tamanho de arquivo no ticket', project: 'oneteam', status: 'release', assignee: { name: 'rodriggopda', avatar: 'https://github.com/rodriggopda.png' }, tags: [{ label: 'Melhoria', color: 'bg-blue-500/10 text-blue-500 border-blue-500/20' }] },
+  { id: '318', title: 'Pesquisa de satisfação', project: 'oneteam', status: 'todo', tags: [{ label: 'Feature', color: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' }] },
+  { id: '317', title: 'Adicionar campo de observação nos parametros de pesquisa de conversas', project: 'oneteam', status: 'review', tags: [{ label: 'Melhoria', color: 'bg-blue-500/10 text-blue-500 border-blue-500/20' }] },
+  { id: '301', title: 'Pesquisa não está encontrando dados quando está em "Minhas Conversas"', project: 'oneteam', status: 'done', assignee: { name: 'rodriggopda', avatar: 'https://github.com/rodriggopda.png' }, tags: [{ label: 'Bug', color: 'bg-red-500/10 text-red-500 border-red-500/20' }] },
+  { id: '309', title: 'SLA de Whatsapp não está funcionando', project: 'oneteam', status: 'done', tags: [{ label: 'Bug', color: 'bg-red-500/10 text-red-500 border-red-500/20' }] },
+  { id: '314', title: 'Cadastro de usuário via email', project: 'oneteam', status: 'todo' },
+  { id: '310', title: 'Inserir filtro tela SLA', project: 'oneteam', status: 'done' },
+  { id: '311', title: 'Workspace não está ficando setado ao editar usuário', project: 'oneteam', status: 'done' },
+  { id: '312', title: 'Usuários não admin não consegue fazer alteração da própria senha', project: 'oneteam', status: 'done' },
+  { id: '296', title: 'Criação e aplicação do SLA', project: 'oneteam', status: 'done' },
+  { id: '308', title: 'SLA Tickets - tempo não está aplicando corretamente', project: 'oneteam', status: 'done' },
+  { id: '306', title: 'Chat interno', project: 'oneteam', status: 'backlog' }
+];
+
 export function TaskBoards() {
-  const [scrollHeight, setScrollHeight] = useState(0);
-
-  const [newReport, setNewReport] = useState<TaskCardProps>();
-  const { data: reports, mutate } = useSWR<TaskCardProps[]>('/reports', api.get);
-
-  const { company_id, project_id, option, report_id } = useParams();
+  const { company_id, project_id } = useParams();
   const cId = company_id || '4go';
   const pId = project_id || 'deskreport';
 
   const navigation = [
     { name: 'Quadros', to: `/${cId}/${pId}/tasks/boards` },
-    /* { name: 'Em andamento', to: `/${cId}/${pId}/tasks/in-progress` }, */
     { name: 'Em Lista', to: `/${cId}/${pId}/tasks/list` },
-    // { name: 'Finalizadas', to: `/${cId}/${pId}/tasks/finished` },
   ]
 
-  const activeReportId = report_id;
-  const activeOption = option;
-
-  useEffect(() => {
-    if (window !== undefined) {
-      navigator.requestMediaKeySystemAccess
-      window.addEventListener('resize', () => {
-        setScrollHeightOnLoad(window.innerHeight);
-        return;
-      });
-      setScrollHeightOnLoad(window.innerHeight);
-    }
-  }, []);
-
-  function createNewReport(status: TaskBoardStatusProps) {
-    setNewReport({
-      dueDate: new Date().toISOString(),
-      title: '',
-      status
-    })
-  }
-
-  function saveNewReport() {
-    if (newReport == undefined) return;
-    api.post('/reports', newReport)
-      .then(() => {
-        if (reports !== undefined) mutate([newReport, ...reports]);
-        setNewReport(undefined);
-      })
-  }
-
-  function setScrollHeightOnLoad(windowSize: number) {
-    const toolbar = document.querySelector('.toolbar');
-    if (toolbar) setScrollHeight(windowSize - toolbar.clientHeight);
-    window.removeEventListener('resize', () => { });
-  }
-
-  const boards = [
-    { title: 'Em análise', flagColor: '#6e7681', data: 'under-analysis' },
-    { title: 'Em andamento', flagColor: '#1f6feb', data: 'in-progress' },
-    { title: 'Aguardando revisão', flagColor: '#bd561d', data: 'awaiting-review' },
-    { title: 'Finalizadas', flagColor: '#238636', data: 'finished' }
-  ]
+  const columns = [
+    { id: 'backlog', title: 'Backlog', description: 'Funcionalidades, melhorias e correções aguardando aprovação.', color: 'text-zinc-500' },
+    { id: 'todo', title: 'Para fazer', description: 'Tarefas já especificadas e prontas para serem iniciadas.', color: 'text-zinc-100' },
+    { id: 'in-progress', title: 'Em andamento', description: 'Funcionalidades em desenvolvimento.', color: 'text-blue-500' },
+    { id: 'review', title: 'Revisão', description: 'Tarefas em fase de validação ou revisão de código.', color: 'text-purple-500' },
+    { id: 'release', title: 'Release', description: 'Pronto para entrar em produção.', color: 'text-emerald-500' },
+    { id: 'done', title: 'Concluído', description: 'Finalizadas e validadas.', color: 'text-zinc-500' }
+  ];
 
   return (
     <Page navigation={navigation}>
       <Topbar title='Tarefas' smartHeader>
-        <span className='text-xs'>Há um total de {reports?.length} problemas relatados</span>
+        <div className='flex items-center gap-4 text-xs font-medium text-zinc-500'>
+          <span>Total: {MOCK_TASKS.length} tarefas</span>
+          <div className='w-px h-3 bg-zinc-200 dark:bg-zinc-800' />
+          <span className='flex items-center gap-1'><div className='w-1.5 h-1.5 rounded-full bg-blue-500' /> {MOCK_TASKS.filter(t => t.status === 'in-progress').length} em progresso</span>
+        </div>
       </Topbar>
-      <div className='flex'>
-        {boards.map((board) => <div key={board.title} className='min-w-max'>
-          <div
-            data-board={board.data}
-            style={{ height: scrollHeight + 'px' }}
-            className='border-r border-neutral-200 dark:border-neutral-900 px-4 w-80 relative overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-neutral-300 dark:scrollbar-thumb-neutral-800 scrollbar-track-neutral-100 dark:scrollbar-track-neutral-900 pb-4 space-y-4 text-sm'
-          >
-            <div className='py-2 flex items-center bg-white dark:bg-neutral-950 sticky top-0 border-b border-neutral-200 dark:border-neutral-900 -mx-10 px-10 transition-colors'>
-              <div className='flex items-center'>
-                <span style={{ borderColor: board.flagColor }}
-                  className="ml-2 mr-3 w-3 h-3 flex rounded-full border-2" />
-                <span>{board.title}</span>
-                <button onClick={() => createNewReport(board.data)} className='ml-3 hover:bg-neutral-100 dark:hover:bg-neutral-700 hover:text-neutral-900 dark:hover:text-white p-1 rounded-lg transition-colors'><Plus size={16} /></button>
+
+      <div className='flex-1 overflow-x-auto transition-colors'>
+        <div className='flex h-full items-start'>
+          {columns.map((column, index) => (
+            <div key={column.id} className='w-[300px] min-w-[300px] shrink-0 h-full flex flex-col border-r border-zinc-200 dark:border-zinc-800/80'>
+              <div className='px-2.5 py-3 group'>
+                <div className='flex items-center justify-between mb-1'>
+                  <div className='flex items-center gap-2'>
+                    <div className={`w-2 h-2 rounded-full border border-current ${column.color}`} />
+                    <h3 className='font-bold text-zinc-900 dark:text-zinc-100 text-sm'>{column.title}</h3>
+                    <span className='text-[10px] bg-zinc-200 dark:bg-zinc-800 text-zinc-500 min-w-6 text-center px-0.5 py-px rounded-full font-bold'>
+                      {MOCK_TASKS.filter(t => t.status === column.id).length}
+                    </span>
+                  </div>
+                  <MoreHorizontal size={16} className='text-zinc-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer' />
+                </div>
+                <p className='text-xs text-zinc-500 leading-relaxed line-clamp-2 leading-4'>{column.description}</p>
+              </div>
+
+              <div
+                className='flex-1 space-y-2 overflow-y-auto px-2 scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800'
+              >
+                {MOCK_TASKS.filter(t => t.status === column.id).map(task => (
+                  <div
+                    key={task.id}
+                    className='bg-white dark:bg-[#121214] border border-zinc-200 dark:border-zinc-800/60 p-3 rounded-lg shadow-sm hover:border-zinc-300 dark:hover:border-zinc-700 transition-all group relative cursor-pointer'
+                  >
+                    <div className='flex items-start justify-between mb-2'>
+                      <div className='flex items-center gap-1.5'>
+                        <div className='w-4 h-4 rounded-full border border-emerald-500/50 flex items-center justify-center'>
+                          <div className='w-1.5 h-1.5 rounded-full bg-emerald-500' />
+                        </div>
+                        <span className='text-[10px] font-bold text-zinc-400 uppercase tracking-tight'>
+                          {task.project} #{task.id}
+                        </span>
+                      </div>
+                      {task.assignee && (
+                        <img
+                          src={task.assignee.avatar}
+                          className='w-5 h-5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-100'
+                          title={task.assignee.name}
+                        />
+                      )}
+                    </div>
+
+                    <h4 className='text-sm font-semibold text-zinc-900 dark:text-zinc-200 mb-3 leading-snug'>
+                      {task.title}
+                    </h4>
+
+                    {task.tags && task.tags.length > 0 && (
+                      <div className='flex flex-wrap gap-1.5 mt-auto pt-2 border-t border-zinc-100/50 dark:border-zinc-800/30'>
+                        {task.tags.map(tag => (
+                          <span
+                            key={tag.label}
+                            className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded border ${tag.color}`}
+                          >
+                            {tag.label}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                <button className='w-full py-2 flex items-center justify-start gap-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 text-xs font-medium transition-colors group'>
+                  <Plus size={14} className='group-hover:scale-110 transition-transform' />
+                  Adicionar item
+                </button>
               </div>
             </div>
-            {
-              (newReport && newReport.status === board.data) ? (
-                <div className='bg-neutral-50 dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-800/50 transition-colors'>
-                  <textarea onChange={(e) => setNewReport({ ...newReport, title: e.target.value })} className="py-2 h-24 px-4 w-full bg-transparent outline-none border-transparent resize-none overflow-hidden" placeholder="Escreva um título" />
-                  <div className='flex justify-end items-center gap-1 px-2 mb-2'>
-                    <button onClick={saveNewReport} className='bg-neutral-200 dark:bg-neutral-800 rounded-lg p-1 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors'>
-                      <Check size={18} />
-                    </button>
-                    <button onClick={() => setNewReport(undefined)} className='bg-neutral-200 dark:bg-neutral-800 rounded-lg p-1 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors'>
-                      <X size={18} />
-                    </button>
-                  </div>
-                </div>
-              ) : null
-            }
-            {reports?.length && reports?.map((report) => report.status === board.data && (
-              <NavLink
-                data-task={report.id}
-                to={`/${cId}/${pId}/tasks/${activeOption}/${report.id}`}
-                key={report.id}
-                className={`${activeReportId === report.id?.toString() ? 'bg-neutral-100 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100' : 'bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800/50'
-                  } w-full flex items-center gap-3 py-2 px-4 hover:bg-neutral-50 dark:hover:bg-neutral-800/75 rounded-lg border shadow-sm transition-colors`}
-              >
-                <div className='flex flex-col w-full'>
-                  <div className='flex-1 flex justify-between'>
-                    <span className='text-xs text-neutral-500'>Demanda #{report.id}</span>
-                    {/* <span className='text-xs'>
-                      {index == Math.round(Math.random() * 20) && <ChevronsUp size={16} color='#ca1212' />}
-                      {index == Math.round(Math.random() * 20) && <ChevronUp size={16} color='#bd561d' />}
-                      {index == Math.round(Math.random() * 20) && <Minus size={16} color='#1f6feb' />}
-                    </span> */}
-                  </div>
-                  <p className='my-3 text-sm break-words'>{report.title}</p>
-                  {/*<div className='flex items-center justify-between'>*/}
-                  {/*  <span className='text-xs text-neutral-500'>Vencimento: {report.dueDate}</span>*/}
-                  {/*  {board.data == report.status && <span className='text-xs text-white px-2 rounded' style={{ background: board.flagColor }}>{report.status}</span>}*/}
-                  {/*</div>*/}
-                  <div className='mt-5 flex border-t border-neutral-100 dark:border-neutral-800 items-center flex-1 justify-between pt-2.5 pb-0.5'>
-                    <div className='flex items-center gap-2'>
-                      <img className='rounded-full bg-neutral-300 dark:bg-neutral-700' width={16} height={16} src={`https://robohash.org/${report.signee?.replace(' ', '').toLocaleLowerCase}.png?size=300x300\u0026set=set1`} />
-                      <span className='truncate text-xs'>{report.signee}</span>
-                    </div>
-                  </div>
-                </div>
-              </NavLink>
-            ))}
-          </div>
-        </div>)}
+          ))}
 
+          {/* Placeholder Column */}
+          <div className='w-[300px] min-w-[300px] h-full flex flex-col shrink-0 px-2 pt-2 border-r border-zinc-200 dark:border-zinc-800/80'>
+            <button className='w-full h-10 flex items-center justify-center gap-2 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-lg text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all text-xs font-bold group'>
+              <Plus size={16} className='group-hover:scale-110 transition-transform' />
+              Novo Quadro
+            </button>
+          </div>
+        </div>
       </div>
     </Page>
   );
