@@ -35,7 +35,7 @@ export function Dropdown({ options, value, onChange, className = '', label }: Dr
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="group inline-flex items-center gap-2 rounded-md px-2 py-1 text-sm font-bold text-neutral-900 dark:text-neutral-100 bg-neutral-100/50 hover:bg-neutral-100 dark:bg-neutral-800/50 dark:hover:bg-neutral-800 transition-colors focus:outline-none"
+          className="group inline-flex items-center gap-2 rounded-md px-2 py-1 text-sm font-bold text-neutral-900 dark:text-neutral-100 bg-neutral-100/50 hover:bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-800 transition-colors focus:outline-none"
         >
           {selectedOption?.name || label}
           <ChevronDown
@@ -57,7 +57,7 @@ export function Dropdown({ options, value, onChange, className = '', label }: Dr
                 }}
                 className={`flex w-full items-center justify-between px-4 py-2.5 text-sm transition-colors ${option.id === value
                   ? 'bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-50 font-bold'
-                  : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 hover:text-neutral-900 dark:hover:text-neutral-100'
+                  : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-neutral-100'
                   }`}
               >
                 {option.name}

@@ -59,7 +59,7 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
     <>
       {smartHeader ? (
         <div className='toolbar bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors'>
-          <div className='pt-2 dark:border-neutral-800/50 w-full flex items-center justify-between px-4'>
+          <div className='pt-2 dark:border-neutral-800 w-full flex items-center justify-between px-4'>
             <div className='flex items-center gap-1 w-full'>
               <div>
                 <span>Desk</span>
@@ -91,8 +91,8 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
           </div>
         </div>
       ) : null}
-      <div className='toolbar bg-zinc-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors'>
-        <div className='border-b border-neutral-200 dark:border-neutral-800/50 w-full flex items-center justify-between px-4'>
+      <div className='toolbar bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors'>
+        <div className='border-b border-neutral-200 dark:border-neutral-800 w-full flex items-center justify-between px-4'>
           <div className='flex items-center gap-3 w-full'>
             <div className='pt-2 flex w-full text-sm'>
               {

@@ -78,7 +78,7 @@ export function UserHub() {
                 </div>
                 <div className="overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800">
                     <table className="w-full text-left">
-                        <thead className="bg-neutral-50 dark:bg-neutral-800/50 text-[10px] uppercase text-neutral-400 font-bold border-b border-neutral-100 dark:border-neutral-800">
+                        <thead className="bg-neutral-50 dark:bg-neutral-800 text-[10px] uppercase text-neutral-400 font-bold border-b border-neutral-100 dark:border-neutral-800">
                             <tr>
                                 <th className="px-6 py-4">Usuário</th>
                                 <th className="px-6 py-4">Cargo</th>
@@ -88,7 +88,7 @@ export function UserHub() {
                         </thead>
                         <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800">
                             {users.map((user, i) => (
-                                <tr key={i} className="group hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors">
+                                <tr key={i} className="group hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors">
                                     <td className="px-6 py-4 flex items-center gap-3">
                                         <div className="w-8 h-8 rounded-full bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center font-bold text-sky-600 text-xs">
                                             {user.name.charAt(0)}

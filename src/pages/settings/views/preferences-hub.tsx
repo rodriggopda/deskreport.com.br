@@ -87,7 +87,7 @@ export function PreferencesHub() {
                         )}
                     </div>
                     <div className="py-4">
-                        <div className="flex items-center gap-4 p-4 bg-neutral-50 dark:bg-neutral-800/50 rounded-xl border border-neutral-200 dark:border-neutral-800 mb-6">
+                        <div className="flex items-center gap-4 p-4 bg-neutral-50 dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-800 mb-6">
                             <div className={`p-2 rounded-full ${notificationPermission === 'granted' ? 'bg-emerald-100 dark:bg-emerald-900/20 text-emerald-500' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-400'}`}>
                                 <AlertCircle size={20} />
                             </div>
@@ -180,7 +180,7 @@ function NotificationToggle({ label, description, defaultChecked = false }: { la
     return (
         <div
             onClick={() => setChecked(!checked)}
-            className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center gap-4 ${checked ? 'bg-sky-50 dark:bg-sky-900/10 border-sky-200 dark:border-sky-800' : 'bg-neutral-50 dark:bg-neutral-800/30 border-neutral-100 dark:border-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-800/50'}`}
+            className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center gap-4 ${checked ? 'bg-sky-50 dark:bg-sky-900/10 border-sky-200 dark:border-sky-800' : 'bg-neutral-50 dark:bg-neutral-800/30 border-neutral-100 dark:border-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-800'}`}
         >
             <div className="flex-1">
                 <span className={`text-sm font-bold block ${checked ? 'text-sky-700 dark:text-sky-300' : 'text-neutral-700 dark:text-neutral-300'}`}>{label}</span>

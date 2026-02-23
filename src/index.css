@@ -7,6 +7,13 @@
     @apply antialiased text-zinc-900 dark:text-zinc-100 bg-white dark:bg-zinc-950;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
+
+  /* Custom Scrollbar */
+  * {
+    @apply scrollbar-thin scrollbar-track-transparent;
+    @apply scrollbar-thumb-zinc-200 hover:scrollbar-thumb-zinc-300 transition-colors;
+    @apply dark:scrollbar-thumb-zinc-800 dark:hover:scrollbar-thumb-zinc-700;
+  }
 }
 
 .inter-sans {

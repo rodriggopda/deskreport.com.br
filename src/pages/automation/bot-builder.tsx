@@ -200,7 +200,7 @@ export default function BotBuilder() {
 
         {/* Sidebar: Draggable Components */}
         <div className='w-64 border-r border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-950 flex flex-col z-20 shrink-0'>
-          <div className='p-6 border-b border-zinc-50 dark:border-zinc-800/50'>
+          <div className='p-6 border-b border-zinc-50 dark:border-zinc-800'>
             <h3 className='font-black text-[10px] text-zinc-400 uppercase tracking-widest'>Blocos Disponíveis</h3>
           </div>
           <div className='flex-1 overflow-y-auto p-4 space-y-1'>
@@ -256,7 +256,7 @@ export default function BotBuilder() {
 
         {/* Inspector Panel */}
         <div className='w-80 border-l border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-950 flex flex-col z-20 shrink-0 shadow-[-10px_0_30px_rgba(0,0,0,0.02)]'>
-          <div className='h-16 px-6 border-b border-zinc-50 dark:border-zinc-800/50 flex items-center justify-between'>
+          <div className='h-16 px-6 border-b border-zinc-50 dark:border-zinc-800 flex items-center justify-between'>
             <h3 className='font-black text-[11px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest'>Configurações</h3>
             <SettingsIcon size={14} className='text-zinc-400' />
           </div>

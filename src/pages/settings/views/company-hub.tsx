@@ -32,7 +32,7 @@ export function CompanyHub() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               <div className="space-y-4">
                 <label className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Logo do Catálogo</label>
-                <div className="border-2 border-dashed border-neutral-200 dark:border-neutral-800 rounded-xl p-8 flex flex-col items-center justify-center gap-3 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors cursor-pointer group">
+                <div className="border-2 border-dashed border-neutral-200 dark:border-neutral-800 rounded-xl p-8 flex flex-col items-center justify-center gap-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer group">
                   <div className="p-3 bg-neutral-100 dark:bg-neutral-800 rounded-full text-neutral-400 dark:text-neutral-500 group-hover:scale-110 transition-transform">
                     <Plus size={24} />
                   </div>
@@ -121,7 +121,7 @@ export function CompanyHub() {
           </div>
           <div className="py-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex items-center justify-between p-4 bg-neutral-50 dark:bg-neutral-800/50 rounded-xl border border-neutral-200 dark:border-neutral-800">
+              <div className="flex items-center justify-between p-4 bg-neutral-50 dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-800">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 flex items-center justify-center font-bold text-neutral-500">C</div>
                   <div className="flex flex-col">
@@ -133,7 +133,7 @@ export function CompanyHub() {
                   <div className="absolute right-0.5 top-0.5 w-4 h-4 rounded-full bg-white shadow-sm" />
                 </div>
               </div>
-              <div className="flex items-center justify-between p-4 bg-neutral-50 dark:bg-neutral-800/50 rounded-xl border border-neutral-200 dark:border-neutral-800">
+              <div className="flex items-center justify-between p-4 bg-neutral-50 dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-800">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 flex items-center justify-center font-bold text-neutral-500">R</div>
                   <div className="flex flex-col">

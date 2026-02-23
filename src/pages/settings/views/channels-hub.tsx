@@ -35,7 +35,7 @@ export function ChannelsHub() {
               </h3>
             </div>
             {waStatus === 'connected' ? (
-              <button onClick={() => setWaStatus('disconnected')} className="text-xs font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 px-3 py-1.5 rounded-lg transition-colors border border-rose-200 dark:border-rose-800/50">
+              <button onClick={() => setWaStatus('disconnected')} className="text-xs font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 px-3 py-1.5 rounded-lg transition-colors border border-rose-200 dark:border-rose-800">
                 Desconectar
               </button>
             ) : waStatus === 'disconnected' ? (
@@ -91,7 +91,7 @@ export function ChannelsHub() {
               </div>
             ) : waStatus === 'connected' ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="p-4 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800/50 rounded-xl space-y-4">
+                <div className="p-4 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800 rounded-xl space-y-4">
                   <div className="flex items-center justify-between font-bold text-xs text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
                     <span>Instância Ativa</span>
                     <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
@@ -116,7 +116,7 @@ export function ChannelsHub() {
               </div>
             ) : (
               <div className="flex flex-col items-center py-6 text-center space-y-4">
-                <div className="p-4 bg-neutral-100 dark:bg-neutral-800/50 rounded-full text-neutral-300">
+                <div className="p-4 bg-neutral-100 dark:bg-neutral-800 rounded-full text-neutral-300">
                   <QrCode size={48} />
                 </div>
                 <div className="max-w-xs">

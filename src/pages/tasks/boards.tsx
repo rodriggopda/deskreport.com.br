@@ -134,7 +134,7 @@ export function TaskBoards() {
                 </div>
               </div>
 
-              <div className='flex-1 space-y-2 overflow-y-auto px-2.5 py-2 scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800 hover:scrollbar-thumb-zinc-300 dark:hover:scrollbar-thumb-zinc-700 bg-zinc-50/10 dark:bg-transparent'>
+              <div className='flex-1 space-y-2 overflow-y-auto px-2.5 py-2 bg-zinc-50/10 dark:bg-transparent'>
                 {getTasksForColumn(column.id).map(task => {
                   const priority = PRIORITY_CONFIG[task.priority];
                   return (

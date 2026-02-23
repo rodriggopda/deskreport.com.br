@@ -67,7 +67,7 @@ export function Message({
         );
       case 'document':
         return (
-          <div className='flex items-center gap-3 p-2 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-zinc-100 dark:border-zinc-700 w-72'>
+          <div className='flex items-center gap-3 p-2 bg-zinc-50 dark:bg-zinc-800 rounded-lg border border-zinc-100 dark:border-zinc-700 w-72'>
             <div className='w-10 h-10 bg-zinc-200 dark:bg-zinc-700 rounded flex items-center justify-center text-zinc-500'>
               <FileIcon size={20} />
             </div>

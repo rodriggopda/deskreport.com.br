@@ -27,7 +27,7 @@ export default function ChatBox() {
       <div className='flex h-[calc(100vh-68px)] overflow-hidden bg-zinc-50/50 dark:bg-zinc-950/50 transition-colors'>
         {/* Sidebar de Contatos */}
         <div className='w-80 border-r border-zinc-200 dark:border-zinc-800 flex flex-col bg-white dark:bg-zinc-950 transition-colors'>
-          <div className='p-4 border-b border-zinc-100 dark:border-zinc-800/50'>
+          <div className='p-4 border-b border-zinc-100 dark:border-zinc-800'>
             <div className='relative flex items-center'>
               <Search className='absolute ml-3 text-zinc-400' size={14} />
               <input
