@@ -6,6 +6,7 @@ import BotList from './pages/automation/bot-list';
 import BotBuilder from './pages/automation/bot-builder';
 import App from './pages/resume';
 import { Login } from './pages/auth/login';
+import { SetupOrganization } from './pages/auth/setup-organization';
 import { Layout } from './components/layout';
 import Settings from './pages/settings';
 import { TaskList } from './pages/tasks/list';
@@ -21,6 +22,14 @@ export const router = createBrowserRouter([
   {
     path: '/login',
     element: <Login />,
+  },
+  {
+    path: '/setup-organization',
+    element: (
+      <AuthGuard>
+        <SetupOrganization />
+      </AuthGuard>
+    ),
   },
   {
     path: '/',

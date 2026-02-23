@@ -1,32 +1,56 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useSession } from '../lib/auth-client';
+import { useSession, authClient } from '../lib/auth-client';
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
-    const { data, isPending } = useSession();
+    const { data: session, isPending } = useSession();
+    const [hasOrg, setHasOrg] = useState<boolean | null>(null);
+    const [checkingOrg, setCheckingOrg] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
 
     useEffect(() => {
-        if (!isPending && !data) {
-            navigate('/login', { state: { from: location }, replace: true });
-        }
-    }, [data, isPending, navigate, location]);
+        if (!isPending) {
+            if (!session) {
+                navigate('/login', { state: { from: location }, replace: true });
+            } else if (!checkingOrg && hasOrg === null) {
+                // Ignore org check if we are on the setup page
+                if (location.pathname === '/setup-organization') {
+                    setHasOrg(true); // Permit render children setup
+                    return;
+                }
 
-    if (isPending) {
+                setCheckingOrg(true);
+                // Check organizations
+                authClient.organization.list().then(({ data }) => {
+                    if (data && data.length > 0) {
+                        setHasOrg(true);
+                    } else {
+                        setHasOrg(false);
+                        navigate('/setup-organization', { replace: true });
+                    }
+                }).catch(() => {
+                    setHasOrg(false);
+                    navigate('/setup-organization', { replace: true });
+                }).finally(() => {
+                    setCheckingOrg(false);
+                });
+            }
+        }
+    }, [session, isPending, navigate, location.pathname, hasOrg, checkingOrg]);
+
+    if (isPending || (session && hasOrg === null)) {
         return (
             <div className="h-screen w-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                    <p className="text-sm font-medium animate-pulse text-zinc-500">Carregando...</p>
+                    <p className="text-sm font-medium animate-pulse text-zinc-500">Preparando plataforma...</p>
                 </div>
             </div>
         );
     }
 
-    // Se não estiver pendente e não tiver sessão, o useEffect vai redirecionar,
-    // mas logo antes do redirecionamento, evitamos renderizar o children.
-    if (!data) {
+    if (!session || hasOrg === false) {
         return null;
     }
 
