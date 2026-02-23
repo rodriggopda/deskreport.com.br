@@ -15,6 +15,8 @@ import Notifications from './pages/notifications';
 import { TaskBoards } from './pages/tasks/boards';
 import TaskDataManagement from './pages/tasks/data-management';
 
+import { AuthGuard } from './components/auth-guard';
+
 export const router = createBrowserRouter([
   {
     path: '/login',
@@ -26,7 +28,11 @@ export const router = createBrowserRouter([
   },
   {
     path: '/:company_id',
-    element: <Layout />,
+    element: (
+      <AuthGuard>
+        <Layout />
+      </AuthGuard>
+    ),
     children: [
       {
         index: true,
@@ -94,7 +100,11 @@ export const router = createBrowserRouter([
   },
   {
     path: '/:company_id/:project_id/tasks',
-    element: <Layout />,
+    element: (
+      <AuthGuard>
+        <Layout />
+      </AuthGuard>
+    ),
     children: [
       {
         index: true,
