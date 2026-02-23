@@ -2,7 +2,8 @@ import { Page } from '../../components/layout/page';
 import { Topbar } from '../../components/layout/topbar';
 import { useParams } from 'react-router-dom';
 import { Plus, MoreHorizontal } from 'lucide-react';
-import { MOCK_TASKS, STATUS_CONFIG, PRIORITY_CONFIG, TaskCardProps } from './tasks-data';
+import { STATUS_CONFIG, PRIORITY_CONFIG, TaskCardProps } from './tasks-data';
+import { useTaskStore } from './use-task-store';
 import { useTaskFilters } from './use-task-filters';
 import { TaskFiltersComponent } from './task-filters-component';
 import { TaskDetailDrawer } from './task-detail-drawer';
@@ -14,6 +15,7 @@ export function TaskBoards() {
   const cId = company_id || '4go';
   const pId = project_id || 'deskreport';
 
+  const { tasks } = useTaskStore();
   const [selectedTask, setSelectedTask] = useState<TaskCardProps | null>(null);
 
   const {
@@ -34,11 +36,12 @@ export function TaskBoards() {
     groupBy,
     setGroupBy,
     filteredTasks
-  } = useTaskFilters(MOCK_TASKS);
+  } = useTaskFilters(tasks);
 
   const navigation = [
     { name: 'Quadros', to: `/${cId}/${pId}/tasks/boards` },
     { name: 'Em Lista', to: `/${cId}/${pId}/tasks/list` },
+    { name: 'Gestão de Dados', to: `/${cId}/${pId}/tasks/management` },
   ]
 
   const dynamicColumns = useMemo(() => {
@@ -57,11 +60,11 @@ export function TaskBoards() {
       }));
     }
     if (groupBy === 'project') {
-      const uniqueProjects = Array.from(new Set(MOCK_TASKS.map(t => t.project)));
+      const uniqueProjects = Array.from(new Set(tasks.map(t => t.project)));
       return uniqueProjects.map(p => ({ id: p, title: p, color: 'text-zinc-500' }));
     }
     if (groupBy === 'assignee') {
-      const uniqueAssignees = Array.from(new Set(MOCK_TASKS.filter(t => t.assignee).map(t => t.assignee!.name)));
+      const uniqueAssignees = Array.from(new Set(tasks.filter(t => t.assignee).map(t => t.assignee!.name)));
       return [...uniqueAssignees.map(a => ({ id: a, title: a, color: 'text-zinc-500' })), { id: 'unassigned', title: 'Sem responsável', color: 'text-zinc-400' }];
     }
     return [];

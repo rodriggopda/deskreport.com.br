@@ -13,6 +13,7 @@ import Teams from './pages/teams';
 import Projects from './pages/projects';
 import Notifications from './pages/notifications';
 import { TaskBoards } from './pages/tasks/boards';
+import TaskDataManagement from './pages/tasks/data-management';
 
 export const router = createBrowserRouter([
   {
@@ -106,6 +107,10 @@ export const router = createBrowserRouter([
       {
         path: 'list',
         element: <TaskList />,
+      },
+      {
+        path: 'management',
+        element: <TaskDataManagement />,
       },
       // {
       //   path: ':option/:report_id',

@@ -2,7 +2,8 @@ import { Page } from '../../components/layout/page';
 import { Topbar } from '../../components/layout/topbar';
 import { useParams } from 'react-router-dom';
 import { MoreVertical, Plus } from 'lucide-react';
-import { MOCK_TASKS, STATUS_CONFIG, TaskCardProps } from './tasks-data';
+import { STATUS_CONFIG, TaskCardProps } from './tasks-data';
+import { useTaskStore } from './use-task-store';
 import { useTaskFilters } from './use-task-filters';
 import { TaskFiltersComponent } from './task-filters-component';
 import { TaskDetailDrawer } from './task-detail-drawer';
@@ -14,6 +15,7 @@ export function TaskList() {
   const cId = company_id || '4go';
   const pId = project_id || 'deskreport';
 
+  const { tasks } = useTaskStore();
   const [selectedTask, setSelectedTask] = useState<TaskCardProps | null>(null);
 
   const {
@@ -34,11 +36,12 @@ export function TaskList() {
     groupBy,
     setGroupBy,
     filteredTasks
-  } = useTaskFilters(MOCK_TASKS);
+  } = useTaskFilters(tasks);
 
   const navigation = [
     { name: 'Quadros', to: `/${cId}/${pId}/tasks/boards` },
     { name: 'Em Lista', to: `/${cId}/${pId}/tasks/list` },
+    { name: 'Gestão de Dados', to: `/${cId}/${pId}/tasks/management` },
   ]
 
   const clearFilters = () => {
