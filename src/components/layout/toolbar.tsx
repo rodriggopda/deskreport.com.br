@@ -8,7 +8,7 @@ type ToolbarProps = {
 
 export function Toolbar({ children, toolbarOptions, inputSearch }: ToolbarProps) {
   return (
-    <div className='px-10 py-3 border-b border-neutral-200 dark:border-neutral-800/50 flex items-center justify-between gap-3'>
+    <div className='px-4 py-3 border-b border-neutral-200 dark:border-neutral-800/50 flex items-center justify-between gap-3'>
       <div className='flex items-center gap-3'>
         {inputSearch !== 'off' ? (
           <>

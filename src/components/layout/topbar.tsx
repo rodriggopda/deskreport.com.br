@@ -59,8 +59,17 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
     <>
       {smartHeader ? (
         <div className='toolbar bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors'>
-          <div className='py-2 border-b border-neutral-200 dark:border-neutral-800/50 w-full flex items-center justify-between px-10'>
+          <div className='pt-2 dark:border-neutral-800/50 w-full flex items-center justify-between px-4'>
             <div className='flex items-center gap-1 w-full'>
+              <div>
+                <span>Desk</span>
+                <span className="text-lg font-bold">Report</span>
+              </div>
+              <ChevronRight size={16} strokeWidth={2} className='text-neutral-400 mx-1' />
+              <h1 className='items-center whitespace-nowrap font-semibold'>
+                {title}
+              </h1>
+              <ChevronRight size={16} strokeWidth={2} className='text-neutral-400 mx-1' />
               <Dropdown
                 options={companies}
                 value={currentCompany}
@@ -69,8 +78,8 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
 
               {isTasksRoute && (
                 <>
-                  {/* <ChevronRight size={16} strokeWidth={2} className='text-neutral-400 mx-1' /> */}
-                  <span className='text-neutral-400 mx-1'>/</span>
+                  <ChevronRight size={16} strokeWidth={2} className='text-neutral-400 mx-1' />
+                  {/* <span className='text-neutral-400 mx-1'>/</span> */}
                   <Dropdown
                     options={projects}
                     value={project_id || 'deskreport'}
@@ -82,13 +91,10 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
           </div>
         </div>
       ) : null}
-      <div className='toolbar bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors'>
-        <div className='py-2 border-b border-neutral-200 dark:border-neutral-800/50 w-full flex items-center justify-between px-10'>
+      <div className='toolbar bg-zinc-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors'>
+        <div className='border-b border-neutral-200 dark:border-neutral-800/50 w-full flex items-center justify-between px-4'>
           <div className='flex items-center gap-3 w-full'>
-            <h1 className='text-lg items-center whitespace-nowrap font-semibold'>
-              {title}
-            </h1>
-            <div className='ml-6 flex space-x-2 w-full text-sm'>
+            <div className='pt-2 flex w-full text-sm'>
               {
                 navigation.map((subitem) => (
                   <SubNavLink key={subitem.to} name={subitem.name} to={subitem.to} />

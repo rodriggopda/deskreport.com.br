@@ -61,7 +61,7 @@ export function MenuNavLink({ to, icon, label }: { to: string, icon: React.React
 }
 
 export function SubNavLink({ name, to }: SubmenuItem) {
-  return <NavLink to={to} className={({ isActive }) => [isActive ? 'text-neutral-900 dark:text-neutral-100 bg-neutral-100 dark:bg-neutral-900 font-semibold border-neutral-200' : 'text-neutral-500', ' flex items-center gap-3 py-1 px-4 rounded transition-colors'].join('')}>
+  return <NavLink to={to} className={({ isActive }) => [isActive ? 'text-neutral-900 dark:text-neutral-100 bg-neutral-50 dark:bg-neutral-900 border-neutral-200' : 'text-neutral-500 border-transparent', ' border-t border-l border-r -mb-px flex items-center gap-3 py-1 px-4 rounded-t transition-colors'].join('')}>
     <span>{name}</span>
   </NavLink>
 }
