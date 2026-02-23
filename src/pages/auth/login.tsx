@@ -5,7 +5,7 @@ export function Login() {
     <div className='h-screen w-screen flex items-center justify-center p-10'>
       <div className='flex flex-col items-center'>
         <div className='font-thin text-2xl'>Desk<span className="font-black">Report</span></div>
-        <div className='mt-5 border border-neutral-200 dark:border-neutral-800 p-6 rounded-xl bg-white dark:bg-transparent shadow-sm dark:shadow-none'>
+        <div className='mt-5 border border-neutral-200 dark:border-neutral-800 p-6 rounded-xl bg-white dark:bg-transparent dark:shadow-none'>
           <div className="xl:min-w-[320px] flex flex-col space-y-4">
             <p className="text-xl">Acesse sua conta</p>
             <label htmlFor="">

@@ -73,7 +73,7 @@ export function Message({
             </div>
             <div className='flex-1 min-w-0'>
               <p className='text-sm font-medium truncate'>{fileName || 'Relatorio_Mensal_v1.pdf'}</p>
-              <p className='text-[10px] text-zinc-400 font-medium uppercase'>{fileSize || '2.4 MB'} • PDF</p>
+              <p className='text-[10px] text-zinc-400 font-medium'>{fileSize || '2.4 MB'} • PDF</p>
             </div>
             <button className='p-2 hover:bg-zinc-200 dark:hover:bg-zinc-600 rounded transition-colors'>
               <Download size={16} className='text-zinc-500' />
@@ -94,7 +94,7 @@ export function Message({
       <div className={`flex flex-col group max-w-[85%] ${isMine ? 'items-end' : 'items-start'}`}>
         <div
           className={`
-            relative p-3 rounded-2xl shadow-sm border transition-colors w-fit
+            relative p-3 rounded-2xl border transition-colors w-fit
             ${isMine
               ? 'bg-zinc-900 text-white border-zinc-800 rounded-tr-none'
               : 'bg-white dark:bg-zinc-950 text-zinc-800 dark:text-zinc-200 border-zinc-200 dark:border-zinc-800 rounded-tl-none'
@@ -106,7 +106,7 @@ export function Message({
             <MoreVertical size={14} className='text-zinc-400' />
           </button>
         </div>
-        <span className={`block py-1.5 px-1 text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500`}>
+        <span className={`block py-1.5 px-1 text-[10px] font-bold text-zinc-400 dark:text-zinc-500`}>
           {timestamp} {isMine && '• Visualizada'}
         </span>
       </div>

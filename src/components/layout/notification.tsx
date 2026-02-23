@@ -2,7 +2,7 @@ import { Check, MessageCircle, UserPlus } from 'lucide-react';
 
 export function Notification() {
   return (
-    <div className='z-50 drop-shadow-xl absolute border border-neutral-200 dark:border-neutral-800 overflow-hidden rounded-lg w-0 group-focus:min-w-[320px] left-14 bottom-4'>
+    <div className='z-50 absolute border border-neutral-200 dark:border-neutral-800 overflow-hidden rounded-lg w-0 group-focus:min-w-[320px] left-14 bottom-4'>
       <div className='text-left bg-white dark:bg-neutral-900 h-0 group-focus:h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 dark:scrollbar-thumb-neutral-700 scrollbar-track-neutral-100 dark:scrollbar-track-neutral-800'>
         <div className='px-4 pt-3'>
           <span className='text-xl'>Notificações </span>

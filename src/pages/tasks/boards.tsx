@@ -2,15 +2,19 @@ import { Page } from '../../components/layout/page';
 import { Topbar } from '../../components/layout/topbar';
 import { useParams } from 'react-router-dom';
 import { Plus, MoreHorizontal } from 'lucide-react';
-import { MOCK_TASKS, STATUS_CONFIG, PRIORITY_CONFIG } from './tasks-data';
+import { MOCK_TASKS, STATUS_CONFIG, PRIORITY_CONFIG, TaskCardProps } from './tasks-data';
 import { useTaskFilters } from './use-task-filters';
 import { TaskFiltersComponent } from './task-filters-component';
-import { useMemo } from 'react';
+import { TaskDetailDrawer } from './task-detail-drawer';
+import { Button } from '../../components/ui/button';
+import { useMemo, useState } from 'react';
 
 export function TaskBoards() {
   const { company_id, project_id } = useParams();
   const cId = company_id || '4go';
   const pId = project_id || 'deskreport';
+
+  const [selectedTask, setSelectedTask] = useState<TaskCardProps | null>(null);
 
   const {
     search,
@@ -108,10 +112,10 @@ export function TaskBoards() {
             onClear={clearFilters}
           />
           <div className='w-px h-3.5 bg-zinc-200 dark:bg-zinc-800' />
-          <button className='flex items-center gap-1.5 shrink-0 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 px-2.5 py-1.5 rounded-lg text-[11px] font-bold hover:opacity-90 transition-all'>
+          <Button size="md" className='gap-1.5'>
             <Plus size={12} />
             Tarefa
-          </button>
+          </Button>
         </div>
       </Topbar>
 
@@ -140,11 +144,12 @@ export function TaskBoards() {
                   return (
                     <div
                       key={task.id}
-                      className='bg-white dark:bg-[#161618] border border-zinc-200 dark:border-zinc-800 shadow-[0_1px_3px_rgba(0,0,0,0.05)] p-3 rounded-lg hover:border-blue-400 dark:hover:border-blue-500/50 hover:shadow-md transition-all group relative cursor-pointer ring-0 hover:ring-2 hover:ring-blue-500/10'
+                      onClick={() => setSelectedTask(task)}
+                      className='bg-white dark:bg-[#161618] border border-zinc-200 dark:border-zinc-800 p-3 rounded-lg hover:border-blue-400 dark:hover:border-blue-500/50 transition-all group relative cursor-pointer ring-0 hover:ring-2 hover:ring-blue-500/10'
                     >
                       <div className='flex items-start justify-between mb-2'>
                         <div className='flex items-center gap-1.5'>
-                          <span className={`text-[9px] font-black uppercase tracking-tight text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700/50`}>
+                          <span className={`text-[9px] font-black text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700/50`}>
                             {task.project}
                           </span>
                           <span className='text-[10px] font-bold text-zinc-500'>#{task.id}</span>
@@ -184,23 +189,28 @@ export function TaskBoards() {
                   );
                 })}
 
-                <button className='w-full py-2 flex items-center justify-center gap-1.5 text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-500/5 rounded-lg text-xs font-semibold transition-all group'>
+                <Button variant="ghost" className='w-full py-2 text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-500/5 transition-all group'>
                   <Plus size={14} className='group-hover:rotate-90 transition-transform' />
                   Novo item
-                </button>
+                </Button>
               </div>
             </div>
           ))}
 
           {/* New Column Placeholder */}
           <div className='w-[300px] min-w-[300px] h-full flex flex-col shrink-0 px-3 pt-6'>
-            <button className='w-full h-10 flex items-center justify-center gap-2 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl text-zinc-400 hover:text-blue-500 hover:border-blue-400 dark:hover:border-blue-500/30 hover:bg-blue-50/50 dark:hover:bg-blue-500/5 transition-all text-xs font-bold group'>
+            <Button variant="outline" className='w-full h-10 gap-2 border-2 border-dashed border-zinc-200 dark:border-zinc-800 hover:text-blue-500 hover:border-blue-400 dark:hover:border-blue-500/30 hover:bg-blue-50/50 dark:hover:bg-blue-500/5 transition-all group'>
               <Plus size={16} className='group-hover:scale-110 transition-transform' />
               Adicionar coluna
-            </button>
+            </Button>
           </div>
         </div>
       </div>
+      <TaskDetailDrawer
+        task={selectedTask}
+        isOpen={!!selectedTask}
+        onClose={() => setSelectedTask(null)}
+      />
     </Page>
   );
 }

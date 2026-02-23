@@ -40,21 +40,21 @@ import { useTenant } from '../../hooks/useTenant';
 
 // Trigger Node
 const TriggerNode = ({ data }: NodeProps) => (
-  <div className='flex items-center gap-3 bg-white dark:bg-zinc-900 border-2 border-zinc-900 dark:border-zinc-100 rounded-md px-5 py-2.5 shadow-[4px_4px_0px_rgba(0,0,0,0.1)] min-w-[200px]'>
+  <div className='flex items-center gap-3 bg-white dark:bg-zinc-900 border-2 border-zinc-900 dark:border-zinc-100 rounded-md px-5 py-2.5 min-w-[200px]'>
     <Zap size={14} className='text-amber-500' fill='currentColor' />
-    <span className='text-[10px] font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest'>{data.label as string}</span>
+    <span className='text-[10px] font-black text-zinc-900 dark:text-zinc-100'>{data.label as string}</span>
     <Handle type="source" position={Position.Bottom} className='w-3 h-3 bg-zinc-900 dark:bg-zinc-100 border-2 border-white dark:border-zinc-950 !-bottom-1.5' />
   </div>
 );
 
 // Message Node
 const MessageNode = ({ data, selected }: NodeProps) => (
-  <div className={`w-[300px] bg-white dark:bg-zinc-900 border-2 border-zinc-900 dark:border-zinc-100 rounded-md shadow-[4px_4px_0px_rgba(0,0,0,0.05)] overflow-hidden transition-all ${selected ? 'ring-2 ring-zinc-500 ring-offset-2' : ''}`}>
+  <div className={`w-[300px] bg-white dark:bg-zinc-900 border-2 border-zinc-900 dark:border-zinc-100 rounded-md overflow-hidden transition-all ${selected ? 'ring-2 ring-zinc-500 ring-offset-2' : ''}`}>
     <Handle type="target" position={Position.Top} className='w-3 h-3 bg-zinc-900 dark:bg-zinc-100 border-2 border-white dark:border-zinc-950 !-top-1.5' />
     <div className='p-2.5 border-b-2 border-zinc-900 dark:border-zinc-100 flex items-center justify-between bg-zinc-50 dark:bg-zinc-800'>
       <div className='flex items-center gap-2'>
         <MessageSquare size={12} className='text-zinc-900 dark:text-zinc-100' />
-        <span className='text-[8px] font-black text-zinc-600 dark:text-zinc-400 uppercase tracking-tighter'>{data.label as string}</span>
+        <span className='text-[8px] font-black text-zinc-600 dark:text-zinc-400'>{data.label as string}</span>
       </div>
       <MoreHorizontal size={12} className='text-zinc-400' />
     </div>
@@ -69,12 +69,12 @@ const MessageNode = ({ data, selected }: NodeProps) => (
 
 // AI Node
 const AINode = ({ data, selected }: NodeProps) => (
-  <div className={`w-[350px] bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 border-2 border-zinc-900 dark:border-zinc-100 rounded-md shadow-[6px_6px_0px_rgba(0,0,0,0.2)] overflow-hidden transition-all ${selected ? 'ring-2 ring-indigo-500 ring-offset-2' : ''}`}>
+  <div className={`w-[350px] bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 border-2 border-zinc-900 dark:border-zinc-100 rounded-md overflow-hidden transition-all ${selected ? 'ring-2 ring-indigo-500 ring-offset-2' : ''}`}>
     <Handle type="target" position={Position.Top} className='w-3 h-3 bg-zinc-900 dark:bg-zinc-100 border-2 border-white dark:border-zinc-950 !-top-1.5' />
     <div className='p-3 flex items-center justify-between bg-zinc-800 dark:bg-zinc-200'>
       <div className='flex items-center gap-2'>
         <Sparkles size={14} fill='currentColor' className='animate-pulse' />
-        <span className='text-[9px] font-black uppercase tracking-widest'>{data.label as string}</span>
+        <span className='text-[9px] font-black'>{data.label as string}</span>
       </div>
       <div className='flex items-center gap-1.5 px-1.5 py-0.5 bg-zinc-900 dark:bg-zinc-300 rounded-sm'>
         <div className='w-1 h-1 rounded-full bg-emerald-400'></div>
@@ -82,11 +82,11 @@ const AINode = ({ data, selected }: NodeProps) => (
       </div>
     </div>
     <div className='p-4 border-t border-zinc-700 dark:border-zinc-300'>
-      <p className='text-[10px] font-bold tracking-tight opacity-80 line-clamp-2'>{data.instruction as string || 'Defina o comportamento da IA...'}</p>
+      <p className='text-[10px] font-bold opacity-80 line-clamp-2'>{data.instruction as string || 'Defina o comportamento da IA...'}</p>
 
       <div className='flex gap-2 mt-4'>
         {(data.options as string[] || ['Default']).map((opt, i) => (
-          <div key={i} className='flex-1 p-2 bg-zinc-800 dark:bg-zinc-100 rounded border border-zinc-700 dark:border-zinc-300 relative text-center text-[8px] font-black uppercase truncate'>
+          <div key={i} className='flex-1 p-2 bg-zinc-800 dark:bg-zinc-100 rounded border border-zinc-700 dark:border-zinc-300 relative text-center text-[8px] font-black truncate'>
             {opt}
             <Handle
               type="source"
@@ -103,11 +103,11 @@ const AINode = ({ data, selected }: NodeProps) => (
 
 // Transfer Node
 const TransferNode = ({ data, selected }: NodeProps) => (
-  <div className={`flex items-center gap-4 bg-emerald-500 text-white border-2 border-zinc-900 dark:border-zinc-100 rounded-md px-5 py-3 shadow-[4px_4px_0px_rgba(0,0,0,0.1)] transition-all ${selected ? 'ring-2 ring-emerald-300 ring-offset-2' : ''}`}>
+  <div className={`flex items-center gap-4 bg-emerald-500 text-white border-2 border-zinc-900 dark:border-zinc-100 rounded-md px-5 py-3 transition-all ${selected ? 'ring-2 ring-emerald-300 ring-offset-2' : ''}`}>
     <Handle type="target" position={Position.Top} className='w-3 h-3 bg-emerald-500 border-2 border-white !-top-1.5' />
     <UserPlus size={16} />
     <div className='flex flex-col'>
-      <span className='text-[8px] font-black uppercase tracking-tighter opacity-80'>{data.label as string}</span>
+      <span className='text-[8px] font-black opacity-80'>{data.label as string}</span>
       <span className='text-xs font-bold leading-none'>{data.sector as string}</span>
     </div>
   </div>
@@ -201,7 +201,7 @@ export default function BotBuilder() {
         {/* Sidebar: Draggable Components */}
         <div className='w-64 border-r border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-950 flex flex-col z-20 shrink-0'>
           <div className='p-6 border-b border-zinc-50 dark:border-zinc-800'>
-            <h3 className='font-black text-[10px] text-zinc-400 uppercase tracking-widest'>Blocos Disponíveis</h3>
+            <h3 className='font-black text-[10px] text-zinc-400'>Blocos Disponíveis</h3>
           </div>
           <div className='flex-1 overflow-y-auto p-4 space-y-1'>
             {sidebarNodeTypes.map((node, i) => (
@@ -210,7 +210,7 @@ export default function BotBuilder() {
                   {node.icon}
                 </div>
                 <div>
-                  <div className='text-[12px] font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-tighter'>{node.label}</div>
+                  <div className='text-[12px] font-bold text-zinc-900 dark:text-zinc-100'>{node.label}</div>
                   <div className='text-[9px] text-zinc-400 font-medium leading-none'>{node.desc}</div>
                 </div>
               </button>
@@ -235,14 +235,14 @@ export default function BotBuilder() {
             <Controls className='!bg-white !dark:bg-zinc-900 !border-2 !border-zinc-900 !dark:border-zinc-100 !rounded-md !shadow-none' />
 
             <Panel position="top-center" className='z-40'>
-              <div className='flex items-center gap-4 px-6 py-3 bg-white dark:bg-zinc-900 border-2 border-zinc-900 dark:border-zinc-100 rounded-md shadow-2xl'>
+              <div className='flex items-center gap-4 px-6 py-3 bg-white dark:bg-zinc-900 border-2 border-zinc-900 dark:border-zinc-100 rounded-md'>
                 <div className='flex items-center gap-3'>
                   <div className='w-2 h-2 rounded-full bg-emerald-500 animate-pulse'></div>
-                  <span className='text-[11px] font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest'>Workflow: Atendimento Cortex</span>
+                  <span className='text-[11px] font-black text-zinc-900 dark:text-zinc-100'>Workflow: Atendimento Cortex</span>
                 </div>
                 <div className='w-px h-4 bg-zinc-200 dark:bg-zinc-800'></div>
                 <div className='flex items-center gap-2'>
-                  <button className='flex items-center gap-2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 px-4 py-1.5 rounded text-[10px] font-black uppercase hover:opacity-80 transition-all'>
+                  <button className='flex items-center gap-2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 px-4 py-1.5 rounded text-[10px] font-black hover:opacity-80 transition-all'>
                     <Save size={14} /> Salvar
                   </button>
                   <button className='w-8 h-8 flex items-center justify-center border-2 border-zinc-900 dark:border-zinc-100 rounded text-zinc-500 hover:bg-zinc-50 dark:hover:bg-zinc-800'>
@@ -255,9 +255,9 @@ export default function BotBuilder() {
         </div>
 
         {/* Inspector Panel */}
-        <div className='w-80 border-l border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-950 flex flex-col z-20 shrink-0 shadow-[-10px_0_30px_rgba(0,0,0,0.02)]'>
+        <div className='w-80 border-l border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-950 flex flex-col z-20 shrink-0'>
           <div className='h-16 px-6 border-b border-zinc-50 dark:border-zinc-800 flex items-center justify-between'>
-            <h3 className='font-black text-[11px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest'>Configurações</h3>
+            <h3 className='font-black text-[11px] text-zinc-500 dark:text-zinc-400'>Configurações</h3>
             <SettingsIcon size={14} className='text-zinc-400' />
           </div>
 
@@ -265,21 +265,21 @@ export default function BotBuilder() {
             {selectedNode ? (
               <div className='space-y-8 animate-in fade-in slide-in-from-right-2 duration-300'>
                 <div className='flex flex-col gap-4'>
-                  <div className='w-12 h-12 bg-zinc-900 dark:bg-zinc-100 rounded-lg flex items-center justify-center text-white dark:text-zinc-950 shadow-lg'>
+                  <div className='w-12 h-12 bg-zinc-900 dark:bg-zinc-100 rounded-lg flex items-center justify-center text-white dark:text-zinc-950'>
                     {selectedNode.type === 'message' && <MessageSquare size={24} />}
                     {selectedNode.type === 'ai' && <Sparkles size={24} />}
                     {selectedNode.type === 'transfer' && <UserPlus size={24} />}
                     {selectedNode.type === 'trigger' && <Zap size={24} />}
                   </div>
                   <div>
-                    <h4 className='text-lg font-black text-zinc-900 dark:text-zinc-100 leading-none uppercase tracking-tighter'>{selectedNode.data.label as string}</h4>
-                    <p className='text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-1'>Módulo Operacional</p>
+                    <h4 className='text-lg font-black text-zinc-900 dark:text-zinc-100 leading-none'>{selectedNode.data.label as string}</h4>
+                    <p className='text-[10px] text-zinc-400 font-bold mt-1'>Módulo Operacional</p>
                   </div>
                 </div>
 
                 <div className='space-y-6 pt-6 border-t border-zinc-100 dark:border-zinc-800'>
                   <div className='space-y-2.5'>
-                    <label className='text-[10px] font-black text-zinc-400 uppercase tracking-widest'>Título do Bloco</label>
+                    <label className='text-[10px] font-black text-zinc-400'>Título do Bloco</label>
                     <input
                       type="text"
                       className='w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-md px-3 py-2 text-xs font-bold outline-none focus:ring-1 focus:ring-zinc-400 transition-all'
@@ -290,7 +290,7 @@ export default function BotBuilder() {
 
                   {selectedNode.type === 'message' && (
                     <div className='space-y-2.5'>
-                      <label className='text-[10px] font-black text-zinc-400 uppercase tracking-widest'>Conteúdo da Mensagem</label>
+                      <label className='text-[10px] font-black text-zinc-400'>Conteúdo da Mensagem</label>
                       <textarea
                         rows={6}
                         className='w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-md px-3 py-3 text-[11px] font-bold outline-none leading-relaxed focus:ring-1 focus:ring-zinc-400 transition-all'
@@ -302,7 +302,7 @@ export default function BotBuilder() {
 
                   {selectedNode.type === 'ai' && (
                     <div className='space-y-2.5'>
-                      <label className='text-[10px] font-black text-zinc-400 uppercase tracking-widest'>System Prompt (Cortex)</label>
+                      <label className='text-[10px] font-black text-zinc-400'>System Prompt (Cortex)</label>
                       <textarea
                         rows={8}
                         className='w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-md px-3 py-3 text-[11px] font-bold outline-none focus:ring-1 focus:ring-zinc-400 transition-all'
@@ -314,7 +314,7 @@ export default function BotBuilder() {
 
                   {selectedNode.type === 'transfer' && (
                     <div className='space-y-2.5'>
-                      <label className='text-[10px] font-black text-zinc-400 uppercase tracking-widest'>Departamento</label>
+                      <label className='text-[10px] font-black text-zinc-400'>Departamento</label>
                       <select
                         className='w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-md px-3 py-2.5 text-xs font-bold outline-none focus:ring-1 focus:ring-zinc-400 transition-all'
                         value={selectedNode.data.sector as string}
@@ -331,7 +331,7 @@ export default function BotBuilder() {
                   <div className='p-4 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-md border-2 border-zinc-900'>
                     <div className='flex items-center gap-2 mb-3 opacity-60'>
                       <Layers size={12} />
-                      <span className='text-[9px] font-black uppercase'>Output Data</span>
+                      <span className='text-[9px] font-black'>Output Data</span>
                     </div>
                     <div className='flex flex-wrap gap-1.5'>
                       {['last_msg', 'customer_name', 'id_flow'].map(tag => (
@@ -344,7 +344,7 @@ export default function BotBuilder() {
             ) : (
               <div className='h-full flex flex-col items-center justify-center opacity-20 text-center grayscale'>
                 <MousePointer2 size={40} className='mb-4' />
-                <p className='text-xs font-black uppercase tracking-widest'>Selecione para<br />configurar o fluxo</p>
+                <p className='text-xs font-black'>Selecione para<br />configurar o fluxo</p>
               </div>
             )}
           </div>

@@ -2,6 +2,7 @@ import { Plus, FileText, Copy, Edit2, Trash2 } from 'lucide-react';
 import { Page } from '../../components/layout/page';
 import { Topbar } from '../../components/layout/topbar';
 import { useTenant } from '../../hooks/useTenant';
+import { Button } from '../../components/ui/button';
 
 export default function MessageTemplates() {
   const { companyUrl } = useTenant();
@@ -30,29 +31,29 @@ export default function MessageTemplates() {
               <h2 className='text-2xl font-bold text-zinc-900 dark:text-zinc-100'>Seus Modelos</h2>
               <p className='text-zinc-500 dark:text-zinc-400 mt-1'>Gerencie respostas rápidas para agilizar seu suporte.</p>
             </div>
-            <button className='flex items-center gap-2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 px-4 py-2 rounded-lg font-medium hover:opacity-90 transition-all shadow-sm'>
+            <Button size="md" className='gap-2'>
               <Plus size={18} />
               Novo Modelo
-            </button>
+            </Button>
           </div>
 
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
             {templates.map((template) => (
-              <div key={template.id} className='bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl hover:border-zinc-300 dark:hover:border-zinc-700 transition-all group shadow-sm'>
+              <div key={template.id} className='bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl hover:border-zinc-300 dark:hover:border-zinc-700 transition-all group'>
                 <div className='flex items-start justify-between mb-4'>
                   <div className='w-10 h-10 bg-zinc-100 dark:bg-zinc-800 rounded-lg flex items-center justify-center text-zinc-600 dark:text-zinc-400'>
                     <FileText size={20} />
                   </div>
                   <div className='flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity'>
-                    <button className='p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100'>
+                    <Button size="icon" variant="ghost" className='h-8 w-8 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100'>
                       <Copy size={16} />
-                    </button>
-                    <button className='p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100'>
+                    </Button>
+                    <Button size="icon" variant="ghost" className='h-8 w-8 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100'>
                       <Edit2 size={16} />
-                    </button>
-                    <button className='p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded text-zinc-500 hover:text-red-600'>
+                    </Button>
+                    <Button size="icon" variant="ghost" className='h-8 w-8 text-zinc-500 hover:text-red-600'>
                       <Trash2 size={16} />
-                    </button>
+                    </Button>
                   </div>
                 </div>
                 <h3 className='font-semibold text-zinc-900 dark:text-zinc-100 mb-2'>{template.name}</h3>
@@ -60,7 +61,7 @@ export default function MessageTemplates() {
                   "{template.content}"
                 </p>
                 <div className='pt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between'>
-                  <span className='px-2 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 rounded text-[10px] font-bold uppercase tracking-wider'>
+                  <span className='px-2 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 rounded text-[10px] font-bold'>
                     {template.category}
                   </span>
                 </div>

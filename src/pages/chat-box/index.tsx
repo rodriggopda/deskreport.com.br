@@ -31,7 +31,7 @@ export default function ChatBox() {
             <div className='relative flex items-center'>
               <Search className='absolute ml-3 text-zinc-400' size={14} />
               <input
-                className='w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 pl-9 py-2 rounded-md text-xs outline-none focus:bg-white dark:focus:bg-zinc-900 transition-all shadow-sm'
+                className='w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 pl-9 py-2 rounded-md text-xs outline-none focus:bg-white dark:focus:bg-zinc-900 transition-all'
                 type='text'
                 placeholder='Pesquisar conversas...'
               />
@@ -45,7 +45,7 @@ export default function ChatBox() {
                   key={customer.id}
                   className={({ isActive }) =>
                     `flex items-center gap-3 py-3 px-3 rounded-lg transition-all border border-transparent ${isActive
-                      ? 'bg-zinc-100/80 dark:bg-zinc-900 shadow-sm border-zinc-200/50 dark:border-zinc-800'
+                      ? 'bg-zinc-100/80 dark:bg-zinc-900 border-zinc-200/50 dark:border-zinc-800'
                       : 'hover:bg-zinc-100/50 dark:hover:bg-zinc-900/30 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'
                     }`
                   }
@@ -93,7 +93,7 @@ export default function ChatBox() {
             </div>
 
             {/* Input modernizado */}
-            <div className='p-4 bg-white dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800 shadow-[0_-4px_12px_rgba(0,0,0,0.02)]'>
+            <div className='p-4 bg-white dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800'>
               <div className='max-w-4xl mx-auto'>
                 <form className='relative flex items-end gap-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-2 focus-within:ring-2 focus-within:ring-zinc-100 dark:focus-within:ring-zinc-900 transition-all'>
                   <div className='flex items-center pb-1 pl-1'>
@@ -112,12 +112,12 @@ export default function ChatBox() {
                     <button type='button' className='p-2 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors'>
                       <Smile size={20} />
                     </button>
-                    <button type='submit' className='bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 p-2.5 rounded-lg hover:opacity-90 transition-opacity shadow-sm'>
+                    <button type='submit' className='bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 p-2.5 rounded-lg hover:opacity-90 transition-opacity'>
                       <Send size={18} fill='currentColor' />
                     </button>
                   </div>
                 </form>
-                <div className='mt-2 flex items-center justify-center gap-4 text-[10px] text-zinc-400 font-medium tracking-tight uppercase'>
+                <div className='mt-2 flex items-center justify-center gap-4 text-[10px] text-zinc-400 font-medium'>
                   <span>Pressione <kbd className='px-1 py-0.5 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 font-sans'>Enter</kbd> para enviar</span>
                   <span className='w-1 h-1 rounded-full bg-zinc-300 dark:bg-zinc-700'></span>
                   <span>Shift + Enter para nova linha</span>

@@ -1,4 +1,5 @@
-import { Plus, Save, Camera, Shield, MoreVertical, User, Users2 } from 'lucide-react';
+import { Plus, Save, Camera, Shield, MoreVertical } from 'lucide-react';
+import { Button } from '../../../components/ui/button';
 
 export function UserHub() {
     const session = { user: { name: "Usuário Exemplo", email: "user@deskreport.com.br", image: "" } };
@@ -26,10 +27,10 @@ export function UserHub() {
                         <h3 className="font-semibold text-neutral-900 dark:text-white text-lg">Meu Perfil</h3>
                         <p className="text-xs text-neutral-500">Credenciais pessoais e foto de avatar</p>
                     </div>
-                    <button className="bg-sky-500 hover:bg-sky-600 focus:ring-2 focus:ring-sky-500/50 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium transition-colors shadow-sm">
+                    <Button size="md" className="gap-2">
                         <Save size={16} />
                         Salvar Alterações
-                    </button>
+                    </Button>
                 </div>
                 <div className="bg-transparent">
                     <div className="flex flex-col md:flex-row gap-8 items-start">
@@ -44,19 +45,19 @@ export function UserHub() {
 
                         <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Nome Completo</label>
+                                <label className="text-[10px] font-bold text-neutral-400">Nome Completo</label>
                                 <input type="text" defaultValue={session?.user?.name || ''} className="w-full bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg px-4 py-3 text-sm focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 outline-none transition-all font-medium" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">E-mail de Trabalho</label>
+                                <label className="text-[10px] font-bold text-neutral-400">E-mail de Trabalho</label>
                                 <input type="email" defaultValue={session?.user?.email || ''} readOnly className="w-full bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 rounded-lg px-4 py-3 text-sm outline-none transition-all font-medium text-neutral-500 cursor-not-allowed" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">WhatsApp</label>
+                                <label className="text-[10px] font-bold text-neutral-400">WhatsApp</label>
                                 <input type="tel" defaultValue="+55 (11) 98765-4321" className="w-full bg-neutral-50 dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-sky-500 outline-none transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Cargo / Função</label>
+                                <label className="text-[10px] font-bold text-neutral-400">Cargo / Função</label>
                                 <input type="text" defaultValue="Administrador" className="w-full bg-neutral-50 dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-sky-500 outline-none transition-all" />
                             </div>
                         </div>
@@ -71,14 +72,14 @@ export function UserHub() {
                         <h3 className="font-semibold text-neutral-900 dark:text-white text-lg">Time e Representantes</h3>
                         <p className="text-xs text-neutral-500 mt-1">Gerencie os acessos e permissões da sua equipe.</p>
                     </div>
-                    <button className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-900 dark:text-white px-4 py-2 rounded-lg flex items-center gap-2 text-xs font-semibold transition-colors shadow-sm">
+                    <Button variant="outline" size="sm" className="gap-2">
                         <Plus size={16} />
                         Convidar Novo
-                    </button>
+                    </Button>
                 </div>
                 <div className="overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800">
                     <table className="w-full text-left">
-                        <thead className="bg-neutral-50 dark:bg-neutral-800 text-[10px] uppercase text-neutral-400 font-bold border-b border-neutral-100 dark:border-neutral-800">
+                        <thead className="bg-neutral-50 dark:bg-neutral-800 text-[10px] text-neutral-400 font-bold border-b border-neutral-100 dark:border-neutral-800">
                             <tr>
                                 <th className="px-6 py-4">Usuário</th>
                                 <th className="px-6 py-4">Cargo</th>
@@ -110,9 +111,9 @@ export function UserHub() {
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 text-right">
-                                        <button className="p-1 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-md text-neutral-400 transition-colors">
+                                        <Button size="icon" variant="ghost" className="h-8 w-8 text-neutral-400">
                                             <MoreVertical size={16} />
-                                        </button>
+                                        </Button>
                                     </td>
                                 </tr>
                             ))}

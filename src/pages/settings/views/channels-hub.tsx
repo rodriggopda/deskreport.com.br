@@ -31,7 +31,7 @@ export function ChannelsHub() {
             <div>
               <h3 className="font-semibold text-neutral-900 dark:text-white text-lg leading-tight flex items-center gap-2">
                 WhatsApp Business
-                <span className="text-xs text-neutral-500 font-medium tracking-tight">Status: {waStatus === 'connected' ? 'Conectado' : waStatus === 'scanning' ? 'Aguardando Leitura' : 'Desconectado'}</span>
+                <span className="text-xs text-neutral-500 font-medium">Status: {waStatus === 'connected' ? 'Conectado' : waStatus === 'scanning' ? 'Aguardando Leitura' : 'Desconectado'}</span>
               </h3>
             </div>
             {waStatus === 'connected' ? (
@@ -39,7 +39,7 @@ export function ChannelsHub() {
                 Desconectar
               </button>
             ) : waStatus === 'disconnected' ? (
-              <button onClick={() => setWaStatus('scanning')} className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-900 dark:text-white px-4 py-2 rounded-lg text-xs font-semibold transition-colors shadow-sm flex items-center gap-2">
+              <button onClick={() => setWaStatus('scanning')} className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-900 dark:text-white px-4 py-2 rounded-lg text-xs font-semibold transition-colors flex items-center gap-2">
                 Conectar WhatsApp
               </button>
             ) : null}
@@ -57,7 +57,7 @@ export function ChannelsHub() {
               </div>
             ) : waStatus === 'scanning' ? (
               <div className="flex flex-col md:flex-row gap-12 items-center">
-                <div className="relative p-2 bg-white rounded-xl border-4 border-emerald-500/20 shadow-xl">
+                <div className="relative p-2 bg-white rounded-xl border-4 border-emerald-500/20">
                   <div className="w-48 h-48 bg-neutral-100 flex items-center justify-center rounded-lg overflow-hidden relative group">
                     <img
                       src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=deskreport-demo"
@@ -68,7 +68,7 @@ export function ChannelsHub() {
                       <button onClick={() => setWaStatus('connected')} className="bg-emerald-500 text-white px-4 py-2 rounded-lg text-xs font-bold">Simular Conexão</button>
                     </div>
                   </div>
-                  <div className="absolute -bottom-3 -right-3 bg-white dark:bg-neutral-800 p-1.5 rounded-full shadow-lg border border-neutral-100 dark:border-neutral-700 animate-spin transition-all">
+                  <div className="absolute -bottom-3 -right-3 bg-white dark:bg-neutral-800 p-1.5 rounded-full border border-neutral-100 dark:border-neutral-700 animate-spin transition-all">
                     <RefreshCw size={14} className="text-emerald-500" />
                   </div>
                 </div>
@@ -92,7 +92,7 @@ export function ChannelsHub() {
             ) : waStatus === 'connected' ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="p-4 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800 rounded-xl space-y-4">
-                  <div className="flex items-center justify-between font-bold text-xs text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
+                  <div className="flex items-center justify-between font-bold text-xs text-emerald-700 dark:text-emerald-400">
                     <span>Instância Ativa</span>
                     <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
                   </div>
@@ -105,11 +105,11 @@ export function ChannelsHub() {
                   </div>
                 </div>
                 <div className="space-y-4 p-4 border border-neutral-200 dark:border-neutral-800 rounded-xl">
-                  <h5 className="text-xs font-bold text-neutral-400 uppercase tracking-widest">Configurações de Mensagem</h5>
+                  <h5 className="text-xs font-bold text-neutral-400">Configurações de Mensagem</h5>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-neutral-600 dark:text-neutral-400">Resposta Automática</span>
-                    <div className="w-10 h-5 bg-sky-500 rounded-full relative cursor-pointer shadow-inner">
-                      <div className="absolute right-0.5 top-0.5 w-4 h-4 rounded-full bg-white shadow-sm" />
+                    <div className="w-10 h-5 bg-sky-500 rounded-full relative cursor-pointer">
+                      <div className="absolute right-0.5 top-0.5 w-4 h-4 rounded-full bg-white" />
                     </div>
                   </div>
                 </div>
@@ -155,14 +155,14 @@ function ComingSoonChannel({ icon, name, color }: { icon: React.ReactNode, name:
   return (
     <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 p-6 flex items-center justify-between opacity-70 group hover:opacity-100 transition-all cursor-not-allowed">
       <div className="flex items-center gap-4">
-        <div className={`p-3 rounded-xl bg-gradient-to-br ${color} text-white shadow-md`}>
+        <div className={`p-3 rounded-xl bg-gradient-to-br ${color} text-white`}>
           {icon}
         </div>
         <div className="flex flex-col">
           <span className="text-sm font-bold text-neutral-800 dark:text-neutral-100">{name}</span>
           <div className="flex items-center gap-1.5 mt-0.5">
             <AlertCircle size={10} className="text-amber-500" />
-            <span className="text-[10px] font-bold text-amber-500 uppercase tracking-tighter">Em breve</span>
+            <span className="text-[10px] font-bold text-amber-500">Em breve</span>
           </div>
         </div>
       </div>

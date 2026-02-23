@@ -1,6 +1,7 @@
 import { Search, X, ListFilter, SortAsc, LayoutGrid, Users, Tag, Flag } from 'lucide-react';
 import { TaskStatus, STATUS_CONFIG, PRIORITY_CONFIG, TaskPriority } from './tasks-data';
 import { SortOption, GroupOption } from './use-task-filters';
+import { Button } from '../../components/ui/button';
 
 interface TaskFiltersProps {
   search: string;
@@ -55,11 +56,14 @@ export function TaskFiltersComponent({
           placeholder="Buscar ou filtrar..."
           className='w-full pl-9 pr-8 py-1.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-md text-xs outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-zinc-500'
         />
-        {search && (
-          <button onClick={() => setSearch('')} className='absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200'>
-            <X size={12} />
-          </button>
-        )}
+        <Button
+          size="icon"
+          variant="ghost"
+          onClick={() => setSearch('')}
+          className='absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6'
+        >
+          <X size={12} />
+        </Button>
       </div>
 
       <div className='flex items-center gap-1.5'>
@@ -156,13 +160,15 @@ export function TaskFiltersComponent({
         </div>
 
         {isFiltered && (
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={onClear}
-            className='flex items-center gap-1 text-[10px] font-bold text-zinc-500 hover:text-red-500 px-2 py-1 transition-colors shrink-0'
+            className='text-zinc-500 hover:text-red-500 gap-1'
           >
             <X size={12} />
             Limpar
-          </button>
+          </Button>
         )}
       </div>
     </div>

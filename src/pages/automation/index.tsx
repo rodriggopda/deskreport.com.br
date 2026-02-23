@@ -2,6 +2,7 @@ import { Zap, Plus, Settings2, Power, MoreVertical, Clock, MessageSquare } from 
 import { Page } from '../../components/layout/page';
 import { Topbar } from '../../components/layout/topbar';
 import { useTenant } from '../../hooks/useTenant';
+import { Button } from '../../components/ui/button';
 
 export default function AutoMessages() {
   const { companyUrl } = useTenant();
@@ -30,15 +31,15 @@ export default function AutoMessages() {
               <h2 className='text-2xl font-bold text-zinc-900 dark:text-zinc-100'>Automações</h2>
               <p className='text-zinc-500 dark:text-zinc-400 mt-1'>Configure gatilhos e respostas automáticas para seus canais.</p>
             </div>
-            <button className='flex items-center gap-2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 px-4 py-2 rounded-lg font-medium hover:opacity-90 transition-all shadow-sm'>
+            <Button size="md" className='gap-2'>
               <Plus size={18} />
               Criar Automação
-            </button>
+            </Button>
           </div>
 
           <div className='space-y-3'>
             {automations.map((automation) => (
-              <div key={automation.id} className='bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-4 rounded-xl flex items-center justify-between hover:border-zinc-300 dark:hover:border-zinc-700 transition-all shadow-sm group'>
+              <div key={automation.id} className='bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-4 rounded-xl flex items-center justify-between hover:border-zinc-300 dark:hover:border-zinc-700 transition-all group'>
                 <div className='flex items-center gap-4'>
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center ${automation.active ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-zinc-100 text-zinc-400 dark:bg-zinc-800'}`}>
                     <Zap size={24} fill={automation.active ? 'currentColor' : 'none'} />
@@ -61,16 +62,20 @@ export default function AutoMessages() {
                   </div>
                 </div>
 
-                <div className='flex items-center gap-3'>
-                  <button className={`p-2 rounded-lg transition-colors ${automation.active ? 'text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20' : 'text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'}`}>
+                <div className='flex items-center gap-1.5'>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className={automation.active ? 'text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20' : 'text-zinc-400'}
+                  >
                     <Power size={18} />
-                  </button>
-                  <button className='p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors'>
+                  </Button>
+                  <Button size="icon" variant="ghost">
                     <Settings2 size={18} />
-                  </button>
-                  <button className='p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors'>
+                  </Button>
+                  <Button size="icon" variant="ghost">
                     <MoreVertical size={18} />
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))}
@@ -80,9 +85,9 @@ export default function AutoMessages() {
             <div className='relative z-10'>
               <h3 className='text-white font-bold text-lg mb-2'>Precisa de uma automação complexa?</h3>
               <p className='text-zinc-400 text-sm max-w-md mb-4'>Integre com Webhooks ou utilize nosso construtor de Chatbots para fluxos avançados de atendimento.</p>
-              <button className='text-zinc-900 bg-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-zinc-100 transition-colors'>
+              <Button variant="secondary" size="md">
                 Ver construtor de Robôs
-              </button>
+              </Button>
             </div>
             <Zap size={140} className='absolute -right-4 -bottom-8 text-zinc-800/40 transform -rotate-12' />
           </div>

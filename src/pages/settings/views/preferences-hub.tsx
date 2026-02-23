@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Share2, AlertCircle, Sun, Moon, Monitor, Bell, BellRing, Settings, Zap } from 'lucide-react';
+import { AlertCircle, Sun, Moon, Monitor, BellRing, Zap } from 'lucide-react';
+import { Button } from '../../../components/ui/button';
 import { useThemeStore } from '../../../store';
 
 export function PreferencesHub() {
@@ -77,13 +78,15 @@ export function PreferencesHub() {
                             <p className="text-xs text-neutral-500 mt-1">Gerencie os alertas e popups de aviso do sistema.</p>
                         </div>
                         {notificationPermission === 'default' && (
-                            <button
+                            <Button
+                                variant="outline"
+                                size="sm"
                                 onClick={requestNotificationPermission}
-                                className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-900 dark:text-white px-4 py-2 rounded-lg text-xs font-semibold transition-colors shadow-sm flex items-center gap-2"
+                                className="gap-2"
                             >
                                 <BellRing size={16} />
                                 Habilitar Notificações
-                            </button>
+                            </Button>
                         )}
                     </div>
                     <div className="py-4">
@@ -156,7 +159,7 @@ function ThemeOption({ id, name, icon, description, active, onClick }: { id: str
                 )}
                 {active && (
                     <div className="absolute inset-0 flex items-center justify-center bg-sky-500/10">
-                        <div className="w-6 h-6 bg-sky-500 rounded-full flex items-center justify-center text-white shadow-lg">
+                        <div className="w-6 h-6 bg-sky-500 rounded-full flex items-center justify-center text-white">
                             <Zap size={14} className="fill-white" />
                         </div>
                     </div>
@@ -187,7 +190,7 @@ function NotificationToggle({ label, description, defaultChecked = false }: { la
                 <span className="text-[10px] text-neutral-500 leading-tight">{description}</span>
             </div>
             <div className={`w-10 h-5 rounded-full relative transition-colors ${checked ? 'bg-sky-500' : 'bg-neutral-300 dark:bg-neutral-700'}`}>
-                <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-all ${checked ? 'right-0.5' : 'left-0.5'}`} />
+                <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${checked ? 'right-0.5' : 'left-0.5'}`} />
             </div>
         </div>
     );

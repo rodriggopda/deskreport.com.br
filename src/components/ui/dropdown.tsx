@@ -46,7 +46,7 @@ export function Dropdown({ options, value, onChange, className = '', label }: Dr
       </div>
 
       {isOpen && (
-        <div className="absolute left-0 z-50 mt-2 w-56 origin-top-left rounded-xl bg-white dark:bg-zinc-900 border border-neutral-200 dark:border-neutral-800 shadow-xl shadow-black/10 focus:outline-none overflow-hidden animate-in fade-in zoom-in duration-100">
+        <div className="absolute left-0 z-50 mt-2 w-56 origin-top-left rounded-xl bg-white dark:bg-zinc-900 border border-neutral-200 dark:border-neutral-800/10 focus:outline-none overflow-hidden animate-in fade-in zoom-in duration-100">
           <div className="py-1">
             {options.map((option) => (
               <button

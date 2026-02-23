@@ -3,6 +3,7 @@ import { Page } from '../../components/layout/page';
 import { Topbar } from '../../components/layout/topbar';
 import { NavLink } from 'react-router-dom';
 import { useTenant } from '../../hooks/useTenant';
+import { Button, buttonVariants } from '../../components/ui/button';
 
 export default function BotList() {
   const { companyUrl } = useTenant();
@@ -56,7 +57,7 @@ export default function BotList() {
             </div>
             <NavLink
               to="/automation/builder/new"
-              className='flex items-center gap-2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 px-4 py-2 rounded-lg font-medium hover:opacity-90 transition-all shadow-sm'
+              className={buttonVariants('primary', 'md', 'gap-2')}
             >
               <Plus size={18} />
               Novo Bot
@@ -65,7 +66,7 @@ export default function BotList() {
 
           <div className='grid grid-cols-1 gap-4'>
             {bots.map((bot) => (
-              <div key={bot.id} className='bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-zinc-300 dark:hover:border-zinc-700 transition-all group shadow-sm flex items-center justify-between'>
+              <div key={bot.id} className='bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 rounded-xl hover:border-zinc-300 dark:hover:border-zinc-700 transition-all group flex items-center justify-between'>
                 <div className='flex items-center gap-6'>
                   <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${bot.active ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400' : 'bg-zinc-100 text-zinc-400 dark:bg-zinc-800'}`}>
                     <Bot size={32} />
@@ -74,9 +75,9 @@ export default function BotList() {
                     <div className='flex items-center gap-3 mb-1'>
                       <h3 className='font-bold text-zinc-900 dark:text-zinc-100 text-lg'>{bot.name}</h3>
                       {bot.active ? (
-                        <span className='px-2 py-0.5 bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest rounded'>Ativo</span>
+                        <span className='px-2 py-0.5 bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400 text-[10px] font-black rounded'>Ativo</span>
                       ) : (
-                        <span className='px-2 py-0.5 bg-zinc-100 text-zinc-400 dark:bg-zinc-800 text-[10px] font-black uppercase tracking-widest rounded'>Pausado</span>
+                        <span className='px-2 py-0.5 bg-zinc-100 text-zinc-400 dark:bg-zinc-800 text-[10px] font-black rounded'>Pausado</span>
                       )}
                     </div>
                     <p className='text-sm text-zinc-500 dark:text-zinc-400 max-w-md'>{bot.description}</p>
@@ -97,23 +98,27 @@ export default function BotList() {
                   </div>
                 </div>
 
-                <div className='flex items-center gap-3'>
-                  <button className={`p-2.5 rounded-lg transition-colors ${bot.active ? 'text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20' : 'text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'}`}>
+                <div className='flex items-center gap-1.5'>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className={`h-10 w-10 ${bot.active ? 'text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20' : 'text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'}`}
+                  >
                     {bot.active ? <Pause size={20} fill='currentColor' /> : <Play size={20} fill='currentColor' />}
-                  </button>
+                  </Button>
                   <NavLink
                     to={`/automation/builder/${bot.id}`}
-                    className='p-2.5 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors'
+                    className={buttonVariants('ghost', 'icon', 'h-10 w-10 text-zinc-500')}
                   >
                     <Edit2 size={20} />
                   </NavLink>
-                  <button className='p-2.5 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors'>
+                  <Button size="icon" variant="ghost" className='h-10 w-10 text-zinc-500'>
                     <Trash2 size={20} />
-                  </button>
+                  </Button>
                   <div className='w-px h-8 bg-zinc-100 dark:bg-zinc-800 mx-1'></div>
-                  <button className='p-2.5 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors'>
+                  <Button size="icon" variant="ghost" className='h-10 w-10 text-zinc-500'>
                     <MoreHorizontal size={20} />
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))}
@@ -121,7 +126,7 @@ export default function BotList() {
 
           <div className='mt-8 flex items-center justify-center p-12 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl'>
             <div className='text-center'>
-              <div className='w-16 h-16 bg-white dark:bg-neutral-900 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm border border-neutral-100 dark:border-neutral-800'>
+              <div className='w-16 h-16 bg-white dark:bg-neutral-900 rounded-full flex items-center justify-center mx-auto mb-4 border border-neutral-100 dark:border-neutral-800'>
                 <Plus size={32} className='text-neutral-400' />
               </div>
               <h4 className='text-zinc-900 dark:text-zinc-100 font-bold'>Criar novo bot do zero</h4>
