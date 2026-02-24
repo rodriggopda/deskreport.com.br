@@ -18,7 +18,7 @@ type TopbarProps = {
 
 export function Topbar({ title, children, toolbarOptions, inputSearch, smartHeader }: TopbarProps) {
   const [navigation] = useSubmenuNavigation((state) => [state.navigation]);
-  const { isChatSidebarOpen, toggleChatSidebar, isChatSidebarEnabled } = useUIStore();
+  const { chatSidebarMode, toggleChatSidebarMode } = useUIStore();
   const { company_id, project_id } = useTenant();
   const navigate = useNavigate();
   const location = useLocation();
@@ -102,20 +102,18 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
             </div>
 
             {/* Chat Toggle Button */}
-            {isChatSidebarEnabled && (
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={toggleChatSidebar}
-                  className={`p-2 rounded-lg transition-all ${isChatSidebarOpen
-                    ? 'bg-zinc-100 dark:bg-zinc-800 text-blue-500'
-                    : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900'
-                    }`}
-                  title={isChatSidebarOpen ? "Fechar Chat" : "Abrir Chat"}
-                >
-                  {isChatSidebarOpen ? <PanelRightClose size={20} /> : <PanelRightOpen size={20} />}
-                </button>
-              </div>
-            )}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={toggleChatSidebarMode}
+                className={`p-2 rounded-lg transition-all ${chatSidebarMode === 'expanded'
+                  ? 'bg-zinc-100 dark:bg-zinc-800 text-blue-500'
+                  : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900'
+                  }`}
+                title={chatSidebarMode === 'expanded' ? "Colapsar Chat" : "Expandir Chat"}
+              >
+                {chatSidebarMode === 'expanded' ? <PanelRightClose size={20} /> : <PanelRightOpen size={20} />}
+              </button>
+            </div>
           </div>
         </div>
       ) : null}

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle, Sun, Moon, Monitor, BellRing, Zap } from 'lucide-react';
 import { Button } from '../../../components/ui/button';
-import { useThemeStore } from '../../../store';
+import { useThemeStore, useUIStore } from '../../../store';
 
 export function PreferencesHub() {
     const { theme, setTheme } = useThemeStore();
+    const { chatSidebarPreference, setChatSidebarPreference } = useUIStore();
     const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
 
     useEffect(() => {
@@ -70,6 +71,32 @@ export function PreferencesHub() {
                     </div>
                 </div>
 
+                {/* CHAT INTERNO */}
+                <div className="flex flex-col gap-4">
+                    <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-4">
+                        <div>
+                            <h3 className="font-semibold text-neutral-900 dark:text-white text-lg">Chat Interno</h3>
+                            <p className="text-xs text-neutral-500 mt-1">Configure o comportamento da barra lateral de chat.</p>
+                        </div>
+                    </div>
+                    <div className="py-2">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <SidebarPreferenceOption
+                                label="Sempre Visível (Compacto)"
+                                description="Mantém uma barra fina com avatares visível o tempo todo."
+                                active={chatSidebarPreference === 'compact'}
+                                onClick={() => setChatSidebarPreference('compact')}
+                            />
+                            <SidebarPreferenceOption
+                                label="Esconder por Padrão"
+                                description="Remove a sidebar da visão. Você a abre clicando no botão do topo."
+                                active={chatSidebarPreference === 'hidden'}
+                                onClick={() => setChatSidebarPreference('hidden')}
+                            />
+                        </div>
+                    </div>
+                </div>
+
                 {/* NOTIFICAÇÕES */}
                 <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-4">
@@ -112,6 +139,23 @@ export function PreferencesHub() {
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    );
+}
+
+function SidebarPreferenceOption({ label, description, active, onClick }: { label: string, description: string, active: boolean, onClick: () => void }) {
+    return (
+        <div
+            onClick={onClick}
+            className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center gap-4 ${active ? 'bg-sky-50 dark:bg-sky-900/10 border-sky-200 dark:border-sky-800' : 'bg-neutral-50 dark:bg-neutral-800/30 border-neutral-100 dark:border-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-800'}`}
+        >
+            <div className="flex-1">
+                <span className={`text-sm font-bold block ${active ? 'text-sky-700 dark:text-sky-300' : 'text-neutral-700 dark:text-neutral-300'}`}>{label}</span>
+                <span className="text-[10px] text-neutral-500 leading-tight">{description}</span>
+            </div>
+            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${active ? 'border-sky-500 bg-sky-500' : 'border-neutral-300 dark:border-neutral-700'}`}>
+                {active && <Zap size={10} className="text-white fill-white" />}
             </div>
         </div>
     );
