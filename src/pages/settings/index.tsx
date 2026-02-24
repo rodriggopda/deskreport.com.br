@@ -8,14 +8,16 @@ import { CompanyHub } from './views/company-hub';
 import { UserHub } from './views/user-hub';
 import { ChannelsHub } from './views/channels-hub';
 import { PreferencesHub } from './views/preferences-hub';
+import { OrganizationsHub } from './views/organizations-hub';
 
 export default function Settings() {
   const { tab } = useParams();
   const { companyUrl } = useTenant();
-  const currentTab = tab || 'company';
+  const currentTab = tab || 'organizations';
 
   const navigation = useMemo(() => [
-    { name: 'Minha Empresa', to: companyUrl('settings/company'), icon: <Building2 size={14} /> },
+    { name: 'Minhas Empresas', to: companyUrl('settings/organizations'), icon: <Building2 size={14} /> },
+    { name: 'Empresa Atual', to: companyUrl('settings/company'), icon: <Building2 size={14} /> },
     { name: 'Canais e Integrações', to: companyUrl('settings/channels'), icon: <Share2 size={14} /> },
     { name: 'Contas e Acessos', to: companyUrl('settings/accounts'), icon: <ShieldCheck size={14} /> },
     { name: 'Preferências', to: companyUrl('settings/preferences'), icon: <Settings2 size={14} /> },
@@ -24,9 +26,10 @@ export default function Settings() {
   const renderContent = () => {
     switch (currentTab) {
       case 'channels': return <ChannelsHub />;
+      case 'company': return <CompanyHub />;
       case 'accounts': return <UserHub />;
       case 'preferences': return <PreferencesHub />;
-      default: return <CompanyHub />;
+      default: return <OrganizationsHub />;
     }
   };
 
