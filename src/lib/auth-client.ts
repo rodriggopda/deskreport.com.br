@@ -5,7 +5,15 @@ export const authClient = createAuthClient({
     baseURL: "http://localhost:3000",
     plugins: [
         organizationClient()
-    ]
+    ],
+    organization: {
+        additionalFields: {
+            metadata: {
+                type: "string",
+                required: false,
+            }
+        }
+    }
 })
 
-export const { signIn, signUp, useSession, useOrganization } = authClient;
+export const { signIn, signUp, useSession, useActiveOrganization: useOrganization } = authClient;

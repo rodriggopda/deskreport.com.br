@@ -6,22 +6,36 @@ import { useOrganization } from '../../lib/auth-client';
 
 export function Navbar() {
   const { company_id, project_id } = useParams();
-  const { data: organization } = useOrganization();
+  const { data: organization, isPending } = useOrganization();
   const cId = company_id || '4go';
   const pId = project_id || 'deskreport';
 
   // Helper para checar se o módulo está ativo
   const isModuleEnabled = (moduleId: string) => {
-    if (!organization) return true; // Se não carregou, mostra (ou gerencia como preferir)
+    // Se ainda está carregando a organização ativa, mantemos visível para evitar pulo de layout
+    if (isPending) return true;
 
-    const metadata = organization.metadata;
-    const parsedMetadata = typeof metadata === 'string' ? JSON.parse(metadata) : metadata;
+    // Se carregou e não achou organização ativa, ou não tem metadados
+    if (!organization) return true;
 
-    // Se não tiver metadados definidos (fallback), mostramos tudo por padrão
-    if (!parsedMetadata?.modules) return true;
+    const metadata = (organization as any).metadata;
+    if (!metadata) return true;
 
-    return (parsedMetadata.modules as string[]).includes(moduleId);
+    try {
+      const parsedMetadata = typeof metadata === 'string' ? JSON.parse(metadata) : metadata;
+
+      // Se não tiver a chave de módulos, mostramos tudo por padrão (compatibilidade)
+      if (!parsedMetadata || !parsedMetadata.modules) return true;
+
+      const enabledModules = parsedMetadata.modules as string[];
+      return enabledModules.includes(moduleId);
+    } catch (e) {
+      console.error("Erro ao processar módulos da organização:", e);
+      return true;
+    }
   };
+
+  console.log(`[Navbar] Org: ${organization?.name} | Modules:`, (organization as any)?.metadata);
 
   return (
     <div className="h-screen max-h-screen">
@@ -39,17 +53,22 @@ export function Navbar() {
                 <MenuNavLink to={`/${cId}/chat`} icon={<MessageCircle size={22} strokeWidth={2} />} label='Conversas' />
               )}
 
+              {isModuleEnabled('internal_chat') && (
+                <MenuNavLink to={`/${cId}/internal-chat`} icon={<MessageCircle size={22} strokeWidth={2} />} label='Chat Interno' />
+              )}
+
               {isModuleEnabled('automation') && (
                 <MenuNavLink to={`/${cId}/automation`} icon={<Zap size={22} strokeWidth={2} />} label='Automação' />
               )}
 
-              <MenuNavLink to={`/${cId}/teams`} icon={<Users2 size={22} strokeWidth={2} />} label='Equipes' />
-
               {isModuleEnabled('projects') && (
-                <MenuNavLink to={`/${cId}/projects`} icon={<FolderDot size={22} strokeWidth={2} />} label='Projetos' />
+                <>
+                  <MenuNavLink to={`/${cId}/teams`} icon={<Users2 size={22} strokeWidth={2} />} label='Equipes' />
+                  <MenuNavLink to={`/${cId}/projects`} icon={<FolderDot size={22} strokeWidth={2} />} label='Projetos' />
+                </>
               )}
 
-              {isModuleEnabled('tickets') && (
+              {isModuleEnabled('tasks') && (
                 <MenuNavLink to={`/${cId}/${pId}/tasks`} icon={<CheckCircle size={22} strokeWidth={2} />} label='Tarefas' />
               )}
 

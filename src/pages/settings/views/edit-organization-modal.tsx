@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import { X, Check, Building2, Briefcase, Zap, Settings } from 'lucide-react';
+import { X, Check, Building2, Briefcase, Zap, Settings, MessageCircle } from 'lucide-react';
 import { Button } from '../../../components/ui/button';
 import { authClient } from '../../../lib/auth-client';
 
 const MODULES = [
-    { id: 'tickets', name: 'Atendimento (Tickets)', icon: <Building2 size={18} /> },
+    { id: 'tasks', name: 'Tarefas (Kanban, Listas)', icon: <Building2 size={18} /> },
     { id: 'chat', name: 'Chat Omnichannel', icon: <Zap size={18} /> },
+    { id: 'automation', name: 'Automações (Bots, Modelos)', icon: <Settings size={18} /> },
     { id: 'projects', name: 'Gestão de Projetos', icon: <Briefcase size={18} /> },
-    { id: 'automation', name: 'Automação (Bots)', icon: <Settings size={18} /> },
+    { id: 'internal_chat', name: 'Chat Interno', icon: <MessageCircle size={18} /> },
 ];
 
 export function EditOrganizationModal({
@@ -151,8 +152,8 @@ export function EditOrganizationModal({
                                             key={module.id}
                                             onClick={() => toggleModule(module.id)}
                                             className={`p-3 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${isSelected
-                                                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10'
-                                                    : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900'
+                                                ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10'
+                                                : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900'
                                                 }`}
                                         >
                                             <div className="flex items-center gap-3">

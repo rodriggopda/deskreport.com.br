@@ -2,20 +2,21 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authClient } from '../../lib/auth-client';
 import { Button } from '../../components/ui/button';
-import { Check, Building2, Briefcase, Zap, Settings, ArrowRight } from 'lucide-react';
+import { Check, Building2, Briefcase, Zap, Settings, ArrowRight, MessageCircle } from 'lucide-react';
 
 const MODULES = [
-    { id: 'tickets', name: 'Atendimento (Tickets)', icon: <Building2 size={18} /> },
+    { id: 'tasks', name: 'Tarefas (Kanban, Listas)', icon: <Building2 size={18} /> },
     { id: 'chat', name: 'Chat Omnichannel', icon: <Zap size={18} /> },
+    { id: 'automation', name: 'Automações (Bots, Modelos)', icon: <Settings size={18} /> },
     { id: 'projects', name: 'Gestão de Projetos', icon: <Briefcase size={18} /> },
-    { id: 'automation', name: 'Automação (Bots)', icon: <Settings size={18} /> },
+    { id: 'internal_chat', name: 'Chat Interno', icon: <MessageCircle size={18} /> },
 ];
 
 export function SetupOrganization() {
     const navigate = useNavigate();
     const [name, setName] = useState('');
     const [industry, setIndustry] = useState('');
-    const [selectedModules, setSelectedModules] = useState<string[]>(['tickets', 'chat']);
+    const [selectedModules, setSelectedModules] = useState<string[]>(['tasks', 'chat']);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
