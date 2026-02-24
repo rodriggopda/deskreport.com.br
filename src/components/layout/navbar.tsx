@@ -55,10 +55,6 @@ export function Navbar() {
                 <MenuNavLink to={`/${cId}/chat`} icon={<MessageCircle size={22} strokeWidth={2} />} label='Conversas' />
               )}
 
-              {isModuleEnabled('internal_chat') && (
-                <MenuNavLink to={`/${cId}/internal-chat`} icon={<MessageCircle size={22} strokeWidth={2} />} label='Chat Interno' />
-              )}
-
               {isModuleEnabled('automation') && (
                 <MenuNavLink to={`/${cId}/automation`} icon={<Zap size={22} strokeWidth={2} />} label='Automação' />
               )}

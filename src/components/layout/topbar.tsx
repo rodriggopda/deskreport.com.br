@@ -101,11 +101,10 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
               )}
             </div>
 
-            {/* Chat Toggle Button */}
             <div className="flex items-center gap-2">
               <button
                 onClick={toggleChatSidebarMode}
-                className={`p-2 rounded-lg transition-all ${chatSidebarMode === 'expanded'
+                className={`p-1 rounded-lg transition-all ${chatSidebarMode === 'expanded'
                   ? 'bg-zinc-100 dark:bg-zinc-800 text-blue-500'
                   : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900'
                   }`}
