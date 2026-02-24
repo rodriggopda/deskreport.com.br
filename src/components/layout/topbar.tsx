@@ -5,6 +5,8 @@ import { ChevronRight } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Dropdown } from '../ui/dropdown';
 import { useTenant } from '../../hooks/useTenant';
+import { authClient } from '../../lib/auth-client';
+import { useEffect, useState } from 'react';
 
 type TopbarProps = {
   title?: string;
@@ -20,10 +22,19 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
   const navigate = useNavigate();
   const location = useLocation();
 
-  const companies = [
-    { id: '4go', name: '4Go Company' },
-    { id: 'codedroplet', name: 'Codedroplet' }
-  ];
+  const [organizations, setOrganizations] = useState<{ id: string, name: string }[]>([]);
+
+  useEffect(() => {
+    authClient.organization.list().then(({ data }) => {
+      if (data) {
+        setOrganizations(data.map(org => ({
+          // Em um mundo ideal trocamos os paths para user org.slug
+          id: org.slug || org.id,
+          name: org.name
+        })));
+      }
+    });
+  }, []);
 
   const projects = [
     { id: 'all', name: 'Projeto' },
@@ -32,7 +43,7 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
     { id: 'vendas', name: 'Vendas' }
   ];
 
-  const currentCompany = company_id || '4go';
+  const currentCompany = company_id || (organizations.length > 0 ? organizations[0].id : '...');
   const isTasksRoute = location.pathname.includes('/tasks');
 
   const handleCompanyChange = (id: string) => {
@@ -71,7 +82,7 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
               </h1>
               <ChevronRight size={16} strokeWidth={2} className='text-neutral-400 mx-1' />
               <Dropdown
-                options={companies}
+                options={organizations}
                 value={currentCompany}
                 onChange={handleCompanyChange}
               />
