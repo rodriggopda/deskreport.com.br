@@ -10,32 +10,34 @@ export function Navbar() {
   const cId = company_id || '4go';
   const pId = project_id || 'deskreport';
 
+  console.log('[Navbar] Organization Data:', {
+    id: organization?.id,
+    name: organization?.name,
+    metadata: (organization as any)?.metadata,
+    type: typeof (organization as any)?.metadata
+  });
+
   // Helper para checar se o módulo está ativo
   const isModuleEnabled = (moduleId: string) => {
-    // Se ainda está carregando a organização ativa, mantemos visível para evitar pulo de layout
+    // Se ainda está carregando, não tomamos decisão (mostra tudo)
     if (isPending) return true;
 
-    // Se carregou e não achou organização ativa, ou não tem metadados
-    if (!organization) return true;
-
-    const metadata = (organization as any).metadata;
-    if (!metadata) return true;
+    // Se não carregou nada, ou não tem metadados (provavelmente organização recém criada sem setup)
+    if (!organization || !(organization as any).metadata) return true;
 
     try {
+      const metadata = (organization as any).metadata;
       const parsedMetadata = typeof metadata === 'string' ? JSON.parse(metadata) : metadata;
 
-      // Se não tiver a chave de módulos, mostramos tudo por padrão (compatibilidade)
       if (!parsedMetadata || !parsedMetadata.modules) return true;
 
-      const enabledModules = parsedMetadata.modules as string[];
-      return enabledModules.includes(moduleId);
+      const enabled = (parsedMetadata.modules as string[]).includes(moduleId);
+      console.log(`[Navbar] Module "${moduleId}" enabled:`, enabled);
+      return enabled;
     } catch (e) {
-      console.error("Erro ao processar módulos da organização:", e);
       return true;
     }
   };
-
-  console.log(`[Navbar] Org: ${organization?.name} | Modules:`, (organization as any)?.metadata);
 
   return (
     <div className="h-screen max-h-screen">

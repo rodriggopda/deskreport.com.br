@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useSession, authClient } from '../lib/auth-client';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useSession, authClient, useOrganization } from '../lib/auth-client';
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
     const { data: session, isPending } = useSession();
@@ -8,6 +8,26 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     const [checkingOrg, setCheckingOrg] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
+
+    const { company_id } = useParams();
+    const { data: activeOrg } = useOrganization();
+
+    useEffect(() => {
+        if (!isPending && session && company_id) {
+            const currentActiveId = activeOrg?.id;
+            const currentActiveSlug = activeOrg?.slug;
+
+            // Se o ID ou Slug da URL não bate com a organização ativa, forçamos o setActive
+            if (activeOrg === undefined || (activeOrg && currentActiveId !== company_id && currentActiveSlug !== company_id)) {
+                console.log('Sincronizando organização ativa:', company_id);
+                authClient.organization.setActive({
+                    organizationId: company_id
+                }).catch(err => {
+                    console.error('Erro ao definir organização ativa:', err);
+                });
+            }
+        }
+    }, [session, isPending, company_id, activeOrg]);
 
     useEffect(() => {
         if (!isPending) {
@@ -25,6 +45,10 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
                 authClient.organization.list().then(({ data }) => {
                     if (data && data.length > 0) {
                         setHasOrg(true);
+                        // Se não tem nenhuma ativa, ativa a primeira por padrão
+                        if (!activeOrg && !company_id) {
+                            authClient.organization.setActive({ organizationId: data[0].id });
+                        }
                     } else {
                         setHasOrg(false);
                         navigate('/setup-organization', { replace: true });
@@ -37,7 +61,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
                 });
             }
         }
-    }, [session, isPending, navigate, location.pathname, hasOrg, checkingOrg]);
+    }, [session, isPending, navigate, location.pathname, hasOrg, checkingOrg, activeOrg, company_id]);
 
     if (isPending || (session && hasOrg === null)) {
         return (

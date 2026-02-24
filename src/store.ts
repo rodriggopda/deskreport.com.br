@@ -29,3 +29,24 @@ export const useThemeStore = create<ThemeStore>()((set) => ({
     set({ theme });
   },
 }));
+
+export type UIStore = {
+  isChatSidebarOpen: boolean;
+  toggleChatSidebar: () => void;
+  isChatSidebarEnabled: boolean;
+  setChatSidebarEnabled: (enabled: boolean) => void;
+};
+
+export const useUIStore = create<UIStore>()((set) => ({
+  isChatSidebarOpen: localStorage.getItem('deskreport-chat-open') === 'true',
+  toggleChatSidebar: () => set((state) => {
+    const newState = !state.isChatSidebarOpen;
+    localStorage.setItem('deskreport-chat-open', String(newState));
+    return { isChatSidebarOpen: newState };
+  }),
+  isChatSidebarEnabled: localStorage.getItem('deskreport-chat-enabled') !== 'false',
+  setChatSidebarEnabled: (enabled: boolean) => {
+    localStorage.setItem('deskreport-chat-enabled', String(enabled));
+    set({ isChatSidebarEnabled: enabled });
+  },
+}));
