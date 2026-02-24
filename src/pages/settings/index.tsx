@@ -4,7 +4,6 @@ import { Building2, ShieldCheck, Share2, Settings2 } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import { useMemo } from 'react';
 import { useTenant } from '../../hooks/useTenant';
-import { CompanyHub } from './views/company-hub';
 import { UserHub } from './views/user-hub';
 import { ChannelsHub } from './views/channels-hub';
 import { PreferencesHub } from './views/preferences-hub';
@@ -16,8 +15,7 @@ export default function Settings() {
   const currentTab = tab || 'organizations';
 
   const navigation = useMemo(() => [
-    { name: 'Minhas Empresas', to: companyUrl('settings/organizations'), icon: <Building2 size={14} /> },
-    { name: 'Empresa Atual', to: companyUrl('settings/company'), icon: <Building2 size={14} /> },
+    { name: 'Organizações', to: companyUrl('settings/organizations'), icon: <Building2 size={14} /> },
     { name: 'Canais e Integrações', to: companyUrl('settings/channels'), icon: <Share2 size={14} /> },
     { name: 'Contas e Acessos', to: companyUrl('settings/accounts'), icon: <ShieldCheck size={14} /> },
     { name: 'Preferências', to: companyUrl('settings/preferences'), icon: <Settings2 size={14} /> },
@@ -26,7 +24,6 @@ export default function Settings() {
   const renderContent = () => {
     switch (currentTab) {
       case 'channels': return <ChannelsHub />;
-      case 'company': return <CompanyHub />;
       case 'accounts': return <UserHub />;
       case 'preferences': return <PreferencesHub />;
       default: return <OrganizationsHub />;

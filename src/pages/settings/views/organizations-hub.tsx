@@ -3,9 +3,11 @@ import { Plus, Users, Building, MoreVertical, ArrowRight } from 'lucide-react';
 import { Button } from '../../../components/ui/button';
 import { authClient } from '../../../lib/auth-client';
 import { useNavigate } from 'react-router-dom';
+import { EditOrganizationModal } from './edit-organization-modal';
 
 export function OrganizationsHub() {
     const [organizations, setOrganizations] = useState<any[]>([]);
+    const [editingOrg, setEditingOrg] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -40,15 +42,15 @@ export function OrganizationsHub() {
             <div className="border-b border-zinc-200 dark:border-zinc-800 pb-6 flex items-start justify-between">
                 <div>
                     <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 mb-2">
-                        Minhas Empresas
+                        Organizações
                     </h2>
                     <p className="text-sm text-zinc-500 max-w-2xl">
-                        Gerencie todas as empresas que você faz parte, alterne entre os contextos ou crie novos espaços de trabalho para novos negócios.
+                        Gerencie todas as organizações que você faz parte, alterne entre os contextos ou crie novos espaços de trabalho para novos negócios.
                     </p>
                 </div>
                 <Button onClick={() => navigate('/setup-organization')} className="gap-2 shrink-0">
                     <Plus size={16} />
-                    Nova Empresa
+                    Nova Organização
                 </Button>
             </div>
 
@@ -59,7 +61,7 @@ export function OrganizationsHub() {
                     </div>
                 ) : organizations.length === 0 ? (
                     <div className="text-center py-12 text-zinc-500">
-                        Nenhuma empresa encontrada.
+                        Nenhuma organização encontrada.
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -86,20 +88,43 @@ export function OrganizationsHub() {
                                         <span>Membro</span>
                                     </div>
 
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => handleSetActive(org)}
-                                        className="gap-2 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                                    >
-                                        Acessar <ArrowRight size={14} />
-                                    </Button>
+                                    <div className="flex items-center gap-2">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setEditingOrg(org);
+                                            }}
+                                            className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+                                        >
+                                            Editar
+                                        </Button>
+                                        <Button
+                                            size="sm"
+                                            onClick={() => handleSetActive(org)}
+                                            className="gap-2"
+                                        >
+                                            Acessar <ArrowRight size={14} />
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
                         ))}
                     </div>
                 )}
             </div>
+
+            {editingOrg && (
+                <EditOrganizationModal
+                    organization={editingOrg}
+                    onClose={() => setEditingOrg(null)}
+                    onSuccess={() => {
+                        setEditingOrg(null);
+                        loadOrganizations();
+                    }}
+                />
+            )}
         </div>
     );
 }
