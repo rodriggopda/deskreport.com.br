@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { authClient } from './lib/auth-client';
 
 export type SubmenuItem = {
   name: string;
@@ -70,4 +71,39 @@ export const useUIStore = create<UIStore>()((set) => ({
     localStorage.setItem('deskreport-chat-mode', nextMode);
     return { chatSidebarMode: nextMode };
   }),
+}));
+
+export type Organization = { id: string; name: string };
+export type Project = { id: string; name: string };
+
+export type TenantStore = {
+  organizations: Organization[];
+  projects: Project[];
+  fetchOrganizations: () => Promise<void>;
+};
+
+export const useTenantStore = create<TenantStore>()((set, get) => ({
+  organizations: [],
+  projects: [
+    { id: 'all', name: 'Projeto' },
+    { id: 'deskreport', name: 'DeskReport' },
+    { id: 'marketing', name: 'Marketing' },
+    { id: 'vendas', name: 'Vendas' }
+  ],
+  fetchOrganizations: async () => {
+    if (get().organizations.length > 0) return;
+    try {
+      const { data } = await authClient.organization.list();
+      if (data) {
+        set({
+          organizations: data.map((org: any) => ({
+            id: org.slug || org.id,
+            name: org.name
+          }))
+        });
+      }
+    } catch (error) {
+      console.error("Failed to fetch organizations:", error);
+    }
+  },
 }));

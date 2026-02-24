@@ -1,12 +1,11 @@
 import { Toolbar } from './toolbar';
-import { useSubmenuNavigation, useUIStore } from '../../store';
+import { useSubmenuNavigation, useUIStore, useTenantStore } from '../../store';
 import { SubNavLink } from './navbar';
 import { ChevronRight, PanelRightOpen, PanelRightClose } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Dropdown } from '../ui/dropdown';
 import { useTenant } from '../../hooks/useTenant';
-import { authClient } from '../../lib/auth-client';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 type TopbarProps = {
   title?: string;
@@ -23,26 +22,11 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [organizations, setOrganizations] = useState<{ id: string, name: string }[]>([]);
+  const { organizations, projects, fetchOrganizations } = useTenantStore();
 
   useEffect(() => {
-    authClient.organization.list().then(({ data }) => {
-      if (data) {
-        setOrganizations(data.map(org => ({
-          // Em um mundo ideal trocamos os paths para user org.slug
-          id: org.slug || org.id,
-          name: org.name
-        })));
-      }
-    });
-  }, []);
-
-  const projects = [
-    { id: 'all', name: 'Projeto' },
-    { id: 'deskreport', name: 'DeskReport' },
-    { id: 'marketing', name: 'Marketing' },
-    { id: 'vendas', name: 'Vendas' }
-  ];
+    fetchOrganizations();
+  }, [fetchOrganizations]);
 
   const currentCompany = company_id || (organizations.length > 0 ? organizations[0].id : '...');
   const isTasksRoute = location.pathname.includes('/tasks');
