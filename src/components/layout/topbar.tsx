@@ -22,13 +22,16 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { organizations, projects, fetchOrganizations } = useTenantStore();
+  const { organizations, projects, fetchOrganizations, fetchProjects } = useTenantStore();
+
+  const currentCompany = company_id || (organizations.length > 0 ? organizations[0].id : '...');
 
   useEffect(() => {
     fetchOrganizations();
-  }, [fetchOrganizations]);
-
-  const currentCompany = company_id || (organizations.length > 0 ? organizations[0].id : '...');
+    if (currentCompany !== '...') {
+      fetchProjects(currentCompany);
+    }
+  }, [fetchOrganizations, fetchProjects, currentCompany]);
   const isTasksRoute = location.pathname.includes('/tasks');
 
   const handleCompanyChange = (id: string) => {
@@ -44,7 +47,7 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
   };
 
   const handleProjectChange = (id: string) => {
-    navigate(`/${company_id}/${id}/tasks/all`);
+    navigate(`/${company_id}/${id}/tasks/boards`);
   };
 
   if (smartHeader === undefined) {
@@ -62,16 +65,15 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
                 <span className="text-lg font-bold">Report</span>
               </div>
               <ChevronRight size={16} strokeWidth={2} className='text-neutral-400 mx-1' />
-              <h1 className='items-center whitespace-nowrap font-semibold'>
-                {title}
-              </h1>
-              <ChevronRight size={16} strokeWidth={2} className='text-neutral-400 mx-1' />
               <Dropdown
                 options={organizations}
                 value={currentCompany}
                 onChange={handleCompanyChange}
               />
-
+              <ChevronRight size={16} strokeWidth={2} className='text-neutral-400 mx-1' />
+              <h1 className='items-center whitespace-nowrap font-semibold'>
+                {title}
+              </h1>
               {isTasksRoute && (
                 <>
                   <ChevronRight size={16} strokeWidth={2} className='text-neutral-400 mx-1' />

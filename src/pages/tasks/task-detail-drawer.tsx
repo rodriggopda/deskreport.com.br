@@ -3,6 +3,7 @@ import { TaskCardProps, PRIORITY_CONFIG, STATUS_CONFIG } from './tasks-data';
 import { useState, useEffect } from 'react';
 import { RichEditor } from '../../components/ui/rich-editor';
 import { Button } from '../../components/ui/button';
+import { useTenantStore } from '../../store';
 
 interface TaskDetailDrawerProps {
     task: TaskCardProps | null;
@@ -23,6 +24,9 @@ export function TaskDetailDrawer({ task, isOpen, onClose, onEdit }: TaskDetailDr
 
     const priority = displayTask ? PRIORITY_CONFIG[displayTask.priority] : null;
     const status = displayTask ? STATUS_CONFIG[displayTask.status] : null;
+
+    const { projects } = useTenantStore();
+    const projectName = projects.find(p => p.id === displayTask?.project)?.name || displayTask?.project;
 
     return (
         <>
@@ -104,7 +108,7 @@ export function TaskDetailDrawer({ task, isOpen, onClose, onEdit }: TaskDetailDr
                                         </div>
                                         <img src={displayTask.assignee?.avatar} className='w-5 h-5 rounded-full border border-zinc-200 dark:border-zinc-800' />
                                         <p className='text-xs text-zinc-500'>
-                                            <span className='font-bold text-zinc-800 dark:text-zinc-200'>rodriggopda</span> adicionou esta tarefa ao projeto <span className='font-bold text-zinc-900 dark:text-zinc-100'>{displayTask.project}</span>
+                                            <span className='font-bold text-zinc-800 dark:text-zinc-200'>rodriggopda</span> adicionou esta tarefa ao projeto <span className='font-bold text-zinc-900 dark:text-zinc-100'>{projectName}</span>
                                         </p>
                                     </div>
 
@@ -179,7 +183,7 @@ export function TaskDetailDrawer({ task, isOpen, onClose, onEdit }: TaskDetailDr
                                         </div>
                                         <div className='p-4 bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-xl space-y-4'>
                                             <div className='flex items-center gap-2 text-xs font-black text-zinc-900 dark:text-zinc-100'>
-                                                {displayTask.project}
+                                                {projectName}
                                             </div>
                                             <div className='space-y-3'>
                                                 <div className='flex items-center justify-between'>

@@ -1,12 +1,17 @@
 import { Page } from '../../components/layout/page';
 import { Topbar } from '../../components/layout/topbar';
+import { ProjectsHub } from './projects-hub';
 
 export default function Projects() {
     return (
         <Page navigation={[]}>
-            <Topbar title='Projetos' inputSearch='off' />
-            <div className="p-8 flex flex-col items-center justify-center h-full text-neutral-400">
-                <p>Em breve: Gerenciamento de Projetos.</p>
+            <div className="flex flex-col h-full w-full">
+                <Topbar title='Projetos' inputSearch='off' />
+                <div className='flex-1 overflow-y-auto bg-transparent p-6'>
+                    <div className="max-w-4xl mx-auto">
+                        <ProjectsHub />
+                    </div>
+                </div>
             </div>
         </Page>
     );

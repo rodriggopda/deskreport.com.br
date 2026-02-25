@@ -9,6 +9,7 @@ export type TaskCardProps = {
     status: TaskStatus;
     priority: TaskPriority;
     createdAt: string;
+    assigneeId?: string | null;
     assignee?: {
         name: string;
         avatar: string;

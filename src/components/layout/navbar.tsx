@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle, MessageCircle, PieChart, Settings, Bell, FolderDot, Zap, Users2 } from 'lucide-react';
+import { CheckCircle, MessageCircle, Inbox, Settings, Bell, FolderDot, Zap, Users2, LayoutDashboard } from 'lucide-react';
 import { NavLink, useParams } from 'react-router-dom';
 import { SubmenuItem } from '../../store';
 import { useOrganization } from '../../lib/auth-client';
@@ -49,7 +49,8 @@ export function Navbar() {
         <div className='flex-1 flex'>
           <div className='flex flex-col py-2 w-full'>
             <ul className='space-y-3 w-full'>
-              <MenuNavLink to={`/${cId}/resume`} icon={<PieChart size={22} strokeWidth={2} />} label='Início' />
+              <MenuNavLink to={`/${cId}/resume`} icon={<Inbox size={22} strokeWidth={2} />} label='Início' />
+              <MenuNavLink to={`/${cId}/dashboard`} icon={<LayoutDashboard size={22} strokeWidth={2} />} label='Painel' />
 
               {isModuleEnabled('chat') && (
                 <MenuNavLink to={`/${cId}/chat`} icon={<MessageCircle size={22} strokeWidth={2} />} label='Conversas' />

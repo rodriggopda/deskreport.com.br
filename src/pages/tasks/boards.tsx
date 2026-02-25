@@ -10,6 +10,7 @@ import { TaskDetailDrawer } from './task-detail-drawer';
 import { TaskFormModal } from './task-form-modal';
 import { Button } from '../../components/ui/button';
 import { useMemo, useState } from 'react';
+import { useTenantStore } from '../../store';
 
 export function TaskBoards() {
   const { company_id, project_id } = useParams();
@@ -20,6 +21,9 @@ export function TaskBoards() {
   const [selectedTask, setSelectedTask] = useState<TaskCardProps | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<TaskCardProps | null>(null);
+
+  const { projects: storeProjects } = useTenantStore();
+  const getProjectName = (id: string) => storeProjects.find(p => p.id === id)?.name || id;
 
   const {
     search,
@@ -40,6 +44,14 @@ export function TaskBoards() {
     setGroupBy,
     filteredTasks
   } = useTaskFilters(tasks);
+
+  // Apply URL routing filter dynamically over the selected Project
+  const finalTasksFiltered = useMemo(() => {
+    if (project_id && project_id !== 'all') {
+      return filteredTasks.filter(t => t.project === project_id);
+    }
+    return filteredTasks;
+  }, [filteredTasks, project_id]);
 
   const navigation = [
     { name: 'Quadros', to: `/${cId}/${pId}/tasks/boards` },
@@ -63,11 +75,11 @@ export function TaskBoards() {
       }));
     }
     if (groupBy === 'project') {
-      const uniqueProjects = Array.from(new Set(tasks.map(t => t.project)));
-      return uniqueProjects.map(p => ({ id: p, title: p, color: 'text-zinc-500' }));
+      const uniqueProjects = Array.from(new Set(finalTasksFiltered.map(t => t.project)));
+      return uniqueProjects.map(p => ({ id: p, title: getProjectName(p), color: 'text-zinc-500' }));
     }
     if (groupBy === 'assignee') {
-      const uniqueAssignees = Array.from(new Set(tasks.filter(t => t.assignee).map(t => t.assignee!.name)));
+      const uniqueAssignees = Array.from(new Set(finalTasksFiltered.filter(t => t.assignee).map(t => t.assignee!.name)));
       return [...uniqueAssignees.map(a => ({ id: a, title: a, color: 'text-zinc-500' })), { id: 'unassigned', title: 'Sem responsável', color: 'text-zinc-400' }];
     }
     return [];
@@ -84,12 +96,12 @@ export function TaskBoards() {
   };
 
   const getTasksForColumn = (columnId: string) => {
-    if (groupBy === 'status') return filteredTasks.filter(t => t.status === columnId);
-    if (groupBy === 'priority') return filteredTasks.filter(t => t.priority === columnId);
-    if (groupBy === 'project') return filteredTasks.filter(t => t.project === columnId);
+    if (groupBy === 'status') return finalTasksFiltered.filter(t => t.status === columnId);
+    if (groupBy === 'priority') return finalTasksFiltered.filter(t => t.priority === columnId);
+    if (groupBy === 'project') return finalTasksFiltered.filter(t => t.project === columnId);
     if (groupBy === 'assignee') {
-      if (columnId === 'unassigned') return filteredTasks.filter(t => !t.assignee);
-      return filteredTasks.filter(t => t.assignee?.name === columnId);
+      if (columnId === 'unassigned') return finalTasksFiltered.filter(t => !t.assignee);
+      return finalTasksFiltered.filter(t => t.assignee?.name === columnId);
     }
     return [];
   };
@@ -155,8 +167,8 @@ export function TaskBoards() {
                     >
                       <div className='flex items-start justify-between mb-2'>
                         <div className='flex items-center gap-1.5'>
-                          <span className={`text-[9px] font-black text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700/50`}>
-                            {task.project}
+                          <span className={`text-[9px] font-black text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700/50 max-w-32 truncate`}>
+                            {getProjectName(task.project)}
                           </span>
                           <span className='text-[10px] font-bold text-zinc-500'>
                             #{String(task.shortId || 0).padStart(3, '0')}
@@ -231,6 +243,7 @@ export function TaskBoards() {
           setTaskToEdit(null);
         }}
         task={taskToEdit}
+        defaultProject={project_id !== 'all' ? project_id : undefined}
       />
     </Page>
   );

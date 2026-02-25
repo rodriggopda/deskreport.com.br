@@ -2,20 +2,30 @@ import { useState, useEffect } from 'react';
 import { Button } from '../../components/ui/button';
 import { useTaskStore } from './use-task-store';
 import { TaskStatus, TaskPriority, STATUS_CONFIG, PRIORITY_CONFIG, TaskCardProps } from './tasks-data';
+import { useTenantStore } from '../../store';
+import { useOrganization } from '../../lib/auth-client';
 import { X } from 'lucide-react';
 
 interface TaskFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   task?: TaskCardProps | null;
+  defaultProject?: string;
 }
 
-export function TaskFormModal({ isOpen, onClose, task }: TaskFormModalProps) {
+export function TaskFormModal({ isOpen, onClose, task, defaultProject }: TaskFormModalProps) {
   const { addTask, updateTask } = useTaskStore();
+  const { projects } = useTenantStore();
+  const { data: orgData } = useOrganization();
+  const members = orgData?.members || [];
+
+  const selectableProjects = projects.filter(p => p.id !== 'all');
+
   const [title, setTitle] = useState('');
-  const [project, setProject] = useState('deskreport');
+  const [project, setProject] = useState(selectableProjects[0]?.id || '');
   const [status, setStatus] = useState<TaskStatus>('todo');
   const [priority, setPriority] = useState<TaskPriority>('medium');
+  const [assigneeId, setAssigneeId] = useState('');
 
   useEffect(() => {
     if (task) {
@@ -23,13 +33,16 @@ export function TaskFormModal({ isOpen, onClose, task }: TaskFormModalProps) {
       setProject(task.project);
       setStatus(task.status);
       setPriority(task.priority);
+      // Backend does not return assigneeId perfectly mapped yet in some places, so handle undefined
+      setAssigneeId((task as any).assigneeId || '');
     } else {
       setTitle('');
-      setProject('deskreport');
+      setProject(defaultProject || selectableProjects[0]?.id || '');
       setStatus('todo');
       setPriority('medium');
+      setAssigneeId('');
     }
-  }, [task, isOpen]);
+  }, [task, isOpen, defaultProject, selectableProjects]);
 
   if (!isOpen) return null;
 
@@ -43,6 +56,7 @@ export function TaskFormModal({ isOpen, onClose, task }: TaskFormModalProps) {
         project,
         status,
         priority,
+        assigneeId: assigneeId || null
       });
     } else {
       addTask({
@@ -50,6 +64,7 @@ export function TaskFormModal({ isOpen, onClose, task }: TaskFormModalProps) {
         project,
         status,
         priority,
+        assigneeId: assigneeId || null,
         tags: [],
       });
     }
@@ -88,13 +103,13 @@ export function TaskFormModal({ isOpen, onClose, task }: TaskFormModalProps) {
                 onChange={(e) => setProject(e.target.value)}
                 className="w-full bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500 transition-all font-medium"
               >
-                <option value="api">Backend (API)</option>
-                <option value="core">Core Platform</option>
-                <option value="whatsapp">WhatsApp Meta</option>
-                <option value="integrations">Integrations</option>
-                <option value="billing">Billing/Módulos</option>
-                <option value="tasks">Tarefas/Gantt</option>
-                <option value="ui-kit">UI Kit</option>
+                {selectableProjects.length === 0 ? (
+                  <option value="">Sem projetos cadastrados</option>
+                ) : (
+                  selectableProjects.map(p => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))
+                )}
               </select>
             </div>
             <div className="space-y-1.5">
@@ -106,6 +121,20 @@ export function TaskFormModal({ isOpen, onClose, task }: TaskFormModalProps) {
               >
                 {Object.entries(STATUS_CONFIG).map(([id, config]) => (
                   <option key={id} value={id}>{config.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-1.5 col-span-2">
+              <label className="text-[10px] font-black uppercase text-zinc-400">Responsável (Assignee)</label>
+              <select
+                value={assigneeId}
+                onChange={(e) => setAssigneeId(e.target.value)}
+                className="w-full bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500 transition-all font-medium"
+              >
+                <option value="">-- Sem Responsável --</option>
+                {members.map(member => (
+                  <option key={member.id} value={member.userId}>{member.user?.name || member.user?.email}</option>
                 ))}
               </select>
             </div>

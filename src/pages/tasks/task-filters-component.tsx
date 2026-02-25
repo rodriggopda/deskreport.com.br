@@ -2,6 +2,7 @@ import { Search, X, ListFilter, SortAsc, LayoutGrid, Users, Tag, Flag } from 'lu
 import { TaskStatus, STATUS_CONFIG, PRIORITY_CONFIG, TaskPriority } from './tasks-data';
 import { SortOption, GroupOption } from './use-task-filters';
 import { Button } from '../../components/ui/button';
+import { useTenantStore } from '../../store';
 
 interface TaskFiltersProps {
   search: string;
@@ -43,6 +44,9 @@ export function TaskFiltersComponent({
   onClear
 }: TaskFiltersProps) {
   const isFiltered = search !== '' || selectedStatus !== 'all' || selectedProject !== 'all' || selectedAssignee !== 'all' || selectedPriority !== 'all';
+
+  const { projects: storeProjects } = useTenantStore();
+  const getProjectName = (id: string) => storeProjects.find(p => p.id === id)?.name || id;
 
   return (
     <div className='flex flex-wrap items-center gap-2'>
@@ -107,7 +111,7 @@ export function TaskFiltersComponent({
           >
             <option value="all">Projeto</option>
             {projects.filter(p => p !== 'all').map(project => (
-              <option key={project} value={project}>{project}</option>
+              <option key={project} value={project}>{getProjectName(project)}</option>
             ))}
           </select>
         </div>

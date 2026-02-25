@@ -12,6 +12,7 @@ import Settings from './pages/settings';
 import { TaskList } from './pages/tasks/list';
 import Teams from './pages/teams';
 import Projects from './pages/projects';
+import Dashboard from './pages/dashboard';
 import Notifications from './pages/notifications';
 import { TaskBoards } from './pages/tasks/boards';
 import TaskDataManagement from './pages/tasks/data-management';
@@ -100,6 +101,10 @@ export const router = createBrowserRouter([
       {
         path: 'projects',
         element: <Projects />,
+      },
+      {
+        path: 'dashboard',
+        element: <Dashboard />,
       },
       {
         path: 'notifications',
