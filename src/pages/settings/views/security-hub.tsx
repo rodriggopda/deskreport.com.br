@@ -55,7 +55,7 @@ export function SecurityHub() {
 
             if (!newUser?.user?.id) throw new Error('Falha na criação do usuário.');
 
-            await authClient.$fetch('http://10.0.0.150:3000/settings/members/link', {
+            await authClient.$fetch('/settings/members/link', {
                 method: 'POST',
                 headers: { 'x-organization-id': activeOrganizationId },
                 body: {
