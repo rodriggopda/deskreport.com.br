@@ -15,10 +15,10 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!isPending && session && company_id) {
       const currentActiveId = activeOrg?.id;
-      const currentActiveSlug = activeOrg?.slug;
 
-      // Se o ID ou Slug da URL não bate com a organização ativa, forçamos o setActive
-      if (activeOrg === undefined || (activeOrg && currentActiveId !== company_id && currentActiveSlug !== company_id)) {
+
+      // Se o ID da URL não bate com a organização ativa, forçamos o setActive
+      if (activeOrg === undefined || (activeOrg && currentActiveId !== company_id)) {
         console.log('Sincronizando organização ativa:', company_id);
         authClient.organization.setActive({
           organizationId: company_id
@@ -34,9 +34,9 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
       if (!session) {
         navigate('/login', { state: { from: location }, replace: true });
       } else if (!checkingOrg && hasOrg === null) {
-        // Ignore org check if we are on the setup page
-        if (location.pathname === '/setup-organization') {
-          setHasOrg(true); // Permit render children setup
+        // Ignore org check if we are on the setup or select page
+        if (location.pathname === '/setup-organization' || location.pathname === '/select-organization') {
+          setHasOrg(true); // Permit render children setup or select
           return;
         }
 

@@ -7,15 +7,17 @@ import BotBuilder from './pages/automation/bot-builder';
 import App from './pages/resume';
 import { Login } from './pages/auth/login';
 import { SetupOrganization } from './pages/auth/setup-organization';
+import { SelectOrganization } from './pages/auth/select-organization';
 import { Layout } from './components/layout';
 import Settings from './pages/settings';
 import { TaskList } from './pages/tasks/list';
-import Teams from './pages/teams';
+import UsersPage from './pages/users';
 import Projects from './pages/projects';
 import Dashboard from './pages/dashboard';
 import Notifications from './pages/notifications';
 import { TaskBoards } from './pages/tasks/boards';
 import TaskDataManagement from './pages/tasks/data-management';
+import OrganizationsPage from './pages/organizations';
 
 import { AuthGuard } from './components/auth-guard';
 
@@ -33,8 +35,30 @@ export const router = createBrowserRouter([
     ),
   },
   {
+    path: '/select-organization',
+    element: (
+      <AuthGuard>
+        <SelectOrganization />
+      </AuthGuard>
+    ),
+  },
+  {
+    path: '/organizations',
+    element: (
+      <AuthGuard>
+        <Layout />
+      </AuthGuard>
+    ),
+    children: [
+      {
+        index: true,
+        element: <OrganizationsPage />,
+      },
+    ],
+  },
+  {
     path: '/',
-    loader: () => redirect('/4go'),
+    loader: () => redirect('/select-organization'),
   },
   {
     path: '/:company_id',
@@ -95,8 +119,8 @@ export const router = createBrowserRouter([
         element: <Settings />,
       },
       {
-        path: 'teams',
-        element: <Teams />,
+        path: 'users',
+        element: <UsersPage />,
       },
       {
         path: 'projects',

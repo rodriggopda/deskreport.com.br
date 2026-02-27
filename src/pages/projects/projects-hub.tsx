@@ -24,7 +24,7 @@ export function ProjectsHub() {
             const headers: any = {};
             if (company_id) headers['x-organization-id'] = company_id;
 
-            const { data } = await authClient.$fetch<any[]>('http://localhost:3000/projects', {
+            const { data } = await authClient.$fetch<any[]>('http://10.0.0.150:3000/projects', {
                 headers
             });
             if (data) setProjects(data);
@@ -43,7 +43,7 @@ export function ProjectsHub() {
             const headers: any = {};
             if (company_id) headers['x-organization-id'] = company_id;
 
-            await authClient.$fetch(`http://localhost:3000/projects/${project.id}`, {
+            await authClient.$fetch(`http://10.0.0.150:3000/projects/${project.id}`, {
                 method: 'PUT',
                 body: { status: newStatus },
                 headers
@@ -84,7 +84,7 @@ export function ProjectsHub() {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {projects.map(project => (
-                            <div key={project.id} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between group">
+                            <div key={project.id} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 flex flex-col justify-between group">
                                 <div>
                                     <div className="flex justify-between items-start mb-4">
                                         <div className="w-12 h-12 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">

@@ -8,8 +8,8 @@ export function useTenant() {
     const { company_id, project_id } = useParams();
 
     // Default values to avoid broken links if parameters are missing
-    const cId = company_id || '4go';
-    const pId = project_id || 'deskreport';
+    const cId = company_id;
+    const pId = project_id;
 
     /**
      * Builds a URL within the current company context.

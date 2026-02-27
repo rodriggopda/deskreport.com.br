@@ -66,7 +66,7 @@ export default function Resume() {
             <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">Radar de Operações</h2>
           </div>
 
-          <div className="bg-white dark:bg-[#121214] border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-sm">
+          <div className="bg-white dark:bg-[#121214] border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden">
             <div className="divide-y divide-zinc-200 dark:divide-zinc-800/80">
 
               <LogItem
@@ -129,8 +129,8 @@ function ActionableItem({
       ${status === 'done'
         ? 'bg-zinc-50 dark:bg-zinc-900/30 border-zinc-200 dark:border-zinc-800 opacity-60'
         : priority === 'high'
-          ? 'bg-white dark:bg-[#121214] border-blue-200 dark:border-blue-900/50 shadow-md shadow-blue-500/5 hover:border-blue-300 dark:hover:border-blue-700'
-          : 'bg-white dark:bg-[#121214] border-zinc-200 dark:border-zinc-800 shadow-sm hover:border-zinc-300 dark:hover:border-zinc-700'
+          ? 'bg-white dark:bg-[#121214] border-blue-200 dark:border-blue-900/50 hover:border-blue-300 dark:hover:border-blue-700'
+          : 'bg-white dark:bg-[#121214] border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700'
       }
     `}>
       {priority === 'high' && status === 'pending' && (
@@ -168,7 +168,7 @@ function ActionableItem({
           ${status === 'done'
             ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 cursor-not-allowed'
             : priority === 'high'
-              ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/20 active:scale-95'
+              ? 'bg-blue-600 hover:bg-blue-700 text-white active:scale-95'
               : 'bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white active:scale-95'
           }
         `}>

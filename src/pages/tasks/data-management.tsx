@@ -119,7 +119,7 @@ export default function TaskDataManagement() {
 
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                         {/* Export Section */}
-                        <div className='bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm'>
+                        <div className='bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6'>
                             <div className='flex items-center gap-3 mb-6'>
                                 <div className='w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center text-blue-600 dark:text-blue-400'>
                                     <Download size={20} />
@@ -147,7 +147,7 @@ export default function TaskDataManagement() {
                         </div>
 
                         {/* Import Section */}
-                        <div className='bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm'>
+                        <div className='bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6'>
                             <div className='flex items-center gap-3 mb-6'>
                                 <div className='w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center text-indigo-600 dark:text-indigo-400'>
                                     <Upload size={20} />
@@ -171,7 +171,7 @@ export default function TaskDataManagement() {
                         </div>
 
                         {/* Advanced Stats */}
-                        <div className='bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm md:col-span-2 relative overflow-hidden'>
+                        <div className='bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 md:col-span-2 relative overflow-hidden'>
                             <div className='flex flex-wrap items-center justify-between gap-6 relative z-10'>
                                 <div>
                                     <h3 className='font-bold text-zinc-900 dark:text-zinc-100 text-lg'>Estatísticas da Base</h3>

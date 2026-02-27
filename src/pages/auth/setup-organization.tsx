@@ -43,21 +43,22 @@ export function SetupOrganization() {
         setError('');
 
         try {
-            const { data, error } = await authClient.organization.create({
+            const { data: organization, error } = await authClient.organization.create({
                 name,
-                slug: name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+                slug: name.toLowerCase().split(' ')[0] || 'org',
                 logo: '',
             });
 
             if (error) throw new Error(error.message);
 
-            if (data) {
+            if (organization) {
                 // If better-auth handles metadata directly we could have passed it above,
                 // but if not, organization.update is an option, or since we only
                 // need organization setup to bypass guard, we redirect:
-                await authClient.organization.update({
-                    organizationId: data.id,
+                const { error: updateError } = await authClient.organization.update({
+                    organizationId: organization.id,
                     data: {
+                        name, // Keep name in data for update, as it's part of the organization object
                         metadata: {
                             industry,
                             modules: selectedModules
@@ -65,8 +66,10 @@ export function SetupOrganization() {
                     }
                 });
 
-                authClient.organization.setActive({ organizationId: data.id });
-                navigate('/');
+                if (updateError) throw new Error(updateError.message);
+
+                authClient.organization.setActive({ organizationId: organization.id });
+                navigate(`/${organization.id}`);
             }
 
         } catch (err: any) {
@@ -111,7 +114,7 @@ export function SetupOrganization() {
                                     required
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    className="px-4 py-3 bg-white dark:bg-zinc-900 w-full rounded-xl outline-none ring-1 ring-zinc-200 dark:ring-zinc-800 focus:ring-blue-500 transition-all text-sm shadow-sm"
+                                    className="px-4 py-3 bg-white dark:bg-zinc-900 w-full rounded-xl outline-none ring-1 ring-zinc-200 dark:ring-zinc-800 focus:ring-blue-500 transition-all text-sm"
                                     type="text"
                                     placeholder="Ex: Acme Corp"
                                 />
@@ -125,7 +128,7 @@ export function SetupOrganization() {
                                     required
                                     value={industry}
                                     onChange={(e) => setIndustry(e.target.value)}
-                                    className="px-4 py-3 bg-white dark:bg-zinc-900 w-full rounded-xl outline-none ring-1 ring-zinc-200 dark:ring-zinc-800 focus:ring-blue-500 transition-all text-sm shadow-sm"
+                                    className="px-4 py-3 bg-white dark:bg-zinc-900 w-full rounded-xl outline-none ring-1 ring-zinc-200 dark:ring-zinc-800 focus:ring-blue-500 transition-all text-sm"
                                     type="text"
                                     placeholder="Ex: Tecnologia, Varejo, Saúde..."
                                 />
@@ -187,7 +190,7 @@ export function SetupOrganization() {
                 {/* Abstract UI Representation */}
                 <div className="w-full max-w-md space-y-6 relative z-10 transition-transform duration-700 hover:scale-105">
                     {/* Fake Topbar */}
-                    <div className="h-16 w-full bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-200/50 dark:border-zinc-800/50 flex items-center px-6 gap-4">
+                    <div className="h-16 w-full bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 flex items-center px-6 gap-4">
                         <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800" />
                         <div className="h-4 w-32 bg-zinc-100 dark:bg-zinc-800 rounded-full" />
                         <div className="ml-auto flex gap-2">
@@ -199,7 +202,7 @@ export function SetupOrganization() {
                     {/* Fake Content area */}
                     <div className="flex gap-6">
                         {/* Sidebar */}
-                        <div className="w-16 h-64 bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-200/50 dark:border-zinc-800/50 flex flex-col items-center py-6 gap-4">
+                        <div className="w-16 h-64 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 flex flex-col items-center py-6 gap-4">
                             <div className="w-8 h-8 bg-blue-500 rounded-lg opacity-20" />
                             <div className="w-8 h-8 bg-zinc-200 dark:bg-zinc-800 rounded-lg" />
                             <div className="w-8 h-8 bg-zinc-200 dark:bg-zinc-800 rounded-lg" />
@@ -207,7 +210,7 @@ export function SetupOrganization() {
                         </div>
 
                         {/* Main Board */}
-                        <div className="flex-1 bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-200/50 dark:border-zinc-800/50 p-6 space-y-4">
+                        <div className="flex-1 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 p-6 space-y-4">
                             <div className="flex gap-4">
                                 <div className="flex-1 space-y-3">
                                     <div className="h-4 w-20 bg-emerald-500/20 rounded-full" />

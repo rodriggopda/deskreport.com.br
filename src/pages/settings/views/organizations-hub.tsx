@@ -30,7 +30,7 @@ export function OrganizationsHub() {
     const handleSetActive = async (org: any) => {
         try {
             await authClient.organization.setActive({ organizationId: org.id });
-            navigate(`/${org.slug || org.id}/resume`);
+            navigate(`/${org.id}/resume`);
         } catch (e) {
             console.error(e);
         }
@@ -66,7 +66,7 @@ export function OrganizationsHub() {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {organizations.map(org => (
-                            <div key={org.id} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between group">
+                            <div key={org.id} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 flex flex-col justify-between group">
                                 <div>
                                     <div className="flex justify-between items-start mb-4">
                                         <div className="w-12 h-12 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
@@ -79,7 +79,7 @@ export function OrganizationsHub() {
                                     </div>
 
                                     <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">{org.name}</h3>
-                                    <p className="text-xs text-zinc-500 font-mono mt-1">/{org.slug || org.id}</p>
+                                    <p className="text-[10px] text-zinc-500 font-mono mt-1 opacity-50 truncate">{org.id}</p>
                                 </div>
 
                                 <div className="mt-8 flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800/50 pt-4">

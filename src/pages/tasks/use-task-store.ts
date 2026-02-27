@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { authClient } from '../../lib/auth-client';
 import { TaskCardProps } from './tasks-data';
 
-const API_URL = 'http://localhost:3000/tasks';
+const API_URL = 'http://10.0.0.150:3000/tasks';
 
 // URL route is typically /:company_id/... so we can extract it for the headers
 const getOrgId = () => {

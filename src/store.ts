@@ -93,7 +93,7 @@ export const useTenantStore = create<TenantStore>()((set, get) => ({
       if (data) {
         set({
           organizations: data.map((org: any) => ({
-            id: org.slug || org.id,
+            id: org.id,
             name: org.name
           }))
         });
@@ -104,7 +104,7 @@ export const useTenantStore = create<TenantStore>()((set, get) => ({
   },
   fetchProjects: async (orgId: string) => {
     try {
-      const { data, error } = await authClient.$fetch<{ id: string; name: string }[]>('http://localhost:3000/projects', {
+      const { data, error } = await authClient.$fetch<{ id: string; name: string }[]>('http://10.0.0.150:3000/projects', {
         headers: {
           'x-organization-id': orgId
         }

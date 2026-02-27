@@ -21,18 +21,18 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
   const { company_id, project_id } = useTenant();
   const navigate = useNavigate();
   const location = useLocation();
-
   const { organizations, projects, fetchOrganizations, fetchProjects } = useTenantStore();
 
-  const currentCompany = company_id || (organizations.length > 0 ? organizations[0].id : '...');
+  const currentCompany = company_id;
 
   useEffect(() => {
     fetchOrganizations();
-    if (currentCompany !== '...') {
+    if (currentCompany && currentCompany !== '...') {
       fetchProjects(currentCompany);
     }
   }, [fetchOrganizations, fetchProjects, currentCompany]);
   const isTasksRoute = location.pathname.includes('/tasks');
+  const isOrganizationsRoute = location.pathname === '/organizations';
 
   const handleCompanyChange = (id: string) => {
     // Mantém o usuário no mesmo path relativo, apenas trocando o ID da empresa
@@ -64,25 +64,29 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
                 <span>Desk</span>
                 <span className="text-lg font-bold">Report</span>
               </div>
-              <ChevronRight size={16} strokeWidth={2} className='text-neutral-400 mx-1' />
-              <Dropdown
-                options={organizations}
-                value={currentCompany}
-                onChange={handleCompanyChange}
-              />
-              <ChevronRight size={16} strokeWidth={2} className='text-neutral-400 mx-1' />
-              <h1 className='items-center whitespace-nowrap font-semibold'>
-                {title}
-              </h1>
-              {isTasksRoute && (
+
+              {!isOrganizationsRoute && (
                 <>
                   <ChevronRight size={16} strokeWidth={2} className='text-neutral-400 mx-1' />
-                  {/* <span className='text-neutral-400 mx-1'>/</span> */}
                   <Dropdown
-                    options={projects}
-                    value={project_id || 'deskreport'}
-                    onChange={handleProjectChange}
+                    options={organizations}
+                    value={currentCompany || ''}
+                    onChange={handleCompanyChange}
                   />
+                  <ChevronRight size={16} strokeWidth={2} className='text-neutral-400 mx-1' />
+                  <h1 className='items-center whitespace-nowrap font-semibold'>
+                    {title || ''}
+                  </h1>
+                  {isTasksRoute && (
+                    <>
+                      <ChevronRight size={16} strokeWidth={2} className='text-neutral-400 mx-1' />
+                      <Dropdown
+                        options={projects}
+                        value={project_id || 'deskreport'}
+                        onChange={handleProjectChange}
+                      />
+                    </>
+                  )}
                 </>
               )}
             </div>
@@ -102,24 +106,26 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
           </div>
         </div>
       ) : null}
-      <div className='toolbar bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors'>
-        <div className='border-b border-neutral-200 dark:border-neutral-800 w-full flex items-center justify-between px-4'>
-          <div className='flex items-center gap-3 w-full'>
-            <div className='pt-2 flex w-full text-sm'>
-              {
-                navigation.map((subitem) => (
-                  <SubNavLink key={subitem.to} name={subitem.name} to={subitem.to} />
-                ))
-              }
+      {(!isOrganizationsRoute || navigation.length > 0) && (
+        <div className='toolbar bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors'>
+          <div className='border-b border-neutral-200 dark:border-neutral-800 w-full flex items-center justify-between px-4'>
+            <div className='flex items-center gap-3 w-full'>
+              <div className='pt-2 flex w-full text-sm'>
+                {
+                  navigation.map((subitem) => (
+                    <SubNavLink key={subitem.to} name={subitem.name} to={subitem.to} />
+                  ))
+                }
+              </div>
             </div>
           </div>
+          {children ? (
+            <Toolbar inputSearch={inputSearch} toolbarOptions={toolbarOptions}>
+              {children}
+            </Toolbar>
+          ) : null}
         </div>
-        {children ? (
-          <Toolbar inputSearch={inputSearch} toolbarOptions={toolbarOptions}>
-            {children}
-          </Toolbar>
-        ) : null}
-      </div>
+      )}
     </>
   );
 }

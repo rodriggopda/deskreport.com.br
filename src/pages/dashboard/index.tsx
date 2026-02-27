@@ -3,16 +3,16 @@ import { Topbar } from '../../components/layout/topbar';
 import { DashboardView } from './dashboard-view';
 
 export default function Dashboard() {
-    return (
-        <Page navigation={[]}>
-            <div className="flex flex-col h-full w-full">
-                <Topbar title='Dashboard' inputSearch='off' />
-                <div className='flex-1 overflow-y-auto bg-transparent p-6'>
-                    <div className="max-w-6xl mx-auto">
-                        <DashboardView />
-                    </div>
-                </div>
-            </div>
-        </Page>
-    );
+  return (
+    <Page navigation={[]}>
+      <div className="flex flex-col h-full w-full">
+        <Topbar title='Dashboard' inputSearch='off' />
+        <div className='flex-1 overflow-y-auto bg-transparent p-6'>
+          <div className="w-full">
+            <DashboardView />
+          </div>
+        </div>
+      </div>
+    </Page>
+  );
 }

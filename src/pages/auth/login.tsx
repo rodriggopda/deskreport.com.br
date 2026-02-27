@@ -39,7 +39,7 @@ export function Login() {
 
         if (error) throw new Error(error.message || 'Erro ao entrar');
         if (data) {
-          navigate('/');
+          navigate('/select-organization');
         }
       }
     } catch (err: any) {
@@ -50,11 +50,13 @@ export function Login() {
   };
 
   return (
-    <div className='h-screen w-screen flex items-center justify-center p-10 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100'>
+    <div className='h-screen w-screen flex items-center justify-center p-10 bg-zinc-950 text-zinc-900 dark:text-zinc-100'>
       <div className='flex flex-col items-center w-full max-w-sm'>
-        <div className='font-thin text-3xl mb-8'>Desk<span className="font-black">Report</span></div>
+        <div className="py-6">
+          <img src="/deskreport-logo.svg" alt="Logo" />
+        </div>
 
-        <div className='w-full border border-zinc-200 dark:border-zinc-800 p-8 rounded-2xl bg-white dark:bg-[#0f0f12] shadow-sm'>
+        <div className='w-full border border-zinc-200 dark:border-zinc-800 p-8 rounded-2xl bg-white dark:bg-[#0f0f12]'>
           <form onSubmit={handleSubmit} className="flex flex-col space-y-5">
             <h1 className="text-xl font-bold tracking-tight text-center mb-2">
               {isRegister ? 'Criar nova conta' : 'Acesse sua conta'}
