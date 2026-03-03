@@ -207,7 +207,7 @@ export function DashboardView() {
           <div className="grid grid-cols-3 gap-2 mt-4">
             {taskStatusData.map(d => (
               <div key={d.name} className="flex flex-col items-center">
-                <div className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider mb-1">{d.name}</div>
+                <div className="text-[10px]  font-bold text-zinc-500 tracking-wider mb-1">{d.name}</div>
                 <div className="text-lg font-black" style={{ color: d.color }}>{d.value}</div>
               </div>
             ))}
@@ -282,7 +282,7 @@ export function DashboardView() {
                   <div className={`w-1 absolute -left-6 top-2 bottom-2 rounded-r-full ${task.priority === 'high' ? 'bg-red-500' : task.priority === 'medium' ? 'bg-amber-500' : 'bg-blue-500'}`}></div>
                   <div className="flex items-center justify-center shrink-0 w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700">
                     <div className="text-center leading-none">
-                      <div className={`text-[9px] font-black uppercase tracking-wider ${isOverdue ? 'text-red-500' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                      <div className={`text-[9px] font-black  tracking-wider ${isOverdue ? 'text-red-500' : 'text-zinc-500 dark:text-zinc-400'}`}>
                         {date.toLocaleDateString('pt-BR', { month: 'short' })}
                       </div>
                       <div className={`text-[13px] font-bold mt-0.5 ${isOverdue ? 'text-red-500' : 'text-zinc-900 dark:text-zinc-100'}`}>
@@ -306,7 +306,7 @@ export function DashboardView() {
                         <span className="text-xs text-zinc-500 font-medium truncate">{task.assignee.name.split(' ')[0]}</span>
                       </div>
                     ) : (
-                      <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider mt-1 block">Sem responsável</span>
+                      <span className="text-[10px] text-zinc-400 font-medium  tracking-wider mt-1 block">Sem responsável</span>
                     )}
                   </div>
                 </div>
@@ -335,7 +335,7 @@ function KPICard({ title, value, icon, gradient }: { title: string, value: numbe
 
       <div className="flex items-start justify-between relative z-10">
         <div>
-          <h3 className="text-zinc-500 dark:text-zinc-400 text-xs font-bold tracking-wider uppercase mb-1">{title}</h3>
+          <h3 className="text-zinc-500 dark:text-zinc-400 text-xs font-bold tracking-wider  mb-1">{title}</h3>
           <div className="text-3xl font-black text-zinc-900 dark:text-white tracking-tight">{value}</div>
         </div>
         <div className={`p-2.5 rounded-xl bg-gradient-to-br ${gradient} text-white`}>

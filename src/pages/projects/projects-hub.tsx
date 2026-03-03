@@ -90,7 +90,7 @@ export function ProjectsHub() {
                                         <div className="w-12 h-12 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
                                             <Briefcase size={24} className="text-zinc-400" />
                                         </div>
-                                        <div className="text-xs uppercase tracking-wider font-semibold px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
+                                        <div className="text-xs  tracking-wider font-semibold px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
                                             {project.status === 'archived' ? 'Arquivado' : 'Ativo'}
                                         </div>
                                     </div>

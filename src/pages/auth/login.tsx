@@ -29,7 +29,7 @@ export function Login() {
         if (error) throw new Error(error.message || 'Erro ao criar conta');
         if (data) {
           // Após cadastro, podemos logar a pessoa ou ela já está logada
-          navigate('/setup-organization'); // Ou para a home se houver org default
+          navigate('/select-organization'); // O backend agora vincula org automaticamente se existir
         }
       } else {
         const { data, error } = await signIn.email({

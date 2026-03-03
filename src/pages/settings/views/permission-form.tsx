@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { ArrowLeft, Search, Users, X, UserPlus } from 'lucide-react';
+import { ArrowLeft, Search, Users, X, UserPlus, Loader2 } from 'lucide-react';
 import { Button } from '../../../components/ui/button';
+import { authClient } from '../../../lib/auth-client';
 
 interface PermissionFormProps {
+    organizationId?: string;
     onBack: () => void;
 }
 
@@ -11,53 +13,172 @@ const PERMISSION_SECTIONS = [
         id: 'admin',
         title: 'Acesso total de administrador',
         permissions: [
-            { id: 'admin_all', title: 'Controle total do sistema', description: 'Acesso de super usuário a todos os recursos' }
+            { id: 'admin_all', title: 'Controle total do sistema', description: 'Acesso total a todos os recursos e dados sem restrições.' }
         ]
     },
     {
-        id: 'remote',
-        title: 'Gerenciamento remoto',
+        id: 'dashboard',
+        title: 'Painel',
         permissions: [
-            { id: 'remote_access', title: 'Acesso Remoto', description: 'Permite iniciar sessões de acesso remoto' },
-            { id: 'remote_terminal', title: 'Terminal Remoto', description: 'Permite acesso ao terminal' }
+            { id: 'dashboard_projects_progress', title: 'Ver progresso de projetos', description: 'Visualizar status e progresso de todos os projetos.' },
+            { id: 'dashboard_only_own_tasks', title: 'Ver apenas tarefas vinculadas do usuário', description: 'Restringir a visão do painel apenas para as próprias tarefas.' }
         ]
     },
     {
-        id: 'rmm',
-        title: 'Administração RMM',
+        id: 'tasks',
+        title: 'Tarefas',
         permissions: [
-            { id: 'rmm_agents', title: 'Gerenciar Agentes', description: 'Instalar ou remover agentes do sistema' },
-            { id: 'rmm_scripts', title: 'Gerenciar Scripts', description: 'Criar e editar scripts de execução' }
+            { id: 'tasks_all', title: 'Controle total', description: 'Permissões completas de tarefas.' },
+            { id: 'tasks_read', title: 'Ler', description: 'Permite visualizar as tarefas da organização.' },
+            { id: 'tasks_create', title: 'Criar', description: 'Permite criar novas tarefas.' },
+            { id: 'tasks_update', title: 'Editar', description: 'Permite editar tarefas existentes.' },
+            { id: 'tasks_delete', title: 'Remover', description: 'Permite remover tarefas do sistema.' }
         ]
     },
     {
-        id: 'tickets',
-        title: 'Atendimento de chamados',
+        id: 'automation',
+        title: 'Automação',
         permissions: [
-            { id: 'ticket_all_assigned', title: 'Acesse todos os tickets atribuídos', description: 'Acessar ingressos atribuídos a outros técnicos' },
-            { id: 'ticket_unassigned', title: 'Acessar tickets não atribuídos', description: 'Acesse todos os tickets não atribuídos' },
-            { id: 'ticket_auto_assign', title: 'Incluir na atribuição automatizada', description: 'Incluir usuário na lista de autoatribuição dentro das regras de automação de tickets' },
-            { id: 'ticket_products', title: 'Gerenciar produtos de bilhete', description: 'Adicionar, editar e excluir produtos relacionados a ingressos' },
-            { id: 'ticket_expenses', title: 'Gerenciar despesas de bilhetes', description: 'Adicionar, editar e excluir despesas relacionadas a ingressos' },
-            { id: 'ticket_delete', title: 'Excluir ingressos', description: 'Excluir tickets atribuídos e acessíveis' },
-            { id: 'ticket_merge', title: 'Mesclar tickets', description: 'Mesclar tickets atribuídos e acessíveis' }
+            { id: 'automation_all', title: 'Controle total', description: 'Acesso total a todas as funções de automação.' },
+
+            // Modelos de mensagens
+            { id: 'auto_templates_all', title: 'Modelos: Controle total', description: 'Gestão completa de modelos de mensagens.' },
+            { id: 'auto_templates_read', title: 'Modelos: Ler', description: 'Visualizar modelos de mensagens.' },
+            { id: 'auto_templates_create', title: 'Modelos: Criar', description: 'Criar novos modelos de mensagens.' },
+            { id: 'auto_templates_update', title: 'Modelos: Editar', description: 'Editar modelos de mensagens existentes.' },
+            { id: 'auto_templates_delete', title: 'Modelos: Remover', description: 'Excluir modelos de mensagens.' },
+
+            // Mensagens automáticas
+            { id: 'auto_msgs_all', title: 'Mensagens Auto: Controle total', description: 'Gestão completa de envios automáticos.' },
+            { id: 'auto_msgs_read', title: 'Mensagens Auto: Ler', description: 'Visualizar mensagens automáticas configuradas.' },
+            { id: 'auto_msgs_create', title: 'Mensagens Auto: Criar', description: 'Criar novas regras de mensagens automáticas.' },
+            { id: 'auto_msgs_update', title: 'Mensagens Auto: Editar', description: 'Editar regras de mensagens automáticas.' },
+            { id: 'auto_msgs_delete', title: 'Mensagens Auto: Remover', description: 'Excluir regras de mensagens automáticas.' },
+
+            // Construtor de bots
+            { id: 'auto_bots_all', title: 'Bots: Controle total', description: 'Acesso total ao construtor de bots fluxos.' },
+            { id: 'auto_bots_read', title: 'Bots: Ler', description: 'Visualizar fluxos de bots.' },
+            { id: 'auto_bots_create', title: 'Bots: Criar', description: 'Criar novos fluxos de conversação.' },
+            { id: 'auto_bots_update', title: 'Bots: Editar', description: 'Editar lógica de bots existentes.' },
+            { id: 'auto_bots_delete', title: 'Bots: Remover', description: 'Excluir bots do sistema.' }
         ]
     },
     {
-        id: 'system',
-        title: 'Sistema',
+        id: 'projects',
+        title: 'Projetos',
         permissions: [
-            { id: 'sys_settings', title: 'Configurações Globais', description: 'Alterar parametrizações do sistema' },
-            { id: 'sys_billing', title: 'Faturamento', description: 'Gerenciar assinaturas e pagamentos' }
+            { id: 'projects_all', title: 'Controle total', description: 'Acesso completo ao gerenciamento de projetos.' },
+            { id: 'projects_read', title: 'Ler', description: 'Visualizar projetos ativos.' },
+            { id: 'projects_create', title: 'Criar', description: 'Criar novos projetos na organização.' },
+            { id: 'projects_update', title: 'Editar', description: 'Editar detalhes e membros do projeto.' },
+            { id: 'projects_delete', title: 'Remover', description: 'Excluir projetos permanentemente.' }
+        ]
+    },
+    {
+        id: 'chat',
+        title: 'Chat de atendimento',
+        permissions: [
+            { id: 'chat_all', title: 'Controle total', description: 'Gestão completa do chat e contatos.' },
+            { id: 'chat_contacts_read', title: 'Ler contatos', description: 'Visualizar lista de contatos.' },
+            { id: 'chat_contacts_create', title: 'Criar contatos', description: 'Adicionar novos contatos manualmente.' },
+            { id: 'chat_contacts_update', title: 'Editar contatos', description: 'Atualizar dados de contatos.' },
+            { id: 'chat_contacts_delete', title: 'Remover contatos', description: 'Excluir contatos da base.' },
+            { id: 'chat_message_send', title: 'Enviar mensagem', description: 'Permite responder conversas.' },
+            { id: 'chat_message_delete', title: 'Apagar mensagem', description: 'Permite apagar mensagens enviadas.' },
+            { id: 'chat_message_update', title: 'Editar mensagem', description: 'Permite editar o conteúdo de mensagens enviadas.' }
+        ]
+    },
+    {
+        id: 'organizations',
+        title: 'Organizations',
+        permissions: [
+            { id: 'org_all', title: 'Controle total', description: 'Acesso Administrativo à configurações da organização.' },
+            { id: 'org_read', title: 'Ler', description: 'Visualizar dados da organização.' },
+            { id: 'org_create', title: 'Criar', description: 'Criar novas sub-organizações ou unidades.' },
+            { id: 'org_update', title: 'Editar', description: 'Editar detalhes da organização.' },
+            { id: 'org_delete', title: 'Remover', description: 'Excluir organização do sistema.' }
+        ]
+    },
+    {
+        id: 'users',
+        title: 'Configurações: Usuários',
+        permissions: [
+            { id: 'cfg_users_all', title: 'Controle total', description: 'Gestão completa de usuários.' },
+            { id: 'cfg_users_read', title: 'Ler', description: 'Visualizar lista de usuários.' },
+            { id: 'cfg_users_create', title: 'Criar', description: 'Convidar ou criar novos usuários.' },
+            { id: 'cfg_users_update', title: 'Editar', description: 'Editar cadastro e status de usuários.' },
+            { id: 'cfg_users_delete', title: 'Remover', description: 'Desativar ou remover usuários da conta.' }
+        ]
+    },
+    {
+        id: 'squads',
+        title: 'Configurações: Squads',
+        permissions: [
+            { id: 'cfg_squads_all', title: 'Controle total', description: 'Gestão completa de squads.' },
+            { id: 'cfg_squads_read', title: 'Ler', description: 'Visualizar squads existentes.' },
+            { id: 'cfg_squads_create', title: 'Criar', description: 'Criar novos squads.' },
+            { id: 'cfg_squads_update', title: 'Editar', description: 'Editar estrutura do squad.' },
+            { id: 'cfg_squads_delete', title: 'Remover', description: 'Excluir squads.' },
+            { id: 'cfg_squads_members', title: 'Adicionar membros', description: 'Gerenciar membros dentro de squads.' }
+        ]
+    },
+    {
+        id: 'permissions',
+        title: 'Configurações: Permissões',
+        permissions: [
+            { id: 'cfg_perms_all', title: 'Controle total', description: 'Gestão completa dos perfis de segurança.' },
+            { id: 'cfg_perms_read', title: 'Ler', description: 'Visualizar perfis existentes.' },
+            { id: 'cfg_perms_create', title: 'Criar', description: 'Criar novos perfis de permissão.' },
+            { id: 'cfg_perms_update', title: 'Editar', description: 'Editar permissões de perfis existentes.' },
+            { id: 'cfg_perms_delete', title: 'Remover', description: 'Excluir perfis de segurança.' },
+            { id: 'cfg_perms_members', title: 'Adicionar membros', description: 'Vincular usuários a perfis de acesso.' }
+        ]
+    },
+    {
+        id: 'audit',
+        title: 'Log de auditoria',
+        permissions: [
+            { id: 'audit_all', title: 'Visualizar auditoria completa', description: 'Ver logs de atividade de todos os usuários da organização.' },
+            { id: 'audit_self', title: 'Visualizar auditoria pessoal', description: 'Ver apenas os próprios logs de atividade.' }
         ]
     }
 ];
 
-export function PermissionForm({ onBack }: PermissionFormProps) {
-    const [selectedSection, setSelectedSection] = useState('tickets');
+export function PermissionForm({ onBack, organizationId }: PermissionFormProps) {
+    const [roleName, setRoleName] = useState('');
+    const [selectedSection, setSelectedSection] = useState('tasks');
     const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [isMembersOpen, setIsMembersOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const handleSave = async () => {
+        if (!roleName.trim()) {
+            alert('Por favor, informe o nome da função.');
+            return;
+        }
+
+        try {
+            setLoading(true);
+            // Usando URL absoluta para evitar o prefixo /api/auth automático do better-auth client
+            await authClient.$fetch('http://10.0.0.150:3000/settings/roles', {
+                method: 'POST',
+                headers: {
+                    'x-organization-id': organizationId || ''
+                },
+                body: {
+                    name: roleName,
+                    permissions: selectedPermissions
+                }
+            });
+            onBack();
+        } catch (e) {
+            console.error(e);
+            alert('Erro ao salvar perfil de acesso.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const togglePermission = (id: string) => {
         setSelectedPermissions(prev =>
@@ -99,28 +220,35 @@ export function PermissionForm({ onBack }: PermissionFormProps) {
                         </div>
                     </div>
                 </div>
+
                 <div className="flex gap-3 text-right">
-                    <Button variant="outline" onClick={onBack}>Cancelar</Button>
-                    <Button className="bg-blue-600 hover:bg-blue-700 text-white border-0" onClick={onBack}>Salvar</Button>
+                    <Button variant="outline" onClick={onBack} disabled={loading}>Cancelar</Button>
+                    <Button
+                        className="bg-blue-600 hover:bg-blue-700 text-white border-0 min-w-[100px]"
+                        onClick={handleSave}
+                        disabled={loading}
+                    >
+                        {loading ? <Loader2 size={16} className="animate-spin" /> : 'Salvar'}
+                    </Button>
                 </div>
             </div>
 
-            {/* INNER TABS */}
-            <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 mb-6 px-12">
-                <div className="flex gap-6">
-                    <button className="text-sm font-bold text-neutral-900 dark:text-white border-b-2 border-neutral-900 dark:border-white pb-3 flex items-center gap-2">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                        Permissões
-                    </button>
-                    <button className="text-sm font-medium text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 pb-3 flex items-center gap-2 transition-colors">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"></path><path d="M9 8h1"></path><path d="M9 12h1"></path><path d="M9 16h1"></path><path d="M14 8h1"></path><path d="M14 12h1"></path><path d="M14 16h1"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path></svg>
-                        Acesso a sites
-                    </button>
+            {/* BARRA DE NOME & MEMBERS */}
+            <div className="flex items-end justify-between border-b border-neutral-200 dark:border-neutral-800 mb-8 px-12 pb-4">
+                <div className='flex-1 max-w-sm'>
+                    <label className='text-[10px] font-black  text-zinc-400 mb-2 block'>Nome da Função</label>
+                    <input
+                        type="text"
+                        value={roleName}
+                        onChange={(e) => setRoleName(e.target.value)}
+                        placeholder="Ex: Gerente, Suporte..."
+                        className="w-full bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 rounded-lg px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-semibold"
+                    />
                 </div>
 
                 <button
                     onClick={() => setIsMembersOpen(true)}
-                    className="mb-3 flex items-center gap-2 px-3 py-1.5 text-xs font-bold text-neutral-600 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-lg transition-all"
+                    className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-neutral-600 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-lg transition-all border border-neutral-200 dark:border-neutral-800"
                 >
                     <Users size={14} />
                     Membros da função (0)
@@ -221,7 +349,7 @@ export function PermissionForm({ onBack }: PermissionFormProps) {
 
                         <div className="p-6 space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase text-zinc-400">Atribuir novos técnicos</label>
+                                <label className="text-[10px] font-black  text-zinc-400">Atribuir novos técnicos</label>
                                 <div className="flex gap-2">
                                     <select className="flex-1 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-500 transition-all font-medium">
                                         <option value="">Selecionar técnicos...</option>
@@ -234,7 +362,7 @@ export function PermissionForm({ onBack }: PermissionFormProps) {
                             </div>
 
                             <div className="space-y-3">
-                                <label className="text-[10px] font-black uppercase text-zinc-400">Técnicos já atribuídos</label>
+                                <label className="text-[10px] font-black  text-zinc-400">Técnicos já atribuídos</label>
                                 <div className="border border-zinc-100 dark:border-zinc-800/50 rounded-xl divide-y divide-zinc-50 dark:divide-zinc-800">
                                     <div className="px-12 py-10 flex flex-col items-center justify-center text-center">
                                         <Users size={32} className="text-zinc-200 dark:text-zinc-800 mb-3" />

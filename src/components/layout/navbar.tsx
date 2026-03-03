@@ -97,7 +97,7 @@ export function Navbar() {
               </div>
 
               <div className="p-2 border-b border-zinc-200 dark:border-zinc-800">
-                <div className="px-2 py-1 text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Visibilidade</div>
+                <div className="px-2 py-1 text-[10px] font-bold text-zinc-400  tracking-widest mb-1">Visibilidade</div>
                 <button className="w-full flex items-center gap-2 px-2 py-1.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors">
                   <Circle size={10} className="fill-emerald-500 text-emerald-500" /> Online
                 </button>

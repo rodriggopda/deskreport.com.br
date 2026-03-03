@@ -113,7 +113,7 @@ export default function TaskDataManagement() {
                             }`}>
                             {status.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
                             <span className='text-sm font-semibold'>{status.message}</span>
-                            <button onClick={() => setStatus({ type: 'idle', message: '' })} className='ml-auto text-xs font-black uppercase opacity-60 hover:opacity-100'>Fechar</button>
+                            <button onClick={() => setStatus({ type: 'idle', message: '' })} className='ml-auto text-xs font-black  opacity-60 hover:opacity-100'>Fechar</button>
                         </div>
                     )}
 
@@ -180,7 +180,7 @@ export default function TaskDataManagement() {
                                 <div className='flex items-center gap-10'>
                                     <div className='text-center'>
                                         <div className='text-2xl font-black text-zinc-900 dark:text-zinc-100'>{tasks.length}</div>
-                                        <div className='text-[10px] font-black text-zinc-400 uppercase'>Tarefas</div>
+                                        <div className='text-[10px] font-black text-zinc-400 '>Tarefas</div>
                                     </div>
                                     <div className='text-center'>
                                         <div className='text-2xl font-black text-zinc-900 dark:text-zinc-100'>
@@ -189,7 +189,7 @@ export default function TaskDataManagement() {
                                                 : new Blob([JSON.stringify(tasks)]).size + ' B'
                                             }
                                         </div>
-                                        <div className='text-[10px] font-black text-zinc-400 uppercase'>Espaço used</div>
+                                        <div className='text-[10px] font-black text-zinc-400 '>Espaço used</div>
                                     </div>
                                     <button
                                         onClick={clearAllTasks}

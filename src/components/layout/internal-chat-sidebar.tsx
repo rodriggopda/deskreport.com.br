@@ -48,7 +48,7 @@ export function InternalChatSidebar() {
       <div className={`flex-1 overflow-y-auto custom-scrollbar p-2 space-y-2 ${!isExpanded && 'flex flex-col items-center'}`}>
         {isExpanded && (
           <div className="px-2 mb-2">
-            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Membros</span>
+            <span className="text-[10px] font-bold text-zinc-500  tracking-wider">Membros</span>
           </div>
         )}
 

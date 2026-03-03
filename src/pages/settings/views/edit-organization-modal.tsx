@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Check, Building2, Briefcase, Zap, Settings, MessageCircle } from 'lucide-react';
 import { Button, Dialog } from '../../../components/ui';
 import { authClient } from '../../../lib/auth-client';
+import { INDUSTRIES } from '../../auth/setup-organization';
 
 const MODULES = [
   { id: 'tasks', name: 'Tarefas (Kanban, Listas)', icon: <Building2 size={18} /> },
@@ -23,7 +24,11 @@ export function EditOrganizationModal({
   const orgMetadata = organization.metadata ? (typeof organization.metadata === 'string' ? JSON.parse(organization.metadata) : organization.metadata) : {};
 
   const [name, setName] = useState(organization.name || '');
-  const [industry, setIndustry] = useState(orgMetadata.industry || '');
+  const [industries, setIndustries] = useState<string[]>(
+    Array.isArray(orgMetadata.industry)
+      ? orgMetadata.industry
+      : (orgMetadata.industry ? [orgMetadata.industry] : [])
+  );
   const [selectedModules, setSelectedModules] = useState<string[]>(orgMetadata.modules || []);
 
   const [loading, setLoading] = useState(false);
@@ -46,7 +51,7 @@ export function EditOrganizationModal({
         data: {
           name,
           metadata: {
-            industry,
+            industry: industries,
             modules: selectedModules
           }
         }
@@ -100,18 +105,33 @@ export function EditOrganizationModal({
             />
           </label>
 
-          <label className="block">
-            <span className="block mb-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <div className="space-y-3">
+            <span className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
               Ramo de Atuação
             </span>
-            <input
-              required
-              value={industry}
-              onChange={(e) => setIndustry(e.target.value)}
-              className="px-3 py-2 bg-white dark:bg-zinc-900 w-full rounded-xl outline-none ring-1 ring-zinc-200 dark:ring-zinc-800 focus:ring-blue-500 transition-all text-sm"
-              type="text"
-            />
-          </label>
+            <div className="flex flex-wrap gap-2">
+              {INDUSTRIES.map(ind => {
+                const isSelected = industries.includes(ind);
+                return (
+                  <button
+                    key={ind}
+                    type="button"
+                    onClick={() => {
+                      setIndustries(prev =>
+                        prev.includes(ind) ? prev.filter(i => i !== ind) : [...prev, ind]
+                      );
+                    }}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${isSelected
+                      ? 'bg-blue-600 border-blue-600 text-white shadow-sm shadow-blue-500/20'
+                      : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-700'
+                      }`}
+                  >
+                    {ind}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         <div>

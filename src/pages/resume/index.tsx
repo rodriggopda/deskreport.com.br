@@ -152,7 +152,7 @@ function ActionableItem({
             <div className="flex items-center gap-2">
               <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">{title}</h3>
               {priority === 'high' && status === 'pending' && (
-                <span className="px-2 py-0.5 text-[10px] uppercase font-black tracking-wider bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 rounded-md">
+                <span className="px-2 py-0.5 text-[10px]  font-black tracking-wider bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 rounded-md">
                   Prioridade
                 </span>
               )}
@@ -206,7 +206,7 @@ function LogItem({
           <span className="text-xs font-medium text-zinc-400 whitespace-nowrap">{time}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-500">
+          <span className="text-[10px]  font-bold tracking-wider text-zinc-500">
             {category}
           </span>
         </div>

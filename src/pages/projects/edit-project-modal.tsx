@@ -84,7 +84,7 @@ export function EditProjectModal({ project, onClose, onSuccess }: EditProjectMod
         >
             <form id="project-form" onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-1.5">
-                    <label className="text-[10px] font-black uppercase text-zinc-400">Nome do Projeto</label>
+                    <label className="text-[10px] font-black  text-zinc-400">Nome do Projeto</label>
                     <input
                         autoFocus
                         type="text"
@@ -96,7 +96,7 @@ export function EditProjectModal({ project, onClose, onSuccess }: EditProjectMod
                 </div>
 
                 <div className="space-y-1.5">
-                    <label className="text-[10px] font-black uppercase text-zinc-400">Descrição</label>
+                    <label className="text-[10px] font-black  text-zinc-400">Descrição</label>
                     <textarea
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
@@ -106,7 +106,7 @@ export function EditProjectModal({ project, onClose, onSuccess }: EditProjectMod
                 </div>
 
                 <div className="space-y-1.5">
-                    <label className="text-[10px] font-black uppercase text-zinc-400">Status</label>
+                    <label className="text-[10px] font-black  text-zinc-400">Status</label>
                     <select
                         value={status}
                         onChange={(e) => setStatus(e.target.value)}

@@ -87,7 +87,7 @@ export function TaskFormModal({ isOpen, onClose, task, defaultProject }: TaskFor
     >
       <form id="task-form" onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
-          <label className="text-[10px] font-black uppercase text-zinc-400">Título da Tarefa</label>
+          <label className="text-[10px] font-black  text-zinc-400">Título da Tarefa</label>
           <input
             autoFocus
             type="text"
@@ -100,7 +100,7 @@ export function TaskFormModal({ isOpen, onClose, task, defaultProject }: TaskFor
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <label className="text-[10px] font-black uppercase text-zinc-400">Projeto</label>
+            <label className="text-[10px] font-black  text-zinc-400">Projeto</label>
             <select
               value={project}
               onChange={(e) => setProject(e.target.value)}
@@ -116,7 +116,7 @@ export function TaskFormModal({ isOpen, onClose, task, defaultProject }: TaskFor
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-[10px] font-black uppercase text-zinc-400">Status</label>
+            <label className="text-[10px] font-black  text-zinc-400">Status</label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as TaskStatus)}
@@ -129,7 +129,7 @@ export function TaskFormModal({ isOpen, onClose, task, defaultProject }: TaskFor
           </div>
 
           <div className="space-y-1.5 col-span-2">
-            <label className="text-[10px] font-black uppercase text-zinc-400">Responsável (Assignee)</label>
+            <label className="text-[10px] font-black  text-zinc-400">Responsável (Assignee)</label>
             <select
               value={assigneeId}
               onChange={(e) => setAssigneeId(e.target.value)}
@@ -144,7 +144,7 @@ export function TaskFormModal({ isOpen, onClose, task, defaultProject }: TaskFor
         </div>
 
         <div className="space-y-1.5 pt-2">
-          <label className="text-[10px] font-black uppercase text-zinc-400">Prioridade</label>
+          <label className="text-[10px] font-black  text-zinc-400">Prioridade</label>
           <div className="grid grid-cols-4 gap-2">
             {Object.entries(PRIORITY_CONFIG).map(([id, config]) => (
               <button

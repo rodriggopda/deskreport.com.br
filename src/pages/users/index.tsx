@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { Page } from '../../components/layout/page';
 import { Topbar } from '../../components/layout/topbar';
 import { Users2, UserPlus, ShieldCheck, Activity, Search, MoreHorizontal, Mail, Phone, Shield } from 'lucide-react';
@@ -8,6 +9,7 @@ import { useTenantStore } from '../../store';
 import { useTenant } from '../../hooks/useTenant';
 
 export default function UsersPage() {
+    const navigate = useNavigate();
     const { company_id } = useTenant();
     const { organizations } = useTenantStore();
     const currentOrg = organizations.find(o => o.id === company_id || (o as any).slug === company_id) || organizations[0];
@@ -96,7 +98,10 @@ export default function UsersPage() {
                                     <Button variant="outline" className="gap-2 h-10 px-4">
                                         Exportar CSV
                                     </Button>
-                                    <Button className="gap-2 h-10 px-4 bg-blue-600 hover:bg-blue-700 text-white border-0">
+                                    <Button
+                                        onClick={() => navigate(`/${company_id}/settings/security`)}
+                                        className="gap-2 h-10 px-4 bg-blue-600 hover:bg-blue-700 text-white border-0"
+                                    >
                                         <UserPlus size={18} />
                                         Novo Usuário
                                     </Button>
@@ -106,7 +111,7 @@ export default function UsersPage() {
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
-                                        <tr className="bg-zinc-50/50 dark:bg-zinc-800/30 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
+                                        <tr className="bg-zinc-50/50 dark:bg-zinc-800/30 text-[11px] font-bold text-zinc-400  tracking-wider">
                                             <th className="px-6 py-4">Usuário</th>
                                             <th className="px-6 py-4">Contato</th>
                                             <th className="px-6 py-4">Cargo</th>
@@ -153,7 +158,7 @@ export default function UsersPage() {
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-2">
-                                                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${member.role === 'admin' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'}`}>
+                                                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold  ${member.role === 'admin' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'}`}>
                                                             {member.role}
                                                         </span>
                                                     </div>
@@ -196,7 +201,7 @@ function StatCard({ icon, label, value, trend }: { icon: React.ReactNode, label:
                 {trend && <span className="text-[10px] font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-full">{trend}</span>}
             </div>
             <div className="flex flex-col">
-                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">{label}</span>
+                <span className="text-[10px] font-bold text-zinc-400  tracking-wider">{label}</span>
                 <span className="text-2xl font-black text-zinc-900 dark:text-zinc-100 mt-1">{value}</span>
             </div>
         </div>
