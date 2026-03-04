@@ -52,10 +52,11 @@ export function TaskDetailDrawer({ task, isOpen, onClose, defaultProject }: Task
             setIsEditingDescription(false);
         } else if (isOpen) {
             // New Task mode
+            const sanitizedProject = (defaultProject && defaultProject !== 'undefined') ? defaultProject : 'deskreport';
             const newTaskTemplate: TaskCardProps = {
                 id: 'temp-' + Date.now(),
                 title: '',
-                project: defaultProject || 'deskreport',
+                project: sanitizedProject,
                 status: 'todo',
                 priority: 'medium',
                 createdAt: new Date().toISOString(),
@@ -151,7 +152,7 @@ export function TaskDetailDrawer({ task, isOpen, onClose, defaultProject }: Task
         const payload = {
             title: editedTitle,
             description: editedDescription,
-            project: displayTask.project,
+            project: (displayTask.project && displayTask.project !== 'undefined') ? displayTask.project : 'deskreport',
             status: displayTask.status,
             priority: displayTask.priority,
             assigneeIds: displayTask.assigneeIds || [],
