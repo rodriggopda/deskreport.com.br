@@ -6,6 +6,7 @@ import BotList from './pages/automation/bot-list';
 import BotBuilder from './pages/automation/bot-builder';
 import App from './pages/resume';
 import { Login } from './pages/auth/login';
+import { Register } from './pages/auth/register';
 import { SetupOrganization } from './pages/auth/setup-organization';
 import { SelectOrganization } from './pages/auth/select-organization';
 import { Layout } from './components/layout';
@@ -26,6 +27,10 @@ export const router = createBrowserRouter([
   {
     path: '/login',
     element: <Login />,
+  },
+  {
+    path: '/register',
+    element: <Register />,
   },
   {
     path: '/setup-organization',

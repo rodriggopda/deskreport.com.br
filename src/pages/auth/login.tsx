@@ -1,13 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { signIn, signUp } from '../../lib/auth-client';
+import { signIn } from '../../lib/auth-client';
 import { Button } from '../../components/ui/button';
 
 export function Login() {
   const navigate = useNavigate();
-  const [isRegister, setIsRegister] = useState(false);
-
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,28 +16,14 @@ export function Login() {
     setError('');
 
     try {
-      if (isRegister) {
-        const { data, error } = await signUp.email({
-          email,
-          password,
-          name,
-        });
+      const { data, error } = await signIn.email({
+        email,
+        password,
+      });
 
-        if (error) throw new Error(error.message || 'Erro ao criar conta');
-        if (data) {
-          // Após cadastro, podemos logar a pessoa ou ela já está logada
-          navigate('/select-organization'); // O backend agora vincula org automaticamente se existir
-        }
-      } else {
-        const { data, error } = await signIn.email({
-          email,
-          password,
-        });
-
-        if (error) throw new Error(error.message || 'Erro ao entrar');
-        if (data) {
-          navigate('/select-organization');
-        }
+      if (error) throw new Error(error.message || 'Erro ao entrar');
+      if (data) {
+        navigate('/select-organization');
       }
     } catch (err: any) {
       setError(err.message || 'Ocorreu um erro');
@@ -59,27 +42,13 @@ export function Login() {
         <div className='w-full border border-zinc-200 dark:border-zinc-800 p-8 rounded-2xl bg-white dark:bg-[#0f0f12]'>
           <form onSubmit={handleSubmit} className="flex flex-col space-y-5">
             <h1 className="text-xl font-bold tracking-tight text-center mb-2">
-              {isRegister ? 'Criar nova conta' : 'Acesse sua conta'}
+              Acesse sua conta
             </h1>
 
             {error && (
               <div className="p-3 text-sm text-red-500 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-lg">
                 {error}
               </div>
-            )}
-
-            {isRegister && (
-              <label className="block">
-                <span className="block mb-2 text-sm font-medium text-zinc-600 dark:text-zinc-400">Nome</span>
-                <input
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="px-4 bg-zinc-100 dark:bg-zinc-900 w-full py-2 rounded-xl outline-none ring-1 ring-transparent focus:ring-blue-500 border border-zinc-200 dark:border-zinc-800 transition-all text-sm"
-                  type="text"
-                  placeholder="Seu nome"
-                />
-              </label>
             )}
 
             <label className="block">
@@ -97,9 +66,7 @@ export function Login() {
             <label className="block">
               <span className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Senha</span>
-                {!isRegister && (
-                  <a href="#" className="text-xs text-blue-600 dark:text-blue-500 hover:underline">Esqueci a senha</a>
-                )}
+                <a href="#" className="text-xs text-blue-600 dark:text-blue-500 hover:underline">Esqueci a senha</a>
               </span>
               <input
                 required
@@ -112,22 +79,21 @@ export function Login() {
             </label>
 
             <Button type="submit" disabled={loading} className="w-full py-2.5 mt-2">
-              {loading ? 'Aguarde...' : (isRegister ? 'Criar conta' : 'Entrar na plataforma')}
+              {loading ? 'Aguarde...' : 'Entrar na plataforma'}
             </Button>
           </form>
         </div>
 
         <div className="mt-6 text-sm text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
-          {isRegister ? 'Já tem uma conta?' : 'Ainda não tem conta?'}
+          Ainda não tem conta?
           <button
             type="button"
             onClick={() => {
-              setIsRegister(!isRegister);
-              setError('');
+              navigate('/register');
             }}
             className="font-semibold text-zinc-900 dark:text-zinc-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
           >
-            {isRegister ? 'Fazer login' : 'Criar nova conta'}
+            Criar nova conta
           </button>
         </div>
       </div>
