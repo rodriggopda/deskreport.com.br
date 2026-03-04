@@ -1,7 +1,7 @@
 import { Page } from '../../components/layout/page';
 import { Topbar } from '../../components/layout/topbar';
 import { useParams } from 'react-router-dom';
-import { Plus } from 'lucide-react';
+import { Plus, RefreshCw } from 'lucide-react';
 import { STATUS_CONFIG, PRIORITY_CONFIG, TaskCardProps } from './tasks-data';
 import { useTaskStore } from './use-task-store';
 import { useTaskFilters } from './use-task-filters';
@@ -16,9 +16,10 @@ export function TaskBoards() {
   const cId = company_id || '4go';
   const pId = project_id || 'deskreport';
 
-  const { tasks } = useTaskStore();
+  const { tasks, syncGithubTasks } = useTaskStore();
   const [selectedTask, setSelectedTask] = useState<TaskCardProps | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
 
   const { projects: storeProjects } = useTenantStore();
   const getProjectName = (id: string) => storeProjects.find(p => p.id === id)?.name || id;
@@ -84,7 +85,7 @@ export function TaskBoards() {
       return [...uniqueAssignees.map(a => ({ id: a, title: a, color: 'text-zinc-500' })), { id: 'unassigned', title: 'Sem responsável', color: 'text-zinc-400' }];
     }
     return [];
-  }, [groupBy]);
+  }, [groupBy, finalTasksFiltered]);
 
   const clearFilters = () => {
     setSearch('');
@@ -107,10 +108,32 @@ export function TaskBoards() {
     return [];
   };
 
+  const handleSyncGithub = async () => {
+    if (!project_id || project_id === 'all') return;
+    setIsSyncing(true);
+    try {
+      await syncGithubTasks(project_id);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
   return (
     <Page navigation={navigation}>
       <Topbar title='Tarefas' smartHeader inputSearch='off'>
         <div className='flex items-center gap-3'>
+          {project_id && project_id !== 'all' && (
+            <Button
+              variant="ghost"
+              size="md"
+              className='gap-1.5 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100'
+              onClick={handleSyncGithub}
+              disabled={isSyncing}
+            >
+              <RefreshCw size={14} className={isSyncing ? 'animate-spin' : ''} />
+              <span className="text-[12px] font-bold">{isSyncing ? 'Sincronizando...' : 'Sincronizar GitHub'}</span>
+            </Button>
+          )}
           <TaskFiltersComponent
             search={search}
             setSearch={setSearch}

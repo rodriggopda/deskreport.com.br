@@ -21,11 +21,27 @@ interface TaskStore {
   deleteTask: (id: string) => Promise<void>;
   fetchTasks: () => Promise<void>;
   addComment: (taskId: string, content: string) => Promise<void>;
+  syncGithubTasks: (projectId: string) => Promise<void>;
 }
 
-export const useTaskStore = create<TaskStore>((set) => ({
+export const useTaskStore = create<TaskStore>((set, get) => ({
   tasks: [],
   setTasks: (tasks) => set({ tasks }),
+  syncGithubTasks: async (projectId) => {
+    try {
+      const { error } = await authClient.$fetch(`http://10.0.0.150:3000/github/sync/${projectId}`, {
+        method: 'POST',
+        headers: { 'x-organization-id': getOrgId() }
+      });
+      if (!error) {
+        await get().fetchTasks();
+      } else {
+        console.error('Failed to sync github tasks:', error);
+      }
+    } catch (error) {
+      console.error('Failed to sync github tasks:', error);
+    }
+  },
   fetchTasks: async () => {
     try {
       const { data, error } = await authClient.$fetch<TaskCardProps[]>(API_URL, {
