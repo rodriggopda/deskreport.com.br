@@ -20,6 +20,7 @@ interface TaskDetailDrawerProps {
 }
 
 import { useParams } from 'react-router-dom';
+import { useSession } from '../../lib/auth-client';
 
 export function TaskDetailDrawer({ task, isOpen, onClose, defaultProject }: TaskDetailDrawerProps) {
     const [displayTask, setDisplayTask] = useState<TaskCardProps | null>(null);
@@ -29,10 +30,13 @@ export function TaskDetailDrawer({ task, isOpen, onClose, defaultProject }: Task
     const [isEditingDescription, setIsEditingDescription] = useState(false);
     const [editedDescription, setEditedDescription] = useState('');
 
-    const { updateTask, addTask } = useTaskStore();
+    const { updateTask, addTask, addComment } = useTaskStore();
     const { projects, teams, fetchTeams, members, fetchMembers } = useTenantStore();
+    const { data: session } = useSession();
+    const user = session?.user;
 
     const [isAddingAssignee, setIsAddingAssignee] = useState(false);
+    const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
     const { company_id } = useParams();
 
@@ -45,7 +49,11 @@ export function TaskDetailDrawer({ task, isOpen, onClose, defaultProject }: Task
 
     useEffect(() => {
         if (task) {
-            setDisplayTask(task);
+            const taskWithIds = {
+                ...task,
+                assigneeIds: task.assigneeIds || task.assignees?.map((a: any) => a.id) || []
+            };
+            setDisplayTask(taskWithIds);
             setEditedTitle(task.title);
             setEditedDescription(task.description || '');
             setIsEditingTitle(false);
@@ -106,13 +114,14 @@ export function TaskDetailDrawer({ task, isOpen, onClose, defaultProject }: Task
             const newAssigneeIds = value as string[];
             updatedTask.assignees = members
                 .filter(m => newAssigneeIds.includes(m.user.id))
-                .map(m => ({ name: m.user.name, avatar: m.user.image || '' }));
+                .map(m => ({ id: m.user.id, name: m.user.name, avatar: m.user.image || '' }));
         }
 
         setDisplayTask(updatedTask);
 
         if (task) {
-            await updateTask(displayTask.id, { [key]: value });
+            // Se for atualização de campo específico, envia só ele
+            await updateTask(task.id, { [key]: value });
         }
     };
 
@@ -164,6 +173,28 @@ export function TaskDetailDrawer({ task, isOpen, onClose, defaultProject }: Task
         onClose();
     };
 
+    const handleAddComment = async () => {
+        if (!displayTask || !comment.trim() || isSubmittingComment) return;
+
+        setIsSubmittingComment(true);
+        try {
+            await addComment(displayTask.id, comment);
+            setComment('');
+        } finally {
+            setIsSubmittingComment(false);
+        }
+    };
+
+    const handleSaveAll = async () => {
+        if (!displayTask) return;
+
+        // Se houver edições pendentes em título ou descrição, a gente força o submit
+        if (isEditingTitle) await handleTitleSubmit();
+        if (isEditingDescription) await handleDescriptionSubmit();
+
+        onClose();
+    };
+
     return (
         <Dialog isOpen={isOpen} onClose={onClose} maxWidth="7xl" hideHeader padded={false} scrollableBody={false}>
             {displayTask && status && priority && (
@@ -180,6 +211,15 @@ export function TaskDetailDrawer({ task, isOpen, onClose, defaultProject }: Task
                         </div>
 
                         <div className="flex items-center gap-2">
+                            {task && (
+                                <Button
+                                    size="sm"
+                                    className="bg-blue-600 hover:bg-blue-500 text-white font-bold h-7 px-3 text-[11px]"
+                                    onClick={handleSaveAll}
+                                >
+                                    Salvar Alterações
+                                </Button>
+                            )}
                             {!task && (
                                 <Button
                                     size="sm"
@@ -332,61 +372,84 @@ export function TaskDetailDrawer({ task, isOpen, onClose, defaultProject }: Task
                                 <div className="space-y-8 pt-10 border-t border-zinc-200 dark:border-white/[0.06]">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
-                                            <h3 className="text-sm font-bold text-zinc-900 dark:text-white">Atividades</h3>
-                                            <div className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black">2</div>
+                                            <h3 className="text-sm font-bold text-zinc-900 dark:text-white">Comentários</h3>
+                                            {displayTask.comments && displayTask.comments.length > 0 && (
+                                                <div className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black">
+                                                    {displayTask.comments.length}
+                                                </div>
+                                            )}
                                         </div>
-                                        <Button variant="ghost" size="sm" className="text-[10px] font-bold text-zinc-500">Filtrar por: Todos</Button>
                                     </div>
 
-                                    {/* Timeline Items */}
+                                    {/* Comments List */}
                                     <div className="space-y-6">
-                                        <div className="flex gap-4">
-                                            <img src={displayTask.assignees?.[0]?.avatar} className="w-8 h-8 rounded-full border border-zinc-200 dark:border-white/[0.08]" />
-                                            <div className="flex-1 space-y-1.5">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-sm font-bold text-zinc-900 dark:text-white leading-none">{displayTask.assignees?.[0]?.name}</span>
-                                                    <span className="text-[10px] text-zinc-500 font-medium">há 2 horas</span>
+                                        {displayTask.comments?.map((c) => (
+                                            <div key={c.id} className="flex gap-4">
+                                                <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center border border-zinc-200 dark:border-white/[0.08] overflow-hidden shrink-0">
+                                                    {c.user?.image ? (
+                                                        <img src={c.user.image} alt={c.user.name} />
+                                                    ) : (
+                                                        <User size={14} className="text-zinc-500" />
+                                                    )}
                                                 </div>
-                                                <div className="text-sm text-zinc-700 dark:text-zinc-400 bg-zinc-50 dark:bg-white/[0.02] border border-zinc-100 dark:border-white/[0.04] p-3 rounded-xl rounded-tl-none">
-                                                    Iniciei a implementação básica do layout seguindo o design do Linear.
+                                                <div className="flex-1 space-y-1.5">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-sm font-bold text-zinc-900 dark:text-white leading-none">{c.user?.name}</span>
+                                                        <span className="text-[10px] text-zinc-500 font-medium">
+                                                            {new Date(c.createdAt).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                                                        </span>
+                                                    </div>
+                                                    <div className="text-sm text-zinc-700 dark:text-zinc-400 bg-zinc-50 dark:bg-white/[0.02] border border-zinc-100 dark:border-white/[0.04] p-3 rounded-xl rounded-tl-none prose prose-sm dark:prose-invert max-w-none"
+                                                        dangerouslySetInnerHTML={{ __html: c.content }}
+                                                    />
                                                 </div>
                                             </div>
-                                        </div>
+                                        ))}
 
-                                        {/* Activity feed type */}
-                                        <div className="flex items-center gap-4 pl-10 text-zinc-500">
-                                            <div className="p-1 rounded bg-zinc-100 dark:bg-zinc-800">
-                                                <Activity size={10} className="text-zinc-500" />
+                                        {(!displayTask.comments || displayTask.comments.length === 0) && (
+                                            <div className="text-center py-6">
+                                                <MessageSquare className="w-8 h-8 text-zinc-800 mx-auto mb-2 opacity-20" />
+                                                <p className="text-xs text-zinc-500">Nenhum comentário por aqui ainda.</p>
                                             </div>
-                                            <p className="text-[11px] italic">
-                                                <span className="font-bold text-zinc-700 dark:text-zinc-400">{displayTask.assignees?.[0]?.name}</span> atualizou o status para <span className="text-blue-600 dark:text-blue-400 font-bold">Em Andamento</span>
-                                            </p>
-                                        </div>
+                                        )}
                                     </div>
 
                                     {/* Reply Box */}
-                                    <div className="flex gap-4 group focus-within:ring-1 focus-within:ring-blue-500/20 rounded-2xl p-2 transition-all">
-                                        <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center shrink-0">
-                                            <User size={14} className="text-zinc-500 dark:text-zinc-600" />
-                                        </div>
-                                        <div className="flex-1 space-y-3">
-                                            <div className="bg-white dark:bg-[#0c0d0e] border border-zinc-200 dark:border-white/[0.06] rounded-xl overflow-hidden focus-within:border-blue-500/50 transition-colors">
-                                                <RichEditor
-                                                    content={comment}
-                                                    onChange={setComment}
-                                                    placeholder="Escreva um comentário..."
-                                                    minHeight="40px"
-                                                />
+                                    {task && (
+                                        <div className="flex gap-4 group focus-within:ring-1 focus-within:ring-blue-500/20 rounded-2xl p-2 transition-all">
+                                            <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center border border-zinc-200 dark:border-white/[0.08] overflow-hidden shrink-0">
+                                                {user?.image ? (
+                                                    <img src={user.image} alt={user.name} />
+                                                ) : (
+                                                    <User size={14} className="text-zinc-500" />
+                                                )}
                                             </div>
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center gap-2">
-                                                    <Button variant="ghost" size="icon" className="h-7 w-7 text-zinc-500"><Paperclip size={14} /></Button>
-                                                    <Button variant="ghost" size="icon" className="h-7 w-7 text-zinc-500"><MessageSquare size={14} /></Button>
+                                            <div className="flex-1 space-y-3">
+                                                <div className="bg-white dark:bg-[#0c0d0e] border border-zinc-200 dark:border-white/[0.06] rounded-xl overflow-hidden focus-within:border-blue-500/50 transition-colors">
+                                                    <RichEditor
+                                                        content={comment}
+                                                        onChange={setComment}
+                                                        placeholder="Escreva um comentário..."
+                                                        minHeight="40px"
+                                                    />
                                                 </div>
-                                                <Button size="sm" className="bg-blue-600 hover:bg-blue-500 text-white font-bold h-8 px-4">Comentar</Button>
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-2">
+                                                        <Button variant="ghost" size="icon" className="h-7 w-7 text-zinc-500"><Paperclip size={14} /></Button>
+                                                        <Button variant="ghost" size="icon" className="h-7 w-7 text-zinc-500"><MessageSquare size={14} /></Button>
+                                                    </div>
+                                                    <Button
+                                                        size="sm"
+                                                        className="bg-blue-600 hover:bg-blue-500 text-white font-bold h-8 px-4 relative disabled:opacity-50"
+                                                        onClick={handleAddComment}
+                                                        disabled={!comment.trim() || isSubmittingComment}
+                                                    >
+                                                        {isSubmittingComment ? 'Enviando...' : 'Comentar'}
+                                                    </Button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

@@ -1,6 +1,18 @@
 export type TaskStatus = 'backlog' | 'todo' | 'in-progress' | 'review' | 'done' | 'release';
 export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
 
+export type TaskComment = {
+  id: string;
+  taskId: string;
+  userId: string;
+  content: string;
+  createdAt: string;
+  user: {
+    name: string;
+    image?: string;
+  }
+}
+
 export type TaskCardProps = {
   id: string;
   shortId?: number;
@@ -11,7 +23,9 @@ export type TaskCardProps = {
   createdAt: string;
   assigneeIds?: string[] | null;
   teamId?: string | null;
+  comments?: TaskComment[];
   assignees?: {
+    id: string;
     name: string;
     avatar: string;
   }[];

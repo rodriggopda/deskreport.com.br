@@ -20,6 +20,7 @@ interface TaskStore {
   updateTask: (id: string, updates: Partial<TaskCardProps>) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
   fetchTasks: () => Promise<void>;
+  addComment: (taskId: string, content: string) => Promise<void>;
 }
 
 export const useTaskStore = create<TaskStore>((set) => ({
@@ -71,6 +72,24 @@ export const useTaskStore = create<TaskStore>((set) => ({
       }
     } catch (error) {
       console.error('Failed to update task:', error);
+    }
+  },
+  addComment: async (taskId, content) => {
+    try {
+      const { data, error } = await authClient.$fetch<TaskCardProps>(`${API_URL}/${taskId}/comments`, {
+        method: 'POST',
+        body: { content },
+        headers: { 'x-organization-id': getOrgId() }
+      });
+      if (!error && data) {
+        set((state) => ({
+          tasks: state.tasks.map(t => t.id === taskId ? data : t)
+        }));
+      } else if (error) {
+        console.error('Failed to add comment:', error);
+      }
+    } catch (error) {
+      console.error('Failed to add comment:', error);
     }
   },
   deleteTask: async (id) => {
