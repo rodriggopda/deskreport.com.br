@@ -1,4 +1,4 @@
-import { Plus, Shield, X, Activity, Users2 } from 'lucide-react';
+import { Plus, Shield, X, Activity } from 'lucide-react';
 import { Button } from '../../../components/ui/button';
 import { PermissionForm } from './permission-form';
 import { authClient } from '../../../lib/auth-client';
@@ -20,7 +20,7 @@ export function SecurityHub() {
   const [inviteRole, setInviteRole] = useState('member');
 
   // Controles de abas dentro de Usuários e Segurança
-  const [activeTab, setActiveTab] = useState<'members' | 'squads' | 'roles' | 'auth' | 'logs'>('members');
+  const [activeTab, setActiveTab] = useState<'members' | 'roles' | 'auth' | 'logs'>('members');
   const [editingRole, setEditingRole] = useState<string | null>(null);
   const [roles, setRoles] = useState<any[]>([]);
 
@@ -133,12 +133,6 @@ export function SecurityHub() {
           Membros
         </button>
         <button
-          onClick={() => setActiveTab('squads')}
-          className={`px-4 py-2 text-xs font-semibold rounded-md transition-all whitespace-nowrap ${activeTab === 'squads' ? 'bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white border border-neutral-200 dark:border-neutral-800 shadow-sm' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'}`}
-        >
-          Squads
-        </button>
-        <button
           onClick={() => setActiveTab('roles')}
           className={`px-4 py-2 text-xs font-semibold rounded-md transition-all whitespace-nowrap ${activeTab === 'roles' ? 'bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white border border-neutral-200 dark:border-neutral-800 shadow-sm' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'}`}
         >
@@ -224,25 +218,6 @@ export function SecurityHub() {
         </div>
       )}
 
-      {activeTab === 'squads' && (
-        <div className="flex flex-col gap-4 animate-in fade-in duration-300">
-          <div className="flex justify-between items-end border-b border-neutral-200 dark:border-neutral-800 pb-4">
-            <div>
-              <h3 className="font-semibold text-neutral-900 dark:text-white text-lg">Gerenciamento de Squads</h3>
-              <p className="text-xs text-neutral-500 mt-1">Organize seu time em squads ou departamentos.</p>
-            </div>
-            <Button variant="outline" size="sm" className="gap-2">
-              <Plus size={16} />
-              Novo Squad
-            </Button>
-          </div>
-          <div className="p-12 border border-neutral-200 dark:border-neutral-800 border-dashed rounded-xl bg-transparent flex flex-col items-center justify-center text-center">
-            <Users2 size={32} className="text-neutral-300 dark:text-neutral-700 mb-4" />
-            <h4 className="font-bold text-neutral-500 dark:text-neutral-400 mb-1">Crie seu primeiro squad</h4>
-            <p className="text-sm text-neutral-400 dark:text-neutral-500">Agrupe membros por especialidade ou projeto.</p>
-          </div>
-        </div>
-      )}
 
       {activeTab === 'roles' && (
         <div className="flex flex-col gap-6 animate-in fade-in duration-300">

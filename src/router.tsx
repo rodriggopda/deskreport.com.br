@@ -18,6 +18,7 @@ import Notifications from './pages/notifications';
 import { TaskBoards } from './pages/tasks/boards';
 import TaskDataManagement from './pages/tasks/data-management';
 import OrganizationsPage from './pages/organizations';
+import TeamsPage from './pages/teams';
 
 import { AuthGuard } from './components/auth-guard';
 
@@ -121,6 +122,10 @@ export const router = createBrowserRouter([
       {
         path: 'users',
         element: <UsersPage />,
+      },
+      {
+        path: 'teams',
+        element: <TeamsPage />,
       },
       {
         path: 'projects',

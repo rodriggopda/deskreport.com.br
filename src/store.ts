@@ -74,18 +74,33 @@ export const useUIStore = create<UIStore>()((set) => ({
 }));
 
 export type Organization = { id: string; name: string };
-export type Project = { id: string; name: string };
+export type Project = {
+  id: string;
+  name: string;
+  teams?: { teamId: string, team?: Team }[];
+  completion_percentage?: number;
+};
+export type Team = {
+  id: string;
+  name: string;
+  description?: string;
+  _count?: { members: number; tasks: number };
+  members?: any[];
+};
 
 export type TenantStore = {
   organizations: Organization[];
   projects: Project[];
+  teams: Team[];
   fetchOrganizations: () => Promise<void>;
   fetchProjects: (orgId: string) => Promise<void>;
+  fetchTeams: (orgId: string) => Promise<void>;
 };
 
 export const useTenantStore = create<TenantStore>()((set, get) => ({
   organizations: [],
   projects: [{ id: 'all', name: 'Todos Projetos' }],
+  teams: [],
   fetchOrganizations: async () => {
     if (get().organizations.length > 0) return;
     try {
@@ -104,7 +119,7 @@ export const useTenantStore = create<TenantStore>()((set, get) => ({
   },
   fetchProjects: async (orgId: string) => {
     try {
-      const { data, error } = await authClient.$fetch<{ id: string; name: string }[]>('http://10.0.0.150:3000/projects', {
+      const { data, error } = await authClient.$fetch<any[]>('http://10.0.0.150:3000/projects', {
         headers: {
           'x-organization-id': orgId
         }
@@ -113,12 +128,31 @@ export const useTenantStore = create<TenantStore>()((set, get) => ({
         set({
           projects: [
             { id: 'all', name: 'Todos Projetos' },
-            ...data.map((p) => ({ id: p.id, name: p.name }))
+            ...data.map((p) => ({
+              id: p.id,
+              name: p.name,
+              teams: p.teams,
+              completion_percentage: p.completion_percentage
+            }))
           ]
         });
       }
     } catch (error) {
       console.error('Failed to fetch projects:', error);
+    }
+  },
+  fetchTeams: async (orgId: string) => {
+    try {
+      const { data, error } = await authClient.$fetch<Team[]>('http://10.0.0.150:3000/teams', {
+        headers: {
+          'x-organization-id': orgId
+        }
+      });
+      if (!error && data) {
+        set({ teams: data });
+      }
+    } catch (error) {
+      console.error('Failed to fetch teams:', error);
     }
   },
 }));

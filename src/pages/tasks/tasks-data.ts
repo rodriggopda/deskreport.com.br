@@ -10,9 +10,14 @@ export type TaskCardProps = {
     priority: TaskPriority;
     createdAt: string;
     assigneeId?: string | null;
+    teamId?: string | null;
     assignee?: {
         name: string;
         avatar: string;
+    };
+    team?: {
+        id: string;
+        name: string;
     };
     tags?: { label: string; color: string }[];
 }

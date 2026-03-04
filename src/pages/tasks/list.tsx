@@ -1,7 +1,7 @@
 import { Page } from '../../components/layout/page';
 import { Topbar } from '../../components/layout/topbar';
 import { useParams } from 'react-router-dom';
-import { MoreVertical, Plus } from 'lucide-react';
+import { Power, Settings2, Plus, Users2 } from 'lucide-react';
 import { STATUS_CONFIG, TaskCardProps } from './tasks-data';
 import { useTaskStore } from './use-task-store';
 import { useTaskFilters } from './use-task-filters';
@@ -88,77 +88,100 @@ export function TaskList() {
         </div>
       </Topbar>
 
-      <div className='flex-1 overflow-auto transition-colors'>
-        <div className='bg-white dark:bg-[#0f0f11] border-b border-zinc-200 dark:border-zinc-800 min-h-full'>
-          <table className='w-full text-left border-collapse table-fixed'>
-            <thead>
-              <tr className='border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 sticky top-0 z-10'>
-                <th className='py-2 px-4 text-[10px] font-black text-zinc-400 w-12 border-r border-zinc-200 dark:border-zinc-800'>ID</th>
-                <th className='py-2 px-4 text-[10px] font-black text-zinc-400 border-r border-zinc-200 dark:border-zinc-800'>
-                  Título
-                </th>
-                <th className='py-2 px-4 text-[10px] font-black text-zinc-400 w-44 border-r border-zinc-200 dark:border-zinc-800'>
-                  Atribuído
-                </th>
-                <th className='py-2 px-4 text-[10px] font-black text-zinc-400 w-36 border-r border-zinc-200 dark:border-zinc-800'>
-                  Status
-                </th>
-                <th className='py-2 px-2 w-10'></th>
-              </tr>
-            </thead>
-            <tbody className='divide-y divide-zinc-200 dark:divide-zinc-800'>
-              {filteredTasks.map((task) => (
-                <tr
-                  key={task.id}
-                  onClick={() => setSelectedTask(task)}
-                  className='hover:bg-zinc-50 dark:hover:bg-white/[0.02] transition-colors group cursor-pointer'
-                >
-                  <td className='py-1.5 px-4 text-[10px] font-bold text-zinc-400 border-r border-zinc-200 dark:border-zinc-800 text-center'>
-                    #{String(task.shortId || 0).padStart(3, '0')}
-                  </td>
-                  <td className='py-1.5 px-4 border-r border-zinc-200 dark:border-zinc-800'>
-                    <div className='flex items-center gap-2'>
-                      <div className={`shrink-0 w-4 h-4 rounded-full border border-emerald-500/40 flex items-center justify-center bg-emerald-500/5`}>
-                        <div className='w-1 h-1 rounded-full bg-emerald-500' />
-                      </div>
-                      <span className='group-hover:text-indigo-600 dark:group-hover:text-indigo-400 text-[12px] font-semibold text-zinc-900 dark:text-zinc-200 transition-colors truncate'>
+      <div className='flex-1 overflow-auto transition-colors p-6 bg-zinc-50 dark:bg-transparent'>
+        <div className='max-w-6xl mx-auto space-y-3'>
+          {filteredTasks.length === 0 ? (
+            <div className="text-center py-20 text-zinc-500 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-3xl">
+              Nenhuma tarefa encontrada com os filtros atuais.
+            </div>
+          ) : (
+            filteredTasks.map((task) => (
+              <div
+                key={task.id}
+                onClick={() => setSelectedTask(task)}
+                className='bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-4 rounded-xl flex items-center justify-between hover:border-zinc-300 dark:hover:border-zinc-700 transition-all group cursor-pointer'
+              >
+                <div className='flex items-center gap-4 flex-1 min-w-0'>
+                  {/* Task ID / Visual Indicator */}
+                  <div className='flex flex-col items-center justify-center min-w-[48px] h-12 rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700/50'>
+                    <span className='text-[10px] font-black text-zinc-400'>ID</span>
+                    <span className='text-xs font-bold text-zinc-900 dark:text-zinc-100'>#{String(task.shortId || 0).padStart(3, '0')}</span>
+                  </div>
+
+                  <div className='flex-1 min-w-0'>
+                    <div className='flex items-center gap-2 mb-1'>
+                      <h4 className='text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors'>
                         {task.title}
+                      </h4>
+                    </div>
+
+                    <div className='flex items-center gap-4'>
+                      {/* Assignee */}
+                      <div className='flex items-center gap-1.5'>
+                        {task.assignee ? (
+                          <>
+                            <img src={task.assignee.avatar} className='w-4 h-4 rounded-full border border-zinc-200 dark:border-zinc-800' />
+                            <span className='text-[11px] font-medium text-zinc-500 dark:text-zinc-400'>{task.assignee.name}</span>
+                          </>
+                        ) : (
+                          <span className='text-[11px] font-medium text-zinc-400 italic'>Sem responsável</span>
+                        )}
+                      </div>
+
+                      <div className='w-px h-3 bg-zinc-200 dark:bg-zinc-800' />
+
+                      {/* Team */}
+                      <div className='flex items-center gap-1.5'>
+                        <Users2 size={12} className={task.team ? 'text-blue-500' : 'text-zinc-300'} />
+                        <span className={`text-[11px] font-medium ${task.team ? 'text-zinc-600 dark:text-zinc-300' : 'text-zinc-400 italic'}`}>
+                          {task.team?.name || 'Sem equipe'}
+                        </span>
+                      </div>
+
+                      <div className='w-px h-3 bg-zinc-200 dark:bg-zinc-800' />
+
+                      {/* Status */}
+                      <div className={`flex items-center gap-1.5 text-[10px] font-black uppercase tracking-tight`}>
+                        <div className={`w-1.5 h-1.5 rounded-full ${STATUS_CONFIG[task.status].color.split(' ')[0]}`} />
+                        <span className='text-zinc-500 dark:text-zinc-400'>{STATUS_CONFIG[task.status].label}</span>
+                      </div>
+
+                      <div className='w-px h-3 bg-zinc-200 dark:bg-zinc-800' />
+
+                      {/* Date */}
+                      <span className='text-[10px] text-zinc-400 font-medium'>
+                        Criada em {new Date(task.createdAt).toLocaleDateString()}
                       </span>
                     </div>
-                  </td>
-                  <td className='py-1.5 px-4 border-r border-zinc-200 dark:border-zinc-800'>
-                    {task.assignee ? (
-                      <div className='flex items-center gap-1.5'>
-                        <img src={task.assignee.avatar} className='w-5 h-5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-100' />
-                        <span className='text-[11px] text-zinc-600 dark:text-zinc-400 font-medium truncate'>{task.assignee.name}</span>
-                      </div>
-                    ) : (
-                      <span className='text-zinc-300 dark:text-zinc-800 text-[11px]'>—</span>
-                    )}
-                  </td>
-                  <td className='py-1.5 px-4 border-r border-zinc-200 dark:border-zinc-800'>
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-[9px] font-black border ${STATUS_CONFIG[task.status].color}`}>
-                      {STATUS_CONFIG[task.status].label}
-                    </span>
-                  </td>
-                  <td className='py-1.5 px-2 text-center'>
-                    <Button size="icon" variant="ghost" className='h-7 w-7'>
-                      <MoreVertical size={14} />
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </div>
+                </div>
 
-          <div className='mt-auto border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0f0f11] py-3 px-6 flex items-center justify-between text-[11px] text-zinc-500'>
-            <span>Mostrando {filteredTasks.length} tarefas</span>
-            <div className='flex items-center gap-1 font-bold'>
-              <Button size="sm" variant="ghost">Anterior</Button>
-              <Button size="sm">1</Button>
-              <Button size="sm" variant="ghost">Próxima</Button>
-            </div>
-          </div>
+                <div className='flex items-center gap-1.5 ml-4'>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => setSelectedTask(task)}
+                    className="text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
+                    title="Acessar Detalhes"
+                  >
+                    <Power size={18} />
+                  </Button>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setTaskToEdit(task);
+                      setIsFormOpen(true);
+                    }}
+                    title="Editar Tarefa"
+                  >
+                    <Settings2 size={18} />
+                  </Button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
       <TaskDetailDrawer

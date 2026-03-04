@@ -111,15 +111,15 @@ const PERMISSION_SECTIONS = [
         ]
     },
     {
-        id: 'squads',
-        title: 'Configurações: Squads',
+        id: 'teams',
+        title: 'Configurações: Equipes',
         permissions: [
-            { id: 'cfg_squads_all', title: 'Controle total', description: 'Gestão completa de squads.' },
-            { id: 'cfg_squads_read', title: 'Ler', description: 'Visualizar squads existentes.' },
-            { id: 'cfg_squads_create', title: 'Criar', description: 'Criar novos squads.' },
-            { id: 'cfg_squads_update', title: 'Editar', description: 'Editar estrutura do squad.' },
-            { id: 'cfg_squads_delete', title: 'Remover', description: 'Excluir squads.' },
-            { id: 'cfg_squads_members', title: 'Adicionar membros', description: 'Gerenciar membros dentro de squads.' }
+            { id: 'cfg_teams_all', title: 'Controle total', description: 'Gestão completa de equipes.' },
+            { id: 'cfg_teams_read', title: 'Ler', description: 'Visualizar equipes existentes.' },
+            { id: 'cfg_teams_create', title: 'Criar', description: 'Criar novas equipes.' },
+            { id: 'cfg_teams_update', title: 'Editar', description: 'Editar estrutura da equipe.' },
+            { id: 'cfg_teams_delete', title: 'Remover', description: 'Excluir equipes.' },
+            { id: 'cfg_teams_members', title: 'Adicionar membros', description: 'Gerenciar membros dentro de equipes.' }
         ]
     },
     {

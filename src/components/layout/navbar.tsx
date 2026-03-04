@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Inbox, LayoutDashboard, MessageCircle, Zap, FolderDot, CheckCircle, Bell, Settings, LogOut, User, Circle, Building } from 'lucide-react';
+import { Inbox, LayoutDashboard, MessageCircle, Zap, FolderDot, CheckCircle, Bell, Settings, LogOut, User, Circle, Building, Users2 } from 'lucide-react';
 import { NavLink, useParams, useNavigate } from 'react-router-dom';
 import { SubmenuItem } from '../../store';
 import { useOrganization, useSession, authClient } from '../../lib/auth-client';
@@ -74,6 +74,8 @@ export function Navbar() {
                 {isModuleEnabled('tasks') && (
                   <MenuNavLink to={`/${cId}/${pId}/tasks`} icon={<CheckCircle size={22} strokeWidth={2} />} label='Tarefas' />
                 )}
+
+                <MenuNavLink to={`/${cId}/teams`} icon={<Users2 size={22} strokeWidth={2} />} label='Equipes' />
 
                 <MenuNavLink to={`/${cId}/notifications`} icon={<Bell size={22} strokeWidth={2} />} label='Avisos' />
                 <MenuNavLink to={`/${cId}/settings`} icon={<Settings size={22} strokeWidth={2} />} label='Configs' />

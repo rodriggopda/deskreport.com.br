@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button, Dialog } from '../../components/ui';
+import { useParams } from 'react-router-dom';
 import { useTaskStore } from './use-task-store';
 import { TaskStatus, TaskPriority, STATUS_CONFIG, PRIORITY_CONFIG, TaskCardProps } from './tasks-data';
 import { useTenantStore } from '../../store';
@@ -14,9 +15,10 @@ interface TaskFormModalProps {
 
 export function TaskFormModal({ isOpen, onClose, task, defaultProject }: TaskFormModalProps) {
   const { addTask, updateTask } = useTaskStore();
-  const { projects } = useTenantStore();
+  const { projects, teams, fetchTeams } = useTenantStore();
   const { data: orgData } = useOrganization();
   const members = orgData?.members || [];
+  const { company_id } = useParams();
 
   const selectableProjects = projects.filter(p => p.id !== 'all');
 
@@ -25,6 +27,13 @@ export function TaskFormModal({ isOpen, onClose, task, defaultProject }: TaskFor
   const [status, setStatus] = useState<TaskStatus>('todo');
   const [priority, setPriority] = useState<TaskPriority>('medium');
   const [assigneeId, setAssigneeId] = useState('');
+  const [teamId, setTeamId] = useState('');
+
+  useEffect(() => {
+    if (isOpen && company_id && teams.length === 0) {
+      fetchTeams(company_id);
+    }
+  }, [isOpen, company_id]);
 
   useEffect(() => {
     if (task) {
@@ -33,12 +42,14 @@ export function TaskFormModal({ isOpen, onClose, task, defaultProject }: TaskFor
       setStatus(task.status);
       setPriority(task.priority);
       setAssigneeId((task as any).assigneeId || '');
+      setTeamId(task.teamId || '');
     } else {
       setTitle('');
       setProject(defaultProject || selectableProjects[0]?.id || '');
       setStatus('todo');
       setPriority('medium');
       setAssigneeId('');
+      setTeamId('');
     }
   }, [task, isOpen, defaultProject, selectableProjects]);
 
@@ -46,23 +57,20 @@ export function TaskFormModal({ isOpen, onClose, task, defaultProject }: TaskFor
     e.preventDefault();
     if (!title.trim()) return;
 
+    const payload = {
+      title,
+      project,
+      status,
+      priority,
+      assigneeId: assigneeId || null,
+      teamId: teamId || null,
+      tags: task?.tags || [],
+    };
+
     if (task) {
-      updateTask(task.id, {
-        title,
-        project,
-        status,
-        priority,
-        assigneeId: assigneeId || null
-      });
+      updateTask(task.id, payload);
     } else {
-      addTask({
-        title,
-        project,
-        status,
-        priority,
-        assigneeId: assigneeId || null,
-        tags: [],
-      });
+      addTask(payload);
     }
 
     onClose();
@@ -128,8 +136,22 @@ export function TaskFormModal({ isOpen, onClose, task, defaultProject }: TaskFor
             </select>
           </div>
 
-          <div className="space-y-1.5 col-span-2">
-            <label className="text-[10px] font-black  text-zinc-400">Responsável (Assignee)</label>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-black  text-zinc-400">Equipe Responsável</label>
+            <select
+              value={teamId}
+              onChange={(e) => setTeamId(e.target.value)}
+              className="w-full bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500 transition-all font-medium"
+            >
+              <option value="">-- Sem Equipe --</option>
+              {teams.map(t => (
+                <option key={t.id} value={t.id}>{t.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-black  text-zinc-400">Membro Responsável</label>
             <select
               value={assigneeId}
               onChange={(e) => setAssigneeId(e.target.value)}

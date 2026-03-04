@@ -1,4 +1,4 @@
-import { X, History, MoreHorizontal, Settings, CheckCircle2 } from 'lucide-react';
+import { X, History, MoreHorizontal, Settings, CheckCircle2, Users2 } from 'lucide-react';
 import { TaskCardProps, PRIORITY_CONFIG, STATUS_CONFIG } from './tasks-data';
 import { useState, useEffect } from 'react';
 import { RichEditor } from '../../components/ui/rich-editor';
@@ -187,6 +187,19 @@ export function TaskDetailDrawer({ task, isOpen, onClose, onEdit }: TaskDetailDr
                                                 </span>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div className='flex items-center justify-between mb-2.5'>
+                                        <span className='text-[11px] font-black text-zinc-400'>Equipe</span>
+                                        <Button size="icon" variant="ghost" className='h-6 w-6 text-zinc-300 hover:text-zinc-600 dark:hover:text-zinc-200'><Settings size={14} /></Button>
+                                    </div>
+                                    <div className='flex items-center gap-2 px-1'>
+                                        <div className='w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400'>
+                                            <Users2 size={12} />
+                                        </div>
+                                        <span className='text-xs font-bold text-zinc-700 dark:text-zinc-300'>{displayTask.team?.name || 'Sem equipe'}</span>
                                     </div>
                                 </div>
 
