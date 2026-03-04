@@ -1,223 +1,499 @@
-import { X, History, MoreHorizontal, Settings, CheckCircle2, Users2 } from 'lucide-react';
+import {
+    X, History, Users2,
+    ChevronRight, Pin, Maximize2, Paperclip,
+    MessageSquare, Plus,
+    User, Target, Layers, Hash, Activity,
+    Pencil, Check
+} from 'lucide-react';
 import { TaskCardProps, PRIORITY_CONFIG, STATUS_CONFIG } from './tasks-data';
 import { useState, useEffect } from 'react';
 import { RichEditor } from '../../components/ui/rich-editor';
-import { Button, Drawer } from '../../components/ui';
+import { Button, Dialog } from '../../components/ui';
 import { useTenantStore } from '../../store';
+import { useTaskStore } from './use-task-store';
 
 interface TaskDetailDrawerProps {
     task: TaskCardProps | null;
     isOpen: boolean;
     onClose: () => void;
-    onEdit?: () => void;
+    defaultProject?: string;
 }
 
-export function TaskDetailDrawer({ task, isOpen, onClose, onEdit }: TaskDetailDrawerProps) {
+import { useParams } from 'react-router-dom';
+
+export function TaskDetailDrawer({ task, isOpen, onClose, defaultProject }: TaskDetailDrawerProps) {
     const [displayTask, setDisplayTask] = useState<TaskCardProps | null>(null);
     const [comment, setComment] = useState('');
+    const [isEditingTitle, setIsEditingTitle] = useState(false);
+    const [editedTitle, setEditedTitle] = useState('');
+    const [isEditingDescription, setIsEditingDescription] = useState(false);
+    const [editedDescription, setEditedDescription] = useState('');
+
+    const { updateTask, addTask } = useTaskStore();
+    const { projects, teams, fetchTeams } = useTenantStore();
+
+    const { company_id } = useParams();
+
+    useEffect(() => {
+        if (isOpen && teams.length === 0 && company_id) {
+            fetchTeams(company_id);
+        }
+    }, [isOpen, teams.length, company_id, fetchTeams]);
 
     useEffect(() => {
         if (task) {
             setDisplayTask(task);
+            setEditedTitle(task.title);
+            setEditedDescription(task.description || '');
+            setIsEditingTitle(false);
+            setIsEditingDescription(false);
+        } else if (isOpen) {
+            // New Task mode
+            const newTaskTemplate: TaskCardProps = {
+                id: 'temp-' + Date.now(),
+                title: '',
+                project: defaultProject || 'deskreport',
+                status: 'todo',
+                priority: 'medium',
+                createdAt: new Date().toISOString(),
+                tags: []
+            };
+            setDisplayTask(newTaskTemplate);
+            setEditedTitle('');
+            setEditedDescription('');
+            setIsEditingTitle(true);
+            setIsEditingDescription(false);
         }
-    }, [task]);
+    }, [task, isOpen, defaultProject]);
 
     const priority = displayTask ? PRIORITY_CONFIG[displayTask.priority] : null;
     const status = displayTask ? STATUS_CONFIG[displayTask.status] : null;
 
-    const { projects } = useTenantStore();
     const projectName = projects.find(p => p.id === displayTask?.project)?.name || displayTask?.project;
 
+    const handleTitleSubmit = async () => {
+        if (displayTask && editedTitle.trim() && editedTitle !== displayTask.title) {
+            if (task) {
+                await updateTask(displayTask.id, { title: editedTitle });
+            }
+            setDisplayTask({ ...displayTask, title: editedTitle });
+        }
+        setIsEditingTitle(false);
+    };
+
+    const handleDescriptionSubmit = async () => {
+        if (displayTask && editedDescription !== displayTask.description) {
+            if (task) {
+                await updateTask(displayTask.id, { description: editedDescription });
+            }
+            setDisplayTask({ ...displayTask, description: editedDescription });
+        }
+        setIsEditingDescription(false);
+    };
+    const handlePropertyUpdate = async (key: keyof TaskCardProps, value: any) => {
+        if (!displayTask) return;
+
+        const updatedTask = { ...displayTask, [key]: value };
+        setDisplayTask(updatedTask);
+
+        if (task) {
+            await updateTask(displayTask.id, { [key]: value });
+        }
+    };
+
+    const handleCreateTask = async () => {
+        if (!displayTask || !editedTitle.trim()) return;
+
+        const payload = {
+            title: editedTitle,
+            description: editedDescription,
+            project: displayTask.project,
+            status: displayTask.status,
+            priority: displayTask.priority,
+            assigneeIds: displayTask.assigneeIds || [],
+            teamId: displayTask.teamId,
+            tags: displayTask.tags || []
+        };
+
+        await addTask(payload);
+        onClose();
+    };
+
     return (
-        <Drawer isOpen={isOpen} onClose={onClose}>
+        <Dialog isOpen={isOpen} onClose={onClose} maxWidth="7xl" hideHeader padded={false} scrollableBody={false}>
             {displayTask && status && priority && (
-                <>
-                    {/* 1. Header Area: Title and Top Actions */}
-                    <div className='px-8 pt-8 pb-4 shrink-0'>
-                        <div className='flex items-start justify-between gap-6 mb-4'>
-                            <div className='flex-1'>
-                                <h2 className='text-2xl font-bold leading-tight group flex items-center gap-3'>
-                                    {displayTask.title}
-                                    <span className='text-zinc-400 dark:text-zinc-600 font-medium text-xl'>
-                                        #{String(displayTask.shortId || 0).padStart(3, '0')}
-                                    </span>
-                                </h2>
-                            </div>
-                            <div className='flex items-center gap-1.5 shrink-0'>
-                                <Button size="sm" onClick={onEdit}>
-                                    Editar
-                                </Button>
-                                <Button size="icon" variant="ghost"><MoreHorizontal size={18} /></Button>
-                                <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    onClick={onClose}
-                                    className='text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10'
-                                >
-                                    <X size={20} />
-                                </Button>
-                            </div>
+                <div className="flex flex-col h-[calc(100vh-200px)] bg-white dark:bg-[#09090b] text-zinc-900 dark:text-zinc-300 font-sans antialiased overflow-hidden">
+
+                    {/* 1. TOP BAR: Navigation & Meta Actions */}
+                    <div className="h-14 px-4 flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800/60 bg-white/50 dark:bg-[#0c0d0e]/50 backdrop-blur-md shrink-0">
+                        <div className="flex items-center gap-2 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
+                            <Layers size={14} className="text-zinc-600" />
+                            <span className="hover:text-zinc-200 cursor-pointer transition-colors px-1">{projectName}</span>
+                            <ChevronRight size={12} className="text-zinc-700" />
+                            <Hash size={12} className="text-zinc-700" />
+                            <span className="text-zinc-400 font-bold px-1">{task ? displayTask.shortId : 'Nova'}</span>
                         </div>
 
-                        <div className='flex items-center gap-3 mb-6'>
-                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black ${status.color}`}>
-                                <CheckCircle2 size={12} /> {status.label}
-                            </span>
-                            <span className='text-xs text-zinc-500 dark:text-zinc-400 font-medium'>
-                                <span className='font-bold text-zinc-800 dark:text-zinc-200'>{displayTask.assignee?.name || 'Sistema'}</span> criou esta tarefa em {new Date(displayTask.createdAt).toLocaleDateString()}
-                            </span>
+                        <div className="flex items-center gap-2">
+                            {!task && (
+                                <Button
+                                    size="sm"
+                                    className="bg-blue-600 hover:bg-blue-500 text-white font-bold h-8 px-4"
+                                    onClick={handleCreateTask}
+                                    disabled={!editedTitle.trim()}
+                                >
+                                    Criar Tarefa
+                                </Button>
+                            )}
+                            <div className="flex items-center gap-1">
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-500 hover:text-zinc-200">
+                                    <Pin size={15} />
+                                </Button>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-500 hover:text-zinc-200">
+                                    <Maximize2 size={15} />
+                                </Button>
+                            </div>
+                            <div className="w-px h-4 bg-zinc-200 dark:bg-white/[0.08] mx-1" />
+                            <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 text-zinc-500 hover:text-red-400">
+                                <X size={18} />
+                            </Button>
                         </div>
-                        <div className='h-px bg-zinc-100 dark:bg-zinc-800/50 w-full' />
                     </div>
 
-                    {/* 2. Main Layout Compartments */}
-                    <div className='flex-1 flex overflow-hidden'>
+                    <div className="flex-1 flex overflow-hidden">
 
-                        {/* Left Column: Timeline & Discussion (Hierarchy Reference: GitHub) */}
-                        <div className='flex-1 overflow-y-auto px-8 py-4 space-y-8 selection:bg-blue-100 selection:text-blue-900'>
+                        {/* 2. MAIN WORKSPACE (LEFT) */}
+                        <div className="flex-1 overflow-y-auto custom-scrollbar">
+                            <div className="max-w-[800px] mx-auto px-12 py-8 space-y-6">
 
-                            {/* Initial Description Box */}
-                            <div className='border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden bg-white dark:bg-[#121214]'>
-                                <div className='bg-zinc-50 dark:bg-zinc-900/50 px-4 py-2.5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between'>
-                                    <span className='text-[11px] font-bold text-zinc-500'>
-                                        Descrição da tarefa
-                                    </span>
-                                    <Button size="icon" variant="ghost" className='h-6 w-6'><MoreHorizontal size={14} /></Button>
-                                </div>
-                                <div className='p-6 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal'>
-                                    <p>Nas etiquetas deverá ter etiquetas do sistema e etiquetas pessoais.</p>
-                                    <p className='mt-4 text-zinc-400 italic'>Nenhuma descrição adicional informada.</p>
-                                </div>
-                            </div>
-
-                            {/* Timeline Hierarchy */}
-                            <div className='relative pl-10 space-y-8 before:absolute before:left-4 before:top-2 before:bottom-2 before:w-px before:bg-zinc-100 dark:before:bg-zinc-800'>
-                                <div className='relative flex items-center gap-3'>
-                                    <div className='absolute -left-8 w-4 h-4 rounded-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center'>
-                                        <History size={10} className='text-zinc-400' />
+                                {/* TITLE & TOP BADGES */}
+                                <div className="space-y-6">
+                                    <div className="flex items-center gap-3">
+                                        <div className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest border ${status.color} bg-opacity-10`}>
+                                            {status.label}
+                                        </div>
+                                        <div className="h-4 w-px bg-white/[0.08]" />
+                                        <div className="flex items-center -space-x-2">
+                                            {displayTask.assignees?.map((a, i) => (
+                                                <img key={i} src={a.avatar} className="w-5 h-5 rounded-full border border-white dark:border-zinc-900 shadow-sm" title={a.name} />
+                                            ))}
+                                            {(!displayTask.assignees || displayTask.assignees.length === 0) && (
+                                                <div className="w-5 h-5 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center">
+                                                    <User size={10} className="text-zinc-500" />
+                                                </div>
+                                            )}
+                                            <span className="text-zinc-600 dark:text-zinc-300 ml-4 text-[11px] font-medium">
+                                                {displayTask.assignees && displayTask.assignees.length > 0
+                                                    ? displayTask.assignees.length === 1 ? displayTask.assignees[0].name : `${displayTask.assignees.length} responsáveis`
+                                                    : 'Sem responsável'}
+                                            </span>
+                                        </div>
                                     </div>
-                                    <img src={displayTask.assignee?.avatar} className='w-5 h-5 rounded-full border border-zinc-200 dark:border-zinc-800' />
-                                    <p className='text-xs text-zinc-500'>
-                                        <span className='font-bold text-zinc-800 dark:text-zinc-200'>rodriggopda</span> adicionou esta tarefa ao projeto <span className='font-bold text-zinc-900 dark:text-zinc-100'>{projectName}</span>
-                                    </p>
-                                </div>
 
-                                <div className='relative flex items-center gap-3'>
-                                    <div className='absolute -left-8 w-4 h-4 rounded-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center'>
-                                        <History size={10} className='text-zinc-400' />
-                                    </div>
-                                    <p className='text-xs text-zinc-500'>
-                                        <span className='font-bold text-zinc-800 dark:text-zinc-200'>rodriggopda</span> moveu para <span className='font-bold text-blue-500'>Em andamento</span>
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Comment Editor Hierarchy */}
-                            <div className='pt-4 pb-10'>
-                                <div className='flex items-start gap-4'>
-                                    <img src={displayTask.assignee?.avatar} className='w-8 h-8 rounded-full border border-zinc-200 dark:border-zinc-800 mt-1' />
-                                    <div className='flex-1'>
-                                        <RichEditor
-                                            content={comment}
-                                            onChange={setComment}
-                                            placeholder="Deixe um comentário ou anotação..."
+                                    {isEditingTitle ? (
+                                        <input
+                                            autoFocus
+                                            value={editedTitle}
+                                            onChange={(e) => setEditedTitle(e.target.value)}
+                                            onBlur={handleTitleSubmit}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') handleTitleSubmit();
+                                                if (e.key === 'Escape') {
+                                                    setEditedTitle(displayTask.title || '');
+                                                    setIsEditingTitle(false);
+                                                }
+                                            }}
+                                            className="w-full text-3xl font-bold tracking-tight text-zinc-900 dark:text-white bg-zinc-50 dark:bg-white/[0.05] border-none outline-none ring-1 ring-blue-500/50 rounded px-2 py-1 -ml-2"
                                         />
-                                        <div className='mt-3 flex items-center justify-end'>
-                                            <Button size="md" className='px-6'>
-                                                Comentar
+                                    ) : (
+                                        <h1
+                                            onClick={() => setIsEditingTitle(true)}
+                                            className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white selection:bg-blue-500/30 cursor-text hover:bg-zinc-50 dark:hover:bg-white/[0.02] rounded transition-colors -ml-2 px-2 py-1 outline-none"
+                                        >
+                                            {displayTask.title || <span className="text-zinc-400 italic font-normal">Sem título</span>}
+                                        </h1>
+                                    )}
+                                </div>
+
+                                {/* DESCRIPTION ZONE */}
+                                <div className="space-y-4">
+                                    <div className="flex justify-end">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className={`h-7 w-7 transition-colors ${isEditingDescription ? 'text-blue-400 bg-blue-400/10' : 'text-zinc-500 hover:text-zinc-200'}`}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (isEditingDescription) handleDescriptionSubmit();
+                                                else setIsEditingDescription(true);
+                                            }}
+                                        >
+                                            {isEditingDescription ? <Check size={14} /> : <Pencil size={14} />}
+                                        </Button>
+                                    </div>
+
+                                    <div className={`prose dark:prose-invert prose-zinc max-w-none text-zinc-700 dark:text-zinc-300 leading-relaxed min-h-[40px] rounded-lg transition-all ${isEditingDescription ? 'bg-zinc-50 dark:bg-[#0c0d0e]/50 ring-1 ring-zinc-200 dark:ring-white/[0.06] p-4' : 'hover:bg-zinc-50 dark:hover:bg-white/[0.01] p-2 cursor-pointer'}`}
+                                        onClick={() => !isEditingDescription && setIsEditingDescription(true)}>
+
+                                        {isEditingDescription ? (
+                                            <div className="space-y-4">
+                                                <RichEditor
+                                                    content={editedDescription}
+                                                    onChange={setEditedDescription}
+                                                    placeholder="Descreva o que deve ser feito..."
+                                                    minHeight="200px"
+                                                />
+                                                <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-white/[0.06] pt-4">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setEditedDescription(displayTask.description || '');
+                                                            setIsEditingDescription(false);
+                                                        }}
+                                                    >
+                                                        Cancelar
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        className="bg-blue-600 hover:bg-blue-500 text-white px-4"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleDescriptionSubmit();
+                                                        }}
+                                                    >
+                                                        Salvar
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="text-sm">
+                                                {displayTask.description ? (
+                                                    <div
+                                                        dangerouslySetInnerHTML={{ __html: displayTask.description }}
+                                                        className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-zinc-100 dark:prose-pre:bg-zinc-900/50"
+                                                    />
+                                                ) : (
+                                                    <p className="text-zinc-500 italic">Nenhuma descrição informada. Clique para adicionar.</p>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* ACTIVITY / COMMENTS */}
+                                <div className="space-y-8 pt-10 border-t border-zinc-200 dark:border-white/[0.06]">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <h3 className="text-sm font-bold text-zinc-900 dark:text-white">Atividades</h3>
+                                            <div className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black">2</div>
+                                        </div>
+                                        <Button variant="ghost" size="sm" className="text-[10px] font-bold text-zinc-500">Filtrar por: Todos</Button>
+                                    </div>
+
+                                    {/* Timeline Items */}
+                                    <div className="space-y-6">
+                                        <div className="flex gap-4">
+                                            <img src={displayTask.assignees?.[0]?.avatar} className="w-8 h-8 rounded-full border border-zinc-200 dark:border-white/[0.08]" />
+                                            <div className="flex-1 space-y-1.5">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-sm font-bold text-zinc-900 dark:text-white leading-none">{displayTask.assignees?.[0]?.name}</span>
+                                                    <span className="text-[10px] text-zinc-500 font-medium">há 2 horas</span>
+                                                </div>
+                                                <div className="text-sm text-zinc-700 dark:text-zinc-400 bg-zinc-50 dark:bg-white/[0.02] border border-zinc-100 dark:border-white/[0.04] p-3 rounded-xl rounded-tl-none">
+                                                    Iniciei a implementação básica do layout seguindo o design do Linear.
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Activity feed type */}
+                                        <div className="flex items-center gap-4 pl-10 text-zinc-500">
+                                            <div className="p-1 rounded bg-zinc-100 dark:bg-zinc-800">
+                                                <Activity size={10} className="text-zinc-500" />
+                                            </div>
+                                            <p className="text-[11px] italic">
+                                                <span className="font-bold text-zinc-700 dark:text-zinc-400">{displayTask.assignees?.[0]?.name}</span> atualizou o status para <span className="text-blue-600 dark:text-blue-400 font-bold">Em Andamento</span>
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Reply Box */}
+                                    <div className="flex gap-4 group focus-within:ring-1 focus-within:ring-blue-500/20 rounded-2xl p-2 transition-all">
+                                        <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center shrink-0">
+                                            <User size={14} className="text-zinc-500 dark:text-zinc-600" />
+                                        </div>
+                                        <div className="flex-1 space-y-3">
+                                            <div className="bg-white dark:bg-[#0c0d0e] border border-zinc-200 dark:border-white/[0.06] rounded-xl overflow-hidden focus-within:border-blue-500/50 transition-colors">
+                                                <RichEditor
+                                                    content={comment}
+                                                    onChange={setComment}
+                                                    placeholder="Escreva um comentário..."
+                                                    minHeight="40px"
+                                                />
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-2">
+                                                    <Button variant="ghost" size="icon" className="h-7 w-7 text-zinc-500"><Paperclip size={14} /></Button>
+                                                    <Button variant="ghost" size="icon" className="h-7 w-7 text-zinc-500"><MessageSquare size={14} /></Button>
+                                                </div>
+                                                <Button size="sm" className="bg-blue-600 hover:bg-blue-500 text-white font-bold h-8 px-4">Comentar</Button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 3. PROPERTIES SIDEBAR (RIGHT) */}
+                        <div className="w-[340px] shrink-0 p-4 h-full flex flex-col">
+                            <div className="flex-1 rounded-xl border border-zinc-200 dark:border-white/[0.06] bg-zinc-50 dark:bg-white/[0.04] overflow-y-auto px-6 py-8 custom-scrollbar">
+                                <div className="space-y-8">
+                                    {/* ... properties ... */}
+
+                                    <div className="space-y-4">
+                                        <div className="grid grid-cols-1 gap-1">
+                                            {/* Status Property */}
+                                            <div className="flex items-center justify-between p-2 rounded-lg hover:bg-white/[0.03] transition-colors group">
+                                                <div className="flex items-center gap-3">
+                                                    <History size={13} className="text-zinc-600 group-hover:text-zinc-400 transition-colors" />
+                                                    <span className="text-[10px] font-black text-zinc-400">Estado</span>
+                                                </div>
+                                                <select
+                                                    value={displayTask.status}
+                                                    onChange={(e) => handlePropertyUpdate('status', e.target.value)}
+                                                    className="bg-transparent text-[11px] font-bold text-zinc-700 dark:text-zinc-300 outline-none cursor-pointer hover:text-blue-500 transition-colors text-right"
+                                                >
+                                                    {Object.entries(STATUS_CONFIG).map(([id, config]) => (
+                                                        <option key={id} value={id} className="bg-white dark:bg-[#0c0d0e] text-zinc-900 dark:text-zinc-100">{config.label}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+
+                                            {/* Priority Property */}
+                                            <div className="flex items-center justify-between p-2 rounded-lg hover:bg-white/[0.03] transition-colors group">
+                                                <div className="flex items-center gap-3">
+                                                    <Activity size={13} className="text-zinc-600 group-hover:text-zinc-400 transition-colors" />
+                                                    <span className="text-[10px] font-black text-zinc-400">Prioridade</span>
+                                                </div>
+                                                <select
+                                                    value={displayTask.priority}
+                                                    onChange={(e) => handlePropertyUpdate('priority', e.target.value)}
+                                                    className={`bg-transparent text-[11px] font-bold ${priority?.color} outline-none cursor-pointer hover:brightness-110 transition-colors text-right`}
+                                                >
+                                                    {Object.entries(PRIORITY_CONFIG).map(([id, config]) => (
+                                                        <option key={id} value={id} className={`bg-white dark:bg-[#0c0d0e] ${config.color.split(' ')[1] || 'text-zinc-500'}`}>{config.label}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+
+                                            {/* Project Property */}
+                                            <div className="flex items-center justify-between p-2 rounded-lg hover:bg-white/[0.03] transition-colors group">
+                                                <div className="flex items-center gap-3">
+                                                    <Target size={13} className="text-zinc-600 group-hover:text-zinc-400 transition-colors" />
+                                                    <span className="text-[10px] font-black text-zinc-400">Projeto</span>
+                                                </div>
+                                                <select
+                                                    value={displayTask.project}
+                                                    onChange={(e) => handlePropertyUpdate('project', e.target.value)}
+                                                    className="bg-transparent text-[11px] font-bold text-zinc-500 outline-none cursor-pointer hover:text-zinc-900 dark:hover:text-zinc-300 transition-colors text-right max-w-[150px]"
+                                                >
+                                                    {projects.filter(p => p.id !== 'all').map(p => (
+                                                        <option key={p.id} value={p.id} className="bg-white dark:bg-[#0c0d0e] text-zinc-900 dark:text-zinc-100">{p.name}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+
+                                            {/* Team Property */}
+                                            <div className="flex items-center justify-between p-2 rounded-lg hover:bg-white/[0.03] transition-colors group">
+                                                <div className="flex items-center gap-3">
+                                                    <Users2 size={13} className="text-zinc-600 group-hover:text-zinc-400 transition-colors" />
+                                                    <span className="text-[10px] font-black text-zinc-400">Equipe</span>
+                                                </div>
+                                                <select
+                                                    value={displayTask.teamId || ''}
+                                                    onChange={(e) => handlePropertyUpdate('teamId', e.target.value || null)}
+                                                    className="bg-transparent text-[11px] font-bold text-zinc-700 dark:text-zinc-300 outline-none cursor-pointer hover:text-blue-500 transition-colors text-right max-w-[150px]"
+                                                >
+                                                    <option value="" className="bg-white dark:bg-[#0c0d0e] text-zinc-500">Não vinculada</option>
+                                                    {teams.map(t => (
+                                                        <option key={t.id} value={t.id} className="bg-white dark:bg-[#0c0d0e] text-zinc-900 dark:text-zinc-100">{t.name}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+
+                                            {/* Responsibles Selection */}
+                                            <div className="p-2 space-y-3">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-3">
+                                                        <Users2 size={13} className="text-zinc-600" />
+                                                        <span className="text-[10px] font-black text-zinc-400">Responsáveis</span>
+                                                    </div>
+                                                    <Button variant="ghost" size="icon" className="h-5 w-5 text-zinc-400 hover:text-white"><Plus size={12} /></Button>
+                                                </div>
+
+                                                <div className="space-y-2">
+                                                    {displayTask.assignees?.map((a, i) => (
+                                                        <div key={i} className="flex items-center justify-between group/user cursor-pointer p-1 rounded hover:bg-white/[0.05] transition-colors">
+                                                            <div className="flex items-center gap-2">
+                                                                <img src={a.avatar} className="w-5 h-5 rounded-full" />
+                                                                <span className="text-[11px] font-bold text-zinc-400 group-hover/user:text-zinc-200 transition-colors">{a.name}</span>
+                                                            </div>
+                                                            <Button variant="ghost" size="icon" className="h-4 w-4 opacity-0 group-hover/user:opacity-100 text-zinc-500 hover:text-red-400">
+                                                                <X size={10} />
+                                                            </Button>
+                                                        </div>
+                                                    ))}
+                                                    {(!displayTask.assignees || displayTask.assignees.length === 0) && (
+                                                        <div className="text-[10px] italic text-zinc-500 pl-6">Nenhum responsável</div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="h-px bg-zinc-200 dark:bg-white/[0.06]" />
+
+                                    {/* Tags Section */}
+                                    <div className="space-y-4">
+                                        <div className="flex items-center justify-between px-1">
+                                            <span className="text-[10px] font-black text-zinc-400">Etiquetas</span>
+                                            <Button variant="ghost" size="icon" className="h-5 w-5 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"><Plus size={12} /></Button>
+                                        </div>
+                                        <div className="flex flex-wrap gap-1.5">
+                                            {displayTask.tags?.map(tag => (
+                                                <div key={tag.label} className={`px-2 py-0.5 rounded text-[10px] font-bold border ${tag.color} bg-opacity-5 hover:bg-opacity-10 cursor-pointer transition-all`}>
+                                                    {tag.label}
+                                                </div>
+                                            ))}
+                                            <Button variant="ghost" className="h-6 px-2 text-[10px] font-bold text-zinc-500 dark:text-zinc-600 border border-dashed border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700">
+                                                + Add Label
                                             </Button>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        {/* Right Column: Metadata Sidebar (Hierarchy Reference: GitHub) */}
-                        <div className='w-[300px] border-l border-zinc-200 dark:border-zinc-800 px-6 py-6 space-y-8 overflow-y-auto bg-white dark:bg-[#09090b]'>
+                                    <div className="h-px bg-zinc-200 dark:bg-white/[0.06]" />
 
-                            {/* Sidebar Sections */}
-                            <div className='space-y-6'>
-                                <div className='group'>
-                                    <div className='flex items-center justify-between mb-2.5'>
-                                        <span className='text-[11px] font-black text-zinc-400'>Responsáveis</span>
-                                        <Button size="icon" variant="ghost" className='h-6 w-6 text-zinc-300 hover:text-zinc-600 dark:hover:text-zinc-200'><Settings size={14} /></Button>
-                                    </div>
-                                    <div className='flex items-center gap-2 px-1'>
-                                        <img src={displayTask.assignee?.avatar} className='w-6 h-6 rounded-full border border-zinc-200 dark:border-zinc-800' />
-                                        <span className='text-xs font-bold text-zinc-700 dark:text-zinc-300'>{displayTask.assignee?.name}</span>
-                                    </div>
-                                </div>
-
-                                <div className='h-px bg-zinc-100 dark:bg-zinc-800/50' />
-
-                                <div>
-                                    <div className='flex items-center justify-between mb-2.5'>
-                                        <span className='text-[11px] font-black text-zinc-400'>Etiquetas</span>
-                                        <button className='text-zinc-300 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors'><Settings size={14} /></button>
-                                    </div>
-                                    <div className='flex flex-wrap gap-1.5 px-1'>
-                                        {displayTask.tags?.map(tag => (
-                                            <span key={tag.label} className={`text-[10px] font-black px-2 py-0.5 rounded border ${tag.color}`}>
-                                                {tag.label}
-                                            </span>
-                                        )) || <span className='text-xs text-zinc-400 italic'>Sem etiquetas</span>}
-                                    </div>
-                                </div>
-
-                                <div className='h-px bg-zinc-100 dark:bg-zinc-800/50' />
-
-                                <div>
-                                    <div className='flex items-center justify-between mb-2.5'>
-                                        <span className='text-[11px] font-black text-zinc-400'>Projeto atual</span>
-                                        <button className='text-zinc-300 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors'><Settings size={14} /></button>
-                                    </div>
-                                    <div className='p-4 bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-xl space-y-4'>
-                                        <div className='flex items-center gap-2 text-xs font-black text-zinc-900 dark:text-zinc-100'>
-                                            {projectName}
+                                    {/* Timestamps */}
+                                    <div className="space-y-3 px-1 text-[10px] font-black text-zinc-400">
+                                        <div className="flex justify-between items-center">
+                                            <span>Criado</span>
+                                            <span className="text-zinc-500">há 24 dias</span>
                                         </div>
-                                        <div className='space-y-3'>
-                                            <div className='flex items-center justify-between'>
-                                                <span className='text-[11px] font-bold text-zinc-400'>Status</span>
-                                                <span className={`px-2 py-0.5 rounded-full font-black text-[9px] border ${status.color}`}>{status.label}</span>
-                                            </div>
-                                            <div className='flex items-center justify-between'>
-                                                <span className='text-[11px] font-bold text-zinc-400'>Prioridade</span>
-                                                <span className={`font-black flex items-center gap-1.5 text-xs ${priority.color}`}>
-                                                    <span className='text-base'>{priority.icon}</span> {priority.label}
-                                                </span>
-                                            </div>
+                                        <div className="flex justify-between items-center">
+                                            <span>Atualizado</span>
+                                            <span className="text-zinc-400">há 12 minutos</span>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div>
-                                    <div className='flex items-center justify-between mb-2.5'>
-                                        <span className='text-[11px] font-black text-zinc-400'>Equipe</span>
-                                        <Button size="icon" variant="ghost" className='h-6 w-6 text-zinc-300 hover:text-zinc-600 dark:hover:text-zinc-200'><Settings size={14} /></Button>
-                                    </div>
-                                    <div className='flex items-center gap-2 px-1'>
-                                        <div className='w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400'>
-                                            <Users2 size={12} />
-                                        </div>
-                                        <span className='text-xs font-bold text-zinc-700 dark:text-zinc-300'>{displayTask.team?.name || 'Sem equipe'}</span>
-                                    </div>
-                                </div>
-
-                                <div className='h-px bg-zinc-100 dark:bg-zinc-800/50' />
-
-                                <div>
-                                    <div className='flex items-center justify-between mb-2.5'>
-                                        <span className='text-[11px] font-black text-zinc-400'>Milestone</span>
-                                        <button className='text-zinc-300 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors'><Settings size={14} /></button>
-                                    </div>
-                                    <span className='text-xs text-zinc-400 italic px-1'>Nenhum marco definido</span>
                                 </div>
                             </div>
                         </div>
 
                     </div>
-                </>
+                </div>
             )}
-        </Drawer>
+        </Dialog>
     );
 }

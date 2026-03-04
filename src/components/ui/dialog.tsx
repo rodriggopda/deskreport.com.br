@@ -10,6 +10,9 @@ interface DialogProps {
     children: React.ReactNode;
     footer?: React.ReactNode;
     maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | '7xl' | 'full';
+    hideHeader?: boolean;
+    padded?: boolean;
+    scrollableBody?: boolean;
 }
 
 export function Dialog({
@@ -19,7 +22,10 @@ export function Dialog({
     description,
     children,
     footer,
-    maxWidth = 'lg'
+    maxWidth = 'lg',
+    hideHeader = false,
+    padded = true,
+    scrollableBody = true
 }: DialogProps) {
     const [mounted, setMounted] = useState(false);
 
@@ -66,21 +72,23 @@ export function Dialog({
                 aria-modal="true"
             >
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-zinc-100 dark:border-zinc-900/50">
-                    <div>
-                        {title && <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">{title}</h3>}
-                        {description && <p className="text-sm text-zinc-500 mt-1">{description}</p>}
+                {!hideHeader && (
+                    <div className="flex items-center justify-between p-6 border-b border-zinc-100 dark:border-zinc-900/50 uppercase tracking-widest">
+                        <div>
+                            {title && <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">{title}</h3>}
+                            {description && <p className="text-sm text-zinc-500 mt-1">{description}</p>}
+                        </div>
+                        <button
+                            onClick={onClose}
+                            className="p-2 -mr-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-xl transition-all"
+                        >
+                            <X size={20} />
+                        </button>
                     </div>
-                    <button
-                        onClick={onClose}
-                        className="p-2 -mr-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-xl transition-all"
-                    >
-                        <X size={20} />
-                    </button>
-                </div>
+                )}
 
                 {/* Body */}
-                <div className="p-6 overflow-y-auto max-h-[calc(100vh-200px)]">
+                <div className={`${padded ? 'p-6' : ''} ${scrollableBody ? 'overflow-y-auto' : 'overflow-hidden'} max-h-[calc(100vh-200px)]`}>
                     {children}
                 </div>
 

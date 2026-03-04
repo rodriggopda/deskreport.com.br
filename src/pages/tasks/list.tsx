@@ -7,7 +7,6 @@ import { useTaskStore } from './use-task-store';
 import { useTaskFilters } from './use-task-filters';
 import { TaskFiltersComponent } from './task-filters-component';
 import { TaskDetailDrawer } from './task-detail-drawer';
-import { TaskFormModal } from './task-form-modal';
 import { Button } from '../../components/ui/button';
 import { useState } from 'react';
 
@@ -18,8 +17,7 @@ export function TaskList() {
 
   const { tasks } = useTaskStore();
   const [selectedTask, setSelectedTask] = useState<TaskCardProps | null>(null);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [taskToEdit, setTaskToEdit] = useState<TaskCardProps | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const {
     search,
@@ -81,7 +79,7 @@ export function TaskList() {
             onClear={clearFilters}
           />
           <div className='w-px h-3.5 bg-zinc-200 dark:bg-zinc-800' />
-          <Button size="md" className='gap-1.5' onClick={() => { setTaskToEdit(null); setIsFormOpen(true); }}>
+          <Button size="md" className='gap-1.5' onClick={() => { setSelectedTask(null); setIsDetailOpen(true); }}>
             <Plus size={12} />
             Tarefa
           </Button>
@@ -113,7 +111,7 @@ export function TaskList() {
               {filteredTasks.map((task) => (
                 <tr
                   key={task.id}
-                  onClick={() => setSelectedTask(task)}
+                  onClick={() => { setSelectedTask(task); setIsDetailOpen(true); }}
                   className='hover:bg-zinc-50 dark:hover:bg-white/[0.02] transition-colors group cursor-pointer'
                 >
                   <td className='py-1.5 px-4 text-[10px] font-bold text-zinc-400 border-r border-zinc-200 dark:border-zinc-800 text-center'>
@@ -130,10 +128,22 @@ export function TaskList() {
                     </div>
                   </td>
                   <td className='py-1.5 px-4 border-r border-zinc-200 dark:border-zinc-800'>
-                    {task.assignee ? (
-                      <div className='flex items-center gap-1.5'>
-                        <img src={task.assignee.avatar} className='w-5 h-5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-100' />
-                        <span className='text-[11px] text-zinc-600 dark:text-zinc-400 font-medium truncate'>{task.assignee.name}</span>
+                    {task.assignees && task.assignees.length > 0 ? (
+                      <div className='flex items-center -space-x-1.5'>
+                        {task.assignees.map((a, i) => (
+                          <img
+                            key={i}
+                            src={a.avatar}
+                            className='w-5 h-5 rounded-full border border-white dark:border-zinc-900 bg-zinc-100 shadow-sm'
+                            title={a.name}
+                          />
+                        ))}
+                        {task.assignees.length === 1 && (
+                          <span className='text-[11px] text-zinc-600 dark:text-zinc-400 font-medium truncate ml-3'>{task.assignees[0].name}</span>
+                        )}
+                        {task.assignees.length > 1 && (
+                          <span className='text-[11px] text-zinc-600 dark:text-zinc-400 font-medium truncate ml-3'>{task.assignees.length} pessoas</span>
+                        )}
                       </div>
                     ) : (
                       <span className='text-zinc-300 dark:text-zinc-800 text-[11px]'>—</span>
@@ -157,8 +167,8 @@ export function TaskList() {
                   <td className='py-1.5 px-2 text-center'>
                     <Button size="icon" variant="ghost" className='h-7 w-7' onClick={(e) => {
                       e.stopPropagation();
-                      setTaskToEdit(task);
-                      setIsFormOpen(true);
+                      setSelectedTask(task);
+                      setIsDetailOpen(true);
                     }}>
                       <MoreVertical size={14} />
                     </Button>
@@ -180,21 +190,12 @@ export function TaskList() {
       </div>
       <TaskDetailDrawer
         task={selectedTask}
-        isOpen={!!selectedTask}
-        onClose={() => setSelectedTask(null)}
-        onEdit={() => {
-          setTaskToEdit(selectedTask);
-          setSelectedTask(null);
-          setIsFormOpen(true);
-        }}
-      />
-      <TaskFormModal
-        isOpen={isFormOpen}
+        isOpen={isDetailOpen}
         onClose={() => {
-          setIsFormOpen(false);
-          setTaskToEdit(null);
+          setIsDetailOpen(false);
+          setSelectedTask(null);
         }}
-        task={taskToEdit}
+        defaultProject={project_id !== 'all' ? project_id : undefined}
       />
     </Page>
   );

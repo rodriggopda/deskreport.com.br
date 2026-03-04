@@ -1,13 +1,12 @@
 import { Page } from '../../components/layout/page';
 import { Topbar } from '../../components/layout/topbar';
 import { useParams } from 'react-router-dom';
-import { Plus, MoreHorizontal } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { STATUS_CONFIG, PRIORITY_CONFIG, TaskCardProps } from './tasks-data';
 import { useTaskStore } from './use-task-store';
 import { useTaskFilters } from './use-task-filters';
 import { TaskFiltersComponent } from './task-filters-component';
 import { TaskDetailDrawer } from './task-detail-drawer';
-import { TaskFormModal } from './task-form-modal';
 import { Button } from '../../components/ui/button';
 import { useMemo, useState } from 'react';
 import { useTenantStore } from '../../store';
@@ -19,8 +18,7 @@ export function TaskBoards() {
 
   const { tasks } = useTaskStore();
   const [selectedTask, setSelectedTask] = useState<TaskCardProps | null>(null);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [taskToEdit, setTaskToEdit] = useState<TaskCardProps | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const { projects: storeProjects } = useTenantStore();
   const getProjectName = (id: string) => storeProjects.find(p => p.id === id)?.name || id;
@@ -64,7 +62,10 @@ export function TaskBoards() {
       return Object.entries(STATUS_CONFIG).map(([id, config]) => ({
         id,
         title: config.label,
-        color: config.color.split(' ')[2] || 'text-zinc-500' // Extract text color
+        color: config.color.includes('text-blue') ? 'text-blue-500' :
+          config.color.includes('text-purple') ? 'text-purple-500' :
+            config.color.includes('text-emerald') ? 'text-emerald-500' :
+              config.color.includes('text-zinc-400') ? 'text-zinc-400' : 'text-zinc-500'
       }));
     }
     if (groupBy === 'priority') {
@@ -79,7 +80,7 @@ export function TaskBoards() {
       return uniqueProjects.map(p => ({ id: p, title: getProjectName(p), color: 'text-zinc-500' }));
     }
     if (groupBy === 'assignee') {
-      const uniqueAssignees = Array.from(new Set(finalTasksFiltered.filter(t => t.assignee).map(t => t.assignee!.name)));
+      const uniqueAssignees = Array.from(new Set(finalTasksFiltered.flatMap(t => t.assignees?.map(a => a.name) || [])));
       return [...uniqueAssignees.map(a => ({ id: a, title: a, color: 'text-zinc-500' })), { id: 'unassigned', title: 'Sem responsável', color: 'text-zinc-400' }];
     }
     return [];
@@ -100,8 +101,8 @@ export function TaskBoards() {
     if (groupBy === 'priority') return finalTasksFiltered.filter(t => t.priority === columnId);
     if (groupBy === 'project') return finalTasksFiltered.filter(t => t.project === columnId);
     if (groupBy === 'assignee') {
-      if (columnId === 'unassigned') return finalTasksFiltered.filter(t => !t.assignee);
-      return finalTasksFiltered.filter(t => t.assignee?.name === columnId);
+      if (columnId === 'unassigned') return finalTasksFiltered.filter(t => !t.assignees || t.assignees.length === 0);
+      return finalTasksFiltered.filter(t => t.assignees?.some(a => a.name === columnId));
     }
     return [];
   };
@@ -130,7 +131,7 @@ export function TaskBoards() {
             onClear={clearFilters}
           />
           <div className='w-px h-3.5 bg-zinc-200 dark:bg-zinc-800' />
-          <Button size="md" className='gap-1.5' onClick={() => { setTaskToEdit(null); setIsFormOpen(true); }}>
+          <Button size="md" className='gap-1.5' onClick={() => { setSelectedTask(null); setIsDetailOpen(true); }}>
             <Plus size={12} />
             Tarefa
           </Button>
@@ -141,18 +142,20 @@ export function TaskBoards() {
         <div className='flex h-full items-start'>
           {dynamicColumns.map((column) => (
             <div key={column.id} className='w-[300px] min-w-[300px] shrink-0 h-full flex flex-col border-r border-zinc-200 dark:border-zinc-800/80 last:border-r-0'>
-              <div className='px-3 py-4 group bg-white/50 dark:bg-black/10 transition-colors'>
-                <div className='flex items-center justify-between mb-1.5'>
+              <div className='px-4 py-3 bg-zinc-50/50 dark:bg-zinc-950/20 border-b border-zinc-200 dark:border-zinc-800/60 sticky top-0 z-10 backdrop-blur-sm'>
+                <div className='flex items-center justify-between group/header'>
                   <div className='flex items-center gap-2'>
-                    <h3 className={`font-bold text-zinc-900 dark:text-zinc-100 text-sm flex items-center gap-2`}>
-                      <span className={`${column.color} text-[10px]`}>●</span>
+                    <div className={`w-2 h-2 rounded-full ${column.color.replace('text-', 'bg-')} ring-4 ${column.color.replace('text-', 'ring-')}/10`} />
+                    <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-[13px] tracking-tight uppercase">
                       {column.title}
                     </h3>
-                    <span className='text-[10px] bg-zinc-200 dark:bg-zinc-800 text-zinc-500 min-w-6 text-center px-1.5 py-0.5 rounded-full font-black border border-zinc-300/50 dark:border-zinc-700/50'>
+                    <span className='text-[10px] font-black text-zinc-400 dark:text-zinc-500 ml-1'>
                       {getTasksForColumn(column.id).length}
                     </span>
                   </div>
-                  <MoreHorizontal size={16} className='text-zinc-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:text-zinc-600 dark:hover:text-zinc-200' />
+                  <Button variant="ghost" size="icon" className='h-6 w-6 text-zinc-400 opacity-0 group-hover/header:opacity-100 transition-opacity'>
+                    <Plus size={14} />
+                  </Button>
                 </div>
               </div>
 
@@ -162,24 +165,36 @@ export function TaskBoards() {
                   return (
                     <div
                       key={task.id}
-                      onClick={() => setSelectedTask(task)}
+                      onClick={() => { setSelectedTask(task); setIsDetailOpen(true); }}
                       className='bg-white dark:bg-[#161618] border border-zinc-200 dark:border-zinc-800 p-3 rounded-lg hover:border-blue-400 dark:hover:border-blue-500/50 transition-all group relative cursor-pointer ring-0 hover:ring-2 hover:ring-blue-500/10'
                     >
-                      <div className='flex items-start justify-between mb-2'>
+                      <div className='flex items-center justify-between mb-3'>
                         <div className='flex items-center gap-1.5'>
-                          <span className={`text-[9px] font-black text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700/50 max-w-32 truncate`}>
+                          <span className={`text-[9px] font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-500 px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700/50 max-w-24 truncate`}>
                             {getProjectName(task.project)}
                           </span>
-                          <span className='text-[10px] font-bold text-zinc-500'>
-                            #{String(task.shortId || 0).padStart(3, '0')}
-                          </span>
+                          {priority && (
+                            <span className={`flex items-center gap-1 text-[9px] font-black uppercase tracking-widest ${priority.color}`}>
+                              {priority.label}
+                            </span>
+                          )}
                         </div>
-                        {task.assignee && (
-                          <img
-                            src={task.assignee.avatar}
-                            className='w-5 h-5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-100 group-hover:scale-110 transition-transform'
-                            title={task.assignee.name}
-                          />
+                        {task.assignees && task.assignees.length > 0 && (
+                          <div className="flex -space-x-1.5 overflow-hidden">
+                            {task.assignees.slice(0, 3).map((a, i) => (
+                              <img
+                                key={i}
+                                src={a.avatar}
+                                className='w-6 h-6 rounded-full border border-white dark:border-zinc-900 bg-zinc-100 shadow-sm relative z-[1]'
+                                title={a.name}
+                              />
+                            ))}
+                            {task.assignees.length > 3 && (
+                              <div className="w-6 h-6 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-white dark:border-zinc-900 flex items-center justify-center text-[8px] font-black text-zinc-500 z-[0]">
+                                +{task.assignees.length - 3}
+                              </div>
+                            )}
+                          </div>
                         )}
                       </div>
 
@@ -187,31 +202,34 @@ export function TaskBoards() {
                         {task.title}
                       </h4>
 
-                      <div className='flex items-center justify-between mt-auto'>
+                      <div className='flex items-center justify-between mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800/50'>
                         <div className='flex items-center gap-2'>
-                          <span className={`flex items-center gap-1 text-[10px] font-bold ${priority.color}`}>
-                            <span className='text-[12px]'>{priority.icon}</span>
-                            {priority.label}
+                          <span className='text-[10px] font-bold text-zinc-400 tabular-nums'>
+                            #{String(task.shortId || 0).padStart(3, '0')}
                           </span>
                           {task.tags && task.tags.length > 0 && (
-                            <div className='flex gap-1'>
-                              {task.tags.map(tag => (
-                                <div key={tag.label} className={`w-1.5 h-1.5 rounded-full ${tag.color.split(' ')[0]}`} />
+                            <div className='flex gap-1 border-l border-zinc-200 dark:border-zinc-800 pl-2'>
+                              {task.tags.slice(0, 2).map(tag => (
+                                <div key={tag.label} className={`w-1.5 h-1.5 rounded-full ${tag.color.split(' ')[0]} shadow-[0_0_8px] ${tag.color.split(' ')[0].replace('bg-', 'shadow-')}/30`} />
                               ))}
                             </div>
                           )}
                         </div>
-                        <span className='text-[9px] text-zinc-400 font-medium'>
-                          {new Date(task.createdAt).toLocaleDateString()}
+                        <span className='text-[10px] text-zinc-400 font-bold uppercase tracking-tighter'>
+                          {new Date(task.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
                         </span>
                       </div>
                     </div>
                   );
                 })}
 
-                <Button variant="ghost" className='w-full py-2 text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-500/5 transition-all group' onClick={() => { setTaskToEdit(null); setIsFormOpen(true); }}>
+                <Button
+                  variant="ghost"
+                  className='w-full py-4 text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-all group border border-dashed border-transparent hover:border-zinc-200 dark:hover:border-zinc-800 mt-2'
+                  onClick={() => { setSelectedTask(null); setIsDetailOpen(true); }}
+                >
                   <Plus size={14} className='group-hover:rotate-90 transition-transform' />
-                  Novo item
+                  <span className="text-[12px] font-bold">Adicionar item</span>
                 </Button>
               </div>
             </div>
@@ -228,21 +246,11 @@ export function TaskBoards() {
       </div>
       <TaskDetailDrawer
         task={selectedTask}
-        isOpen={!!selectedTask}
-        onClose={() => setSelectedTask(null)}
-        onEdit={() => {
-          setTaskToEdit(selectedTask);
-          setSelectedTask(null);
-          setIsFormOpen(true);
-        }}
-      />
-      <TaskFormModal
-        isOpen={isFormOpen}
+        isOpen={isDetailOpen}
         onClose={() => {
-          setIsFormOpen(false);
-          setTaskToEdit(null);
+          setIsDetailOpen(false);
+          setSelectedTask(null);
         }}
-        task={taskToEdit}
         defaultProject={project_id !== 'all' ? project_id : undefined}
       />
     </Page>
