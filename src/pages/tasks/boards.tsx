@@ -146,7 +146,7 @@ export function TaskBoards() {
                 <div className='flex items-center justify-between group/header'>
                   <div className='flex items-center gap-2'>
                     <div className={`w-2 h-2 rounded-full ${column.color.replace('text-', 'bg-')} ring-4 ${column.color.replace('text-', 'ring-')}/10`} />
-                    <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-[13px] tracking-tight uppercase">
+                    <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-[13px] tracking-tight">
                       {column.title}
                     </h3>
                     <span className='text-[10px] font-black text-zinc-400 dark:text-zinc-500 ml-1'>
@@ -170,11 +170,11 @@ export function TaskBoards() {
                     >
                       <div className='flex items-center justify-between mb-3'>
                         <div className='flex items-center gap-1.5'>
-                          <span className={`text-[9px] font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-500 px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700/50 max-w-24 truncate`}>
+                          <span className={`text-[9px] font-black text-zinc-500 dark:text-zinc-500 px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700/50 max-w-24 truncate`}>
                             {getProjectName(task.project)}
                           </span>
                           {priority && (
-                            <span className={`flex items-center gap-1 text-[9px] font-black uppercase tracking-widest ${priority.color}`}>
+                            <span className={`flex items-center gap-1 text-[9px] font-black ${priority.color}`}>
                               {priority.label}
                             </span>
                           )}
@@ -215,7 +215,7 @@ export function TaskBoards() {
                             </div>
                           )}
                         </div>
-                        <span className='text-[10px] text-zinc-400 font-bold uppercase tracking-tighter'>
+                        <span className='text-[10px] text-zinc-400 font-bold tracking-tighter'>
                           {new Date(task.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
                         </span>
                       </div>

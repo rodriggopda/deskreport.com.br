@@ -30,15 +30,18 @@ export function TaskDetailDrawer({ task, isOpen, onClose, defaultProject }: Task
     const [editedDescription, setEditedDescription] = useState('');
 
     const { updateTask, addTask } = useTaskStore();
-    const { projects, teams, fetchTeams } = useTenantStore();
+    const { projects, teams, fetchTeams, members, fetchMembers } = useTenantStore();
+
+    const [isAddingAssignee, setIsAddingAssignee] = useState(false);
 
     const { company_id } = useParams();
 
     useEffect(() => {
-        if (isOpen && teams.length === 0 && company_id) {
-            fetchTeams(company_id);
+        if (isOpen && company_id) {
+            if (teams.length === 0) fetchTeams(company_id);
+            if (members.length === 0) fetchMembers(company_id);
         }
-    }, [isOpen, teams.length, company_id, fetchTeams]);
+    }, [isOpen, teams.length, members.length, company_id, fetchTeams, fetchMembers]);
 
     useEffect(() => {
         if (task) {
@@ -56,6 +59,8 @@ export function TaskDetailDrawer({ task, isOpen, onClose, defaultProject }: Task
                 status: 'todo',
                 priority: 'medium',
                 createdAt: new Date().toISOString(),
+                assigneeIds: [],
+                assignees: [],
                 tags: []
             };
             setDisplayTask(newTaskTemplate);
@@ -94,11 +99,50 @@ export function TaskDetailDrawer({ task, isOpen, onClose, defaultProject }: Task
         if (!displayTask) return;
 
         const updatedTask = { ...displayTask, [key]: value };
+
+        // If updating assigneeIds, we also need to update the assignees display list
+        if (key === 'assigneeIds') {
+            const newAssigneeIds = value as string[];
+            updatedTask.assignees = members
+                .filter(m => newAssigneeIds.includes(m.user.id))
+                .map(m => ({ name: m.user.name, avatar: m.user.image || '' }));
+        }
+
         setDisplayTask(updatedTask);
 
         if (task) {
             await updateTask(displayTask.id, { [key]: value });
         }
+    };
+
+    const handleAddAssignee = (userId: string) => {
+        if (!displayTask) return;
+        const currentIds = displayTask.assigneeIds || [];
+        if (currentIds.includes(userId)) {
+            setIsAddingAssignee(false);
+            return;
+        }
+        handlePropertyUpdate('assigneeIds', [...currentIds, userId]);
+        setIsAddingAssignee(false);
+    };
+
+    const handleRemoveAssignee = (userId: string) => {
+        if (!displayTask) return;
+        const currentIds = displayTask.assigneeIds || [];
+        handlePropertyUpdate('assigneeIds', currentIds.filter(id => id !== userId));
+    };
+
+    const handleAddTag = () => {
+        if (!displayTask) return;
+        const newTag = { label: 'Nova Etiqueta', color: 'text-blue-500 border-blue-500/20 bg-blue-500/10' };
+        const currentTags = displayTask.tags || [];
+        handlePropertyUpdate('tags', [...currentTags, newTag]);
+    };
+
+    const handleRemoveTag = (label: string) => {
+        if (!displayTask) return;
+        const currentTags = displayTask.tags || [];
+        handlePropertyUpdate('tags', currentTags.filter(t => t.label !== label));
     };
 
     const handleCreateTask = async () => {
@@ -126,7 +170,7 @@ export function TaskDetailDrawer({ task, isOpen, onClose, defaultProject }: Task
 
                     {/* 1. TOP BAR: Navigation & Meta Actions */}
                     <div className="h-14 px-4 flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800/60 bg-white/50 dark:bg-[#0c0d0e]/50 backdrop-blur-md shrink-0">
-                        <div className="flex items-center gap-2 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
+                        <div className="flex items-center gap-2 text-[11px] font-medium text-zinc-500 transition-colors">
                             <Layers size={14} className="text-zinc-600" />
                             <span className="hover:text-zinc-200 cursor-pointer transition-colors px-1">{projectName}</span>
                             <ChevronRight size={12} className="text-zinc-700" />
@@ -169,7 +213,7 @@ export function TaskDetailDrawer({ task, isOpen, onClose, defaultProject }: Task
                                 {/* TITLE & TOP BADGES */}
                                 <div className="space-y-6">
                                     <div className="flex items-center gap-3">
-                                        <div className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest border ${status.color} bg-opacity-10`}>
+                                        <div className={`px-2 py-0.5 rounded text-[10px] font-bold border ${status.color} bg-opacity-10`}>
                                             {status.label}
                                         </div>
                                         <div className="h-4 w-px bg-white/[0.08]" />
@@ -423,32 +467,69 @@ export function TaskDetailDrawer({ task, isOpen, onClose, defaultProject }: Task
                                                 </select>
                                             </div>
 
-                                            {/* Responsibles Selection */}
-                                            <div className="p-2 space-y-3">
-                                                <div className="flex items-center justify-between">
-                                                    <div className="flex items-center gap-3">
-                                                        <Users2 size={13} className="text-zinc-600" />
-                                                        <span className="text-[10px] font-black text-zinc-400">Responsáveis</span>
-                                                    </div>
-                                                    <Button variant="ghost" size="icon" className="h-5 w-5 text-zinc-400 hover:text-white"><Plus size={12} /></Button>
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-3">
+                                                    <Users2 size={13} className="text-zinc-600" />
+                                                    <span className="text-[10px] font-black text-zinc-400">Responsáveis</span>
                                                 </div>
+                                                <div className="relative">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className={`h-5 w-5 transition-colors ${isAddingAssignee ? 'text-blue-500' : 'text-zinc-400 hover:text-white'}`}
+                                                        onClick={() => setIsAddingAssignee(!isAddingAssignee)}
+                                                    >
+                                                        <Plus size={12} />
+                                                    </Button>
 
-                                                <div className="space-y-2">
-                                                    {displayTask.assignees?.map((a, i) => (
-                                                        <div key={i} className="flex items-center justify-between group/user cursor-pointer p-1 rounded hover:bg-white/[0.05] transition-colors">
-                                                            <div className="flex items-center gap-2">
-                                                                <img src={a.avatar} className="w-5 h-5 rounded-full" />
-                                                                <span className="text-[11px] font-bold text-zinc-400 group-hover/user:text-zinc-200 transition-colors">{a.name}</span>
+                                                    {isAddingAssignee && (
+                                                        <div className="absolute right-0 top-6 w-48 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+                                                            <div className="p-1 max-h-48 overflow-y-auto custom-scrollbar">
+                                                                {members
+                                                                    .filter(m => !(displayTask.assigneeIds || []).includes(m.user.id))
+                                                                    .map(m => (
+                                                                        <div
+                                                                            key={m.user.id}
+                                                                            className="flex items-center gap-2 p-2 hover:bg-zinc-50 dark:hover:bg-white/[0.05] cursor-pointer rounded transition-colors"
+                                                                            onClick={() => handleAddAssignee(m.user.id)}
+                                                                        >
+                                                                            <img src={m.user.image} className="w-5 h-5 rounded-full" />
+                                                                            <span className="text-[11px] font-medium text-zinc-600 dark:text-zinc-300 truncate">{m.user.name}</span>
+                                                                        </div>
+                                                                    ))}
+                                                                {members.length === 0 && <div className="p-2 text-[10px] italic text-zinc-500 text-center">Nenhum membro</div>}
                                                             </div>
-                                                            <Button variant="ghost" size="icon" className="h-4 w-4 opacity-0 group-hover/user:opacity-100 text-zinc-500 hover:text-red-400">
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                {(displayTask.assigneeIds || []).map((userId, i) => {
+                                                    const member = members.find(m => m.user.id === userId);
+                                                    const name = member?.user?.name || displayTask.assignees?.[i]?.name || 'Usuário';
+                                                    const avatar = member?.user?.image || displayTask.assignees?.[i]?.avatar || '';
+
+                                                    return (
+                                                        <div key={userId} className="flex items-center justify-between group/user cursor-pointer p-1 rounded hover:bg-white/[0.05] transition-colors">
+                                                            <div className="flex items-center gap-2">
+                                                                <img src={avatar} className="w-5 h-5 rounded-full" />
+                                                                <span className="text-[11px] font-bold text-zinc-400 group-hover/user:text-zinc-200 transition-colors">{name}</span>
+                                                            </div>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                className="h-4 w-4 opacity-0 group-hover/user:opacity-100 text-zinc-500 hover:text-red-400"
+                                                                onClick={() => handleRemoveAssignee(userId)}
+                                                            >
                                                                 <X size={10} />
                                                             </Button>
                                                         </div>
-                                                    ))}
-                                                    {(!displayTask.assignees || displayTask.assignees.length === 0) && (
-                                                        <div className="text-[10px] italic text-zinc-500 pl-6">Nenhum responsável</div>
-                                                    )}
-                                                </div>
+                                                    );
+                                                })}
+                                                {(!displayTask.assigneeIds || displayTask.assigneeIds.length === 0) && (
+                                                    <div className="text-[10px] italic text-zinc-500 pl-6">Nenhum responsável</div>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -463,11 +544,26 @@ export function TaskDetailDrawer({ task, isOpen, onClose, defaultProject }: Task
                                         </div>
                                         <div className="flex flex-wrap gap-1.5">
                                             {displayTask.tags?.map(tag => (
-                                                <div key={tag.label} className={`px-2 py-0.5 rounded text-[10px] font-bold border ${tag.color} bg-opacity-5 hover:bg-opacity-10 cursor-pointer transition-all`}>
+                                                <div
+                                                    key={tag.label}
+                                                    className={`group/tag relative px-2 py-0.5 rounded text-[10px] font-bold border ${tag.color} bg-opacity-5 hover:bg-opacity-10 cursor-pointer transition-all flex items-center gap-1`}
+                                                >
                                                     {tag.label}
+                                                    <X
+                                                        size={10}
+                                                        className="opacity-0 group-hover/tag:opacity-100 hover:text-red-500 transition-opacity"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleRemoveTag(tag.label);
+                                                        }}
+                                                    />
                                                 </div>
                                             ))}
-                                            <Button variant="ghost" className="h-6 px-2 text-[10px] font-bold text-zinc-500 dark:text-zinc-600 border border-dashed border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700">
+                                            <Button
+                                                variant="ghost"
+                                                className="h-6 px-2 text-[10px] font-bold text-zinc-500 dark:text-zinc-600 border border-dashed border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:text-blue-500 transition-colors"
+                                                onClick={handleAddTag}
+                                            >
                                                 + Add Label
                                             </Button>
                                         </div>

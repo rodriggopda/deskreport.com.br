@@ -92,15 +92,18 @@ export type TenantStore = {
   organizations: Organization[];
   projects: Project[];
   teams: Team[];
+  members: any[];
   fetchOrganizations: () => Promise<void>;
   fetchProjects: (orgId: string) => Promise<void>;
   fetchTeams: (orgId: string) => Promise<void>;
+  fetchMembers: (orgId: string) => Promise<void>;
 };
 
 export const useTenantStore = create<TenantStore>()((set, get) => ({
   organizations: [],
   projects: [{ id: 'all', name: 'Todos Projetos' }],
   teams: [],
+  members: [],
   fetchOrganizations: async () => {
     if (get().organizations.length > 0) return;
     try {
@@ -153,6 +156,18 @@ export const useTenantStore = create<TenantStore>()((set, get) => ({
       }
     } catch (error) {
       console.error('Failed to fetch teams:', error);
+    }
+  },
+  fetchMembers: async (orgId: string) => {
+    try {
+      const { data } = await authClient.organization.getFullOrganization({
+        query: { organizationId: orgId }
+      });
+      if (data?.members) {
+        set({ members: data.members });
+      }
+    } catch (error) {
+      console.error('Failed to fetch members:', error);
     }
   },
 }));
