@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Button, Dialog } from '../../components/ui';
 import { useParams } from 'react-router-dom';
 import { useTaskStore } from './use-task-store';
@@ -20,10 +20,10 @@ export function TaskFormModal({ isOpen, onClose, task, defaultProject }: TaskFor
   const members = orgData?.members || [];
   const { company_id } = useParams();
 
-  const selectableProjects = projects.filter(p => p.id !== 'all');
+  const selectableProjects = useMemo(() => projects.filter(p => p.id !== 'all'), [projects]);
 
   const [title, setTitle] = useState('');
-  const [project, setProject] = useState(selectableProjects[0]?.id || '');
+  const [project, setProject] = useState('');
   const [status, setStatus] = useState<TaskStatus>('todo');
   const [priority, setPriority] = useState<TaskPriority>('medium');
   const [assigneeId, setAssigneeId] = useState('');
@@ -33,9 +33,11 @@ export function TaskFormModal({ isOpen, onClose, task, defaultProject }: TaskFor
     if (isOpen && company_id && teams.length === 0) {
       fetchTeams(company_id);
     }
-  }, [isOpen, company_id]);
+  }, [isOpen, company_id, teams.length, fetchTeams]);
 
   useEffect(() => {
+    if (!isOpen) return;
+
     if (task) {
       setTitle(task.title);
       setProject(task.project);
@@ -51,7 +53,7 @@ export function TaskFormModal({ isOpen, onClose, task, defaultProject }: TaskFor
       setAssigneeId('');
       setTeamId('');
     }
-  }, [task, isOpen, defaultProject, selectableProjects]);
+  }, [isOpen, task]); // Removed selectableProjects and defaultProject to prevent resets while typing
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
