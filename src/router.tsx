@@ -20,6 +20,7 @@ import { TaskBoards } from './pages/tasks/boards';
 import TaskDataManagement from './pages/tasks/data-management';
 import OrganizationsPage from './pages/organizations';
 import TeamsPage from './pages/teams';
+import { GithubCallback } from './pages/github/callback';
 
 import { AuthGuard } from './components/auth-guard';
 
@@ -27,6 +28,10 @@ export const router = createBrowserRouter([
   {
     path: '/login',
     element: <Login />,
+  },
+  {
+    path: '/github/callback',
+    element: <GithubCallback />,
   },
   {
     path: '/register',
