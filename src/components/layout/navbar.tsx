@@ -13,7 +13,7 @@ export function Navbar() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const cId = company_id;
-  const pId = project_id;
+  const pId = project_id ?? 'all';
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -46,11 +46,11 @@ export function Navbar() {
   };
 
   return (
-    <div className="h-screen max-h-screen">
-      <nav className="h-full flex flex-col w-[74px] bg-zinc-900 z-50 transition-colors">
+    <div className='h-screen max-h-screen'>
+      <nav className='h-full flex flex-col w-[74px] bg-zinc-900 z-50 transition-colors'>
         <div className='flex justify-center items-center py-6 relative'>
           <div className='absolute top-0 left-0 w-full h-24 bg-[#2BCC56]/10 blur-3xl rounded-full'></div>
-          <img className='h-8 relative z-10' src="/deskreport-simbol.svg" alt="DeskReport logo" />
+          <img className='h-8 relative z-10' src='/deskreport-simbol.svg' alt='DeskReport logo' />
         </div>
         <div className='flex-1 flex'>
           <div className='flex flex-col py-2 w-full'>
@@ -59,23 +59,15 @@ export function Navbar() {
                 <MenuNavLink to={`/${cId}/resume`} icon={<Inbox size={22} strokeWidth={2} />} label='Início' />
                 <MenuNavLink to={`/${cId}/dashboard`} icon={<LayoutDashboard size={22} strokeWidth={2} />} label='Painel' />
 
-                {isModuleEnabled('chat') && (
-                  <MenuNavLink to={`/${cId}/chat`} icon={<MessageCircle size={22} strokeWidth={2} />} label='Conversas' />
-                )}
+                {isModuleEnabled('chat') && <MenuNavLink to={`/${cId}/chat`} icon={<MessageCircle size={22} strokeWidth={2} />} label='Conversas' />}
 
-                {isModuleEnabled('automation') && (
-                  <MenuNavLink to={`/${cId}/automation`} icon={<Zap size={22} strokeWidth={2} />} label='Automação' />
-                )}
-
-                {isModuleEnabled('projects') && (
-                  <MenuNavLink to={`/${cId}/projects`} icon={<FolderDot size={22} strokeWidth={2} />} label='Projetos' />
-                )}
-
-                {isModuleEnabled('tasks') && (
-                  <MenuNavLink to={`/${cId}/${pId}/tasks`} icon={<CheckCircle size={22} strokeWidth={2} />} label='Tarefas' />
-                )}
+                {isModuleEnabled('automation') && <MenuNavLink to={`/${cId}/automation`} icon={<Zap size={22} strokeWidth={2} />} label='Automação' />}
 
                 <MenuNavLink to={`/${cId}/teams`} icon={<Users2 size={22} strokeWidth={2} />} label='Equipes' />
+
+                {isModuleEnabled('projects') && <MenuNavLink to={`/${cId}/projects`} icon={<FolderDot size={22} strokeWidth={2} />} label='Projetos' />}
+
+                {isModuleEnabled('tasks') && <MenuNavLink to={`/${cId}/${pId}/tasks`} icon={<CheckCircle size={22} strokeWidth={2} />} label='Tarefas' />}
 
                 <MenuNavLink to={`/${cId}/notifications`} icon={<Bell size={22} strokeWidth={2} />} label='Avisos' />
                 <MenuNavLink to={`/${cId}/settings`} icon={<Settings size={22} strokeWidth={2} />} label='Configs' />
@@ -88,46 +80,71 @@ export function Navbar() {
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className={`w-10 h-10 rounded-lg overflow-hidden border transition-colors ${isDropdownOpen ? 'border-white' : 'border-white/20 hover:border-white'}`}
           >
-            <img src={session?.user?.image || 'https://robohash.org/rodriggopda.png?set=set5&size=126x126'} alt='Avatar' className='w-full h-full object-cover bg-white/10' />
+            <img
+              src={session?.user?.image || 'https://robohash.org/rodriggopda.png?set=set5&size=126x126'}
+              alt='Avatar'
+              className='w-full h-full object-cover bg-white/10'
+            />
           </button>
 
           {isDropdownOpen && (
-            <div className="absolute bottom-12 left-14 w-60 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden animate-in fade-in zoom-in duration-200 z-[100]">
-              <div className="p-4 border-b border-zinc-200 dark:border-zinc-800">
-                <div className="font-bold text-sm text-zinc-900 dark:text-zinc-100">{session?.user?.name || 'Usuário'}</div>
-                <div className="font-bold text-[10px] text-zinc-500">{session?.user?.email || 'usuario@email.com'}</div>
+            <div className='absolute bottom-12 left-14 w-60 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden animate-in fade-in zoom-in duration-200 z-[100]'>
+              <div className='p-4 border-b border-zinc-200 dark:border-zinc-800'>
+                <div className='font-bold text-sm text-zinc-900 dark:text-zinc-100'>{session?.user?.name || 'Usuário'}</div>
+                <div className='font-bold text-[10px] text-zinc-500'>{session?.user?.email || 'usuario@email.com'}</div>
               </div>
 
-              <div className="p-2 border-b border-zinc-200 dark:border-zinc-800">
-                <div className="px-2 py-1 text-[10px] font-bold text-zinc-400  tracking-widest mb-1">Visibilidade</div>
-                <button className="w-full flex items-center gap-2 px-2 py-1.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors">
-                  <Circle size={10} className="fill-emerald-500 text-emerald-500" /> Online
+              <div className='p-2 border-b border-zinc-200 dark:border-zinc-800'>
+                <div className='px-2 py-1 text-[10px] font-bold text-zinc-400  tracking-widest mb-1'>Visibilidade</div>
+                <button className='w-full flex items-center gap-2 px-2 py-1.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors'>
+                  <Circle size={10} className='fill-emerald-500 text-emerald-500' /> Online
                 </button>
-                <button className="w-full flex items-center gap-2 px-2 py-1.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors">
-                  <Circle size={10} className="fill-red-500 text-red-500" /> Não incomode
+                <button className='w-full flex items-center gap-2 px-2 py-1.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors'>
+                  <Circle size={10} className='fill-red-500 text-red-500' /> Não incomode
                 </button>
-                <button className="w-full flex items-center gap-2 px-2 py-1.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors">
-                  <Circle size={10} className="fill-amber-500 text-amber-500" /> Ocupado
+                <button className='w-full flex items-center gap-2 px-2 py-1.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors'>
+                  <Circle size={10} className='fill-amber-500 text-amber-500' /> Ocupado
                 </button>
-                <button className="w-full flex items-center gap-2 px-2 py-1.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors">
-                  <Circle size={10} className="fill-zinc-500 text-zinc-500" /> Offline
+                <button className='w-full flex items-center gap-2 px-2 py-1.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors'>
+                  <Circle size={10} className='fill-zinc-500 text-zinc-500' /> Offline
                 </button>
               </div>
 
-              <div className="p-2 border-b border-zinc-200 dark:border-zinc-800">
-                <button onClick={() => { navigate(`/organizations`); setIsDropdownOpen(false); }} className="w-full flex items-center gap-2 px-2 py-1.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors">
+              <div className='p-2 border-b border-zinc-200 dark:border-zinc-800'>
+                <button
+                  onClick={() => {
+                    navigate(`/organizations`);
+                    setIsDropdownOpen(false);
+                  }}
+                  className='w-full flex items-center gap-2 px-2 py-1.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors'
+                >
                   <Building size={14} /> Minhas organizações
                 </button>
-                <button onClick={() => { navigate(`/${cId}/settings/profile`); setIsDropdownOpen(false); }} className="w-full flex items-center gap-2 px-2 py-1.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors">
+                <button
+                  onClick={() => {
+                    navigate(`/${cId}/settings/profile`);
+                    setIsDropdownOpen(false);
+                  }}
+                  className='w-full flex items-center gap-2 px-2 py-1.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors'
+                >
                   <User size={14} /> Meu perfil
                 </button>
-                <button onClick={() => { navigate(`/${cId}/settings`); setIsDropdownOpen(false); }} className="w-full flex items-center gap-2 px-2 py-1.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors">
+                <button
+                  onClick={() => {
+                    navigate(`/${cId}/settings`);
+                    setIsDropdownOpen(false);
+                  }}
+                  className='w-full flex items-center gap-2 px-2 py-1.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors'
+                >
                   <Settings size={14} /> Configurações gerais
                 </button>
               </div>
 
-              <div className="p-2">
-                <button onClick={handleLogout} className="w-full flex items-center gap-2 px-2 py-1.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-md transition-colors">
+              <div className='p-2'>
+                <button
+                  onClick={handleLogout}
+                  className='w-full flex items-center gap-2 px-2 py-1.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-md transition-colors'
+                >
                   <LogOut size={14} /> Sair
                 </button>
               </div>
@@ -139,17 +156,27 @@ export function Navbar() {
   );
 }
 
-export function MenuNavLink({ to, icon, label }: { to: string, icon: React.ReactNode, label: string }) {
+export function MenuNavLink({ to, icon, label }: { to: string; icon: React.ReactNode; label: string }) {
   return (
-    <li className="relative group">
-      <NavLink to={to} className={({ isActive }) => [isActive ? 'text-white font-black' : 'text-zinc-400 font-medium hover:text-zinc-200', 'flex flex-col items-center justify-center gap-1.5 transition-all duration-200 py-1'].join(' ')}>
+    <li className='relative group'>
+      <NavLink
+        to={to}
+        className={({ isActive }) =>
+          [
+            isActive ? 'text-white font-black' : 'text-zinc-400 font-medium hover:text-zinc-200',
+            'flex flex-col items-center justify-center gap-1.5 transition-all duration-200 py-1',
+          ].join(' ')
+        }
+      >
         {({ isActive }) => (
           <div className='flex flex-col items-center justify-center gap-1 transition-all duration-200 py-1'>
-            <div className={`p-1 rounded-lg transition-all duration-200 flex items-center justify-center ${isActive ? 'text-white' : 'text-zinc-400 group-hover:text-white'}`}>
+            <div
+              className={`p-1 rounded-lg transition-all duration-200 flex items-center justify-center ${isActive ? 'text-white' : 'text-zinc-400 group-hover:text-white'}`}
+            >
               {React.cloneElement(icon as React.ReactElement, {
                 fill: isActive ? '#737373' : 'none',
                 stroke: isActive ? 'currentColor' : 'currentColor',
-                strokeWidth: isActive ? 2 : 2
+                strokeWidth: isActive ? 2 : 2,
               })}
             </div>
             <span className='text-[10px] font-medium'>{label}</span>
@@ -157,11 +184,23 @@ export function MenuNavLink({ to, icon, label }: { to: string, icon: React.React
         )}
       </NavLink>
     </li>
-  )
+  );
 }
 
 export function SubNavLink({ name, to }: SubmenuItem) {
-  return <NavLink to={to} className={({ isActive }) => [isActive ? 'text-neutral-900 dark:text-neutral-100 bg-neutral-50 dark:bg-neutral-950 border-neutral-200 dark:border-neutral-800' : 'text-neutral-500 border-transparent', ' border-t border-l border-r -mb-px flex items-center gap-3 py-1 px-4 rounded-t transition-colors'].join(' ')}>
-    <span>{name}</span>
-  </NavLink>
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        [
+          isActive
+            ? 'text-neutral-900 dark:text-neutral-100 bg-neutral-50 dark:bg-neutral-950 border-neutral-200 dark:border-neutral-800'
+            : 'text-neutral-500 border-transparent',
+          ' border-t border-l border-r -mb-px flex items-center gap-3 py-1 px-4 rounded-t transition-colors',
+        ].join(' ')
+      }
+    >
+      <span>{name}</span>
+    </NavLink>
+  );
 }

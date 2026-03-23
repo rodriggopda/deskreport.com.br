@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 import { authClient } from '../../lib/auth-client';
 import { TaskCardProps } from './tasks-data';
+import { apiBase } from '../../api/fetcher';
 
-const API_URL = 'http://10.0.0.150:3000/tasks';
+const API_URL = apiBase + '/tasks';
 
 // URL route is typically /:company_id/... so we can extract it for the headers
 const getOrgId = () => {
@@ -29,7 +30,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
   fetchTasks: async () => {
     try {
       const { data, error } = await authClient.$fetch<TaskCardProps[]>(API_URL, {
-        headers: { 'x-organization-id': getOrgId() }
+        headers: { 'x-organization-id': getOrgId() },
       });
       if (!error && data) {
         set({ tasks: data });
@@ -45,7 +46,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
       const { data, error } = await authClient.$fetch<TaskCardProps>(API_URL, {
         method: 'POST',
         body: task,
-        headers: { 'x-organization-id': getOrgId() }
+        headers: { 'x-organization-id': getOrgId() },
       });
       if (!error && data) {
         set((state) => ({ tasks: [data, ...state.tasks] }));
@@ -61,11 +62,11 @@ export const useTaskStore = create<TaskStore>((set) => ({
       const { data, error } = await authClient.$fetch<TaskCardProps>(`${API_URL}/${id}`, {
         method: 'PUT',
         body: updates,
-        headers: { 'x-organization-id': getOrgId() }
+        headers: { 'x-organization-id': getOrgId() },
       });
       if (!error && data) {
         set((state) => ({
-          tasks: state.tasks.map(t => t.id === id ? data : t)
+          tasks: state.tasks.map((t) => (t.id === id ? data : t)),
         }));
       } else if (error) {
         console.error('Failed to update task:', error);
@@ -79,11 +80,11 @@ export const useTaskStore = create<TaskStore>((set) => ({
       const { data, error } = await authClient.$fetch<TaskCardProps>(`${API_URL}/${taskId}/comments`, {
         method: 'POST',
         body: { content },
-        headers: { 'x-organization-id': getOrgId() }
+        headers: { 'x-organization-id': getOrgId() },
       });
       if (!error && data) {
         set((state) => ({
-          tasks: state.tasks.map(t => t.id === taskId ? data : t)
+          tasks: state.tasks.map((t) => (t.id === taskId ? data : t)),
         }));
       } else if (error) {
         console.error('Failed to add comment:', error);
@@ -96,11 +97,11 @@ export const useTaskStore = create<TaskStore>((set) => ({
     try {
       const { error } = await authClient.$fetch(`${API_URL}/${id}`, {
         method: 'DELETE',
-        headers: { 'x-organization-id': getOrgId() }
+        headers: { 'x-organization-id': getOrgId() },
       });
       if (!error) {
         set((state) => ({
-          tasks: state.tasks.filter(t => t.id !== id)
+          tasks: state.tasks.filter((t) => t.id !== id),
         }));
       } else if (error) {
         console.error('Failed to delete task:', error);

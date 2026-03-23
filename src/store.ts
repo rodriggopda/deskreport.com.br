@@ -1,15 +1,16 @@
-import { create } from 'zustand'
+import { create } from 'zustand';
 import { authClient } from './lib/auth-client';
+import { apiBase } from './api/fetcher';
 
 export type SubmenuItem = {
   name: string;
   to: string;
-}
+};
 
 export type SubmenuNavigation = {
   navigation: SubmenuItem[];
-  setNavigation: (navigation: SubmenuItem[]) => void
-}
+  setNavigation: (navigation: SubmenuItem[]) => void;
+};
 
 export const useSubmenuNavigation = create<SubmenuNavigation>()((set) => ({
   navigation: [],
@@ -52,32 +53,33 @@ export const useUIStore = create<UIStore>()((set) => ({
     localStorage.setItem('deskreport-chat-pref', pref);
     // Se mudar a preferência, a gente ajusta o modo atual se ele estiver nos estados iniciais
     set((state) => {
-      const newMode = (state.chatSidebarMode === 'expanded') ? 'expanded' : (pref === 'hidden' ? 'hidden' : 'compact');
+      const newMode = state.chatSidebarMode === 'expanded' ? 'expanded' : pref === 'hidden' ? 'hidden' : 'compact';
       localStorage.setItem('deskreport-chat-mode', newMode);
       return { chatSidebarPreference: pref, chatSidebarMode: newMode };
     });
   },
-  toggleChatSidebarMode: () => set((state) => {
-    let nextMode: ChatSidebarMode;
+  toggleChatSidebarMode: () =>
+    set((state) => {
+      let nextMode: ChatSidebarMode;
 
-    if (state.chatSidebarPreference === 'hidden') {
-      // Se prefere escondido: alterna entre Hidden e Expanded
-      nextMode = state.chatSidebarMode === 'expanded' ? 'hidden' : 'expanded';
-    } else {
-      // Se prefere compacto: alterna entre Compact e Expanded
-      nextMode = state.chatSidebarMode === 'expanded' ? 'compact' : 'expanded';
-    }
+      if (state.chatSidebarPreference === 'hidden') {
+        // Se prefere escondido: alterna entre Hidden e Expanded
+        nextMode = state.chatSidebarMode === 'expanded' ? 'hidden' : 'expanded';
+      } else {
+        // Se prefere compacto: alterna entre Compact e Expanded
+        nextMode = state.chatSidebarMode === 'expanded' ? 'compact' : 'expanded';
+      }
 
-    localStorage.setItem('deskreport-chat-mode', nextMode);
-    return { chatSidebarMode: nextMode };
-  }),
+      localStorage.setItem('deskreport-chat-mode', nextMode);
+      return { chatSidebarMode: nextMode };
+    }),
 }));
 
 export type Organization = { id: string; name: string };
 export type Project = {
   id: string;
   name: string;
-  teams?: { teamId: string, team?: Team }[];
+  teams?: { teamId: string; team?: Team }[];
   completion_percentage?: number;
 };
 export type Team = {
@@ -112,20 +114,20 @@ export const useTenantStore = create<TenantStore>()((set, get) => ({
         set({
           organizations: data.map((org: any) => ({
             id: org.id,
-            name: org.name
-          }))
+            name: org.name,
+          })),
         });
       }
     } catch (error) {
-      console.error("Failed to fetch organizations:", error);
+      console.error('Failed to fetch organizations:', error);
     }
   },
   fetchProjects: async (orgId: string) => {
     try {
-      const { data, error } = await authClient.$fetch<any[]>('http://10.0.0.150:3000/projects', {
+      const { data, error } = await authClient.$fetch<any[]>(`${apiBase}/projects`, {
         headers: {
-          'x-organization-id': orgId
-        }
+          'x-organization-id': orgId,
+        },
       });
       if (!error && data) {
         set({
@@ -135,9 +137,9 @@ export const useTenantStore = create<TenantStore>()((set, get) => ({
               id: p.id,
               name: p.name,
               teams: p.teams,
-              completion_percentage: p.completion_percentage
-            }))
-          ]
+              completion_percentage: p.completion_percentage,
+            })),
+          ],
         });
       }
     } catch (error) {
@@ -146,10 +148,10 @@ export const useTenantStore = create<TenantStore>()((set, get) => ({
   },
   fetchTeams: async (orgId: string) => {
     try {
-      const { data, error } = await authClient.$fetch<Team[]>('http://10.0.0.150:3000/teams', {
+      const { data, error } = await authClient.$fetch<Team[]>(`${apiBase}/teams`, {
         headers: {
-          'x-organization-id': orgId
-        }
+          'x-organization-id': orgId,
+        },
       });
       if (!error && data) {
         set({ teams: data });
@@ -161,7 +163,7 @@ export const useTenantStore = create<TenantStore>()((set, get) => ({
   fetchMembers: async (orgId: string) => {
     try {
       const { data } = await authClient.organization.getFullOrganization({
-        query: { organizationId: orgId }
+        query: { organizationId: orgId },
       });
       if (data?.members) {
         set({ members: data.members });
