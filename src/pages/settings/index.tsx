@@ -9,6 +9,8 @@ import { ChannelsHub } from './views/channels-hub';
 import { PreferencesHub } from './views/preferences-hub';
 import { OrganizationsHub } from './views/organizations-hub';
 import { ProfileHub } from './views/profile-hub';
+import { BackupHub } from './views/backup-hub';
+import { Database } from 'lucide-react';
 
 export default function Settings() {
   const { tab } = useParams();
@@ -20,6 +22,7 @@ export default function Settings() {
     { name: 'Canais e Integrações', to: companyUrl('settings/channels'), icon: <Share2 size={14} /> },
     { name: 'Usuários e Segurança', to: companyUrl('settings/security'), icon: <ShieldCheck size={14} /> },
     { name: 'Preferências', to: companyUrl('settings/preferences'), icon: <Settings2 size={14} /> },
+    { name: 'Backup e Dados', to: companyUrl('settings/backup'), icon: <Database size={14} /> },
   ], [companyUrl]);
 
   const renderContent = () => {
@@ -28,6 +31,7 @@ export default function Settings() {
       case 'security': return <SecurityHub />;
       case 'preferences': return <PreferencesHub />;
       case 'organizations': return <OrganizationsHub />;
+      case 'backup': return <BackupHub />;
       default: return <ProfileHub />;
     }
   };
