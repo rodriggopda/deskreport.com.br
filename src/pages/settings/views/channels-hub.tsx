@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Share2, MessageCircle, Instagram, Facebook, Zap, ExternalLink, QrCode, AlertCircle, RefreshCw } from 'lucide-react';
+import { Instagram, Facebook, ExternalLink, QrCode, AlertCircle, RefreshCw } from 'lucide-react';
 
 export function ChannelsHub() {
   const [loading, setLoading] = useState(true);
@@ -14,11 +14,11 @@ export function ChannelsHub() {
     <div className="space-y-8 animate-slide-up pb-10">
 
       {/* HEADER INFORMATIVO */}
-      <div className="mb-8 border-b border-neutral-200 dark:border-neutral-800 pb-6">
-        <h2 className="text-2xl font-semibold text-neutral-900 dark:text-white flex items-center gap-2 mb-2">
+      <div className="mb-8 border-b border-zinc-200 dark:border-zinc-800 pb-6">
+        <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 mb-2">
           Central de Integrações
         </h2>
-        <p className="text-sm text-neutral-500 max-w-2xl">
+        <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-2xl">
           Conecte suas redes sociais e canais de atendimento para centralizar suas vendas.
           Ative o WhatsApp para que seus clientes possam finalizar pedidos e conversar diretamente com seu time.
         </p>

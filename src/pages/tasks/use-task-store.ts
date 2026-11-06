@@ -21,10 +21,13 @@ interface TaskStore {
   updateTask: (id: string, updates: Partial<TaskCardProps>) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
   fetchTasks: () => Promise<void>;
-  addComment: (taskId: string, content: string) => Promise<void>;
+  addComment: (taskId: string, content: string, agent?: string) => Promise<void>;
+  dispatchTask: (id: string, agent: string) => Promise<string | null>;
+  stopTask: (id: string) => Promise<string | null>;
+  fetchTerminal: (id: string) => Promise<string>;
 }
 
-export const useTaskStore = create<TaskStore>((set) => ({
+export const useTaskStore = create<TaskStore>((set, get) => ({
   tasks: [],
   setTasks: (tasks) => set({ tasks }),
   fetchTasks: async () => {
@@ -38,7 +41,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
         console.error('Failed to fetch tasks:', error);
       }
     } catch (error) {
-      console.error('Failed to fetch tasks:', error);
+      console.error('Failed to fetch tasks:', (error as Error).message || error);
     }
   },
   addTask: async (task) => {
@@ -54,10 +57,13 @@ export const useTaskStore = create<TaskStore>((set) => ({
         console.error('Failed to add task:', error);
       }
     } catch (error) {
-      console.error('Failed to add task:', error);
+      console.error('Failed to add task:', (error as Error).message || error);
     }
   },
   updateTask: async (id, updates) => {
+    const previous = get().tasks;
+    set({ tasks: previous.map((t) => (t.id === id ? { ...t, ...updates } : t)) });
+
     try {
       const { data, error } = await authClient.$fetch<TaskCardProps>(`${API_URL}/${id}`, {
         method: 'PUT',
@@ -68,18 +74,47 @@ export const useTaskStore = create<TaskStore>((set) => ({
         set((state) => ({
           tasks: state.tasks.map((t) => (t.id === id ? data : t)),
         }));
-      } else if (error) {
+      } else {
+        set({ tasks: previous });
         console.error('Failed to update task:', error);
       }
     } catch (error) {
-      console.error('Failed to update task:', error);
+      set({ tasks: previous });
+      console.error('Failed to update task:', (error as Error).message || error);
     }
   },
-  addComment: async (taskId, content) => {
+  dispatchTask: async (id, agent) => {
+    const { error } = await authClient.$fetch(`${API_URL}/${id}/dispatch`, {
+      method: 'POST',
+      body: { agent },
+      headers: { 'x-organization-id': getOrgId() },
+    });
+    if (error) return error.message || 'Não foi possível rodar o agente';
+
+    if (agent === 'antigravity') return null;
+    set((state) => ({
+      tasks: state.tasks.map((t) => (t.id === id ? { ...t, status: 'in-progress' } : t)),
+    }));
+    return null;
+  },
+  stopTask: async (id) => {
+    const { error } = await authClient.$fetch(`${API_URL}/${id}/stop`, {
+      method: 'POST',
+      headers: { 'x-organization-id': getOrgId() },
+    });
+    return error ? error.message || 'Não foi possível parar o agente' : null;
+  },
+  fetchTerminal: async (id) => {
+    const { data } = await authClient.$fetch<{ text: string }>(`${API_URL}/${id}/terminal`, {
+      headers: { 'x-organization-id': getOrgId() },
+    });
+    return data?.text || '';
+  },
+  addComment: async (taskId, content, agent) => {
     try {
       const { data, error } = await authClient.$fetch<TaskCardProps>(`${API_URL}/${taskId}/comments`, {
         method: 'POST',
-        body: { content },
+        body: { content, agent: agent || undefined },
         headers: { 'x-organization-id': getOrgId() },
       });
       if (!error && data) {
@@ -90,7 +125,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
         console.error('Failed to add comment:', error);
       }
     } catch (error) {
-      console.error('Failed to add comment:', error);
+      console.error('Failed to add comment:', (error as Error).message || error);
     }
   },
   deleteTask: async (id) => {
@@ -107,12 +142,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
         console.error('Failed to delete task:', error);
       }
     } catch (error) {
-      console.error('Failed to delete task:', error);
+      console.error('Failed to delete task:', (error as Error).message || error);
     }
   },
 }));
-
-// Load tasks initially if running on client
-if (typeof window !== 'undefined') {
-  useTaskStore.getState().fetchTasks();
-}

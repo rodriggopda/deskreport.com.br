@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Inbox, LayoutDashboard, MessageCircle, Zap, FolderDot, CheckCircle, Bell, Settings, LogOut, User, Circle, Building, Users2 } from 'lucide-react';
+import { Inbox, LayoutDashboard, MessageCircle, FolderDot, CheckCircle, Bell, Settings, LogOut, User, Circle, Building, Users2 } from 'lucide-react';
 import { NavLink, useParams, useNavigate } from 'react-router-dom';
 import { SubmenuItem } from '../../store';
 import { useOrganization, useSession, authClient } from '../../lib/auth-client';
@@ -61,7 +61,7 @@ export function Navbar() {
 
                 {isModuleEnabled('chat') && <MenuNavLink to={`/${cId}/chat`} icon={<MessageCircle size={22} strokeWidth={2} />} label='Conversas' />}
 
-                {isModuleEnabled('automation') && <MenuNavLink to={`/${cId}/automation`} icon={<Zap size={22} strokeWidth={2} />} label='Automação' />}
+                {/* {isModuleEnabled('automation') && <MenuNavLink to={`/${cId}/automation`} icon={<Zap size={22} strokeWidth={2} />} label='Automação' />} */}
 
                 <MenuNavLink to={`/${cId}/teams`} icon={<Users2 size={22} strokeWidth={2} />} label='Equipes' />
 
@@ -163,7 +163,7 @@ export function MenuNavLink({ to, icon, label }: { to: string; icon: React.React
         to={to}
         className={({ isActive }) =>
           [
-            isActive ? 'text-white font-black' : 'text-zinc-400 font-medium hover:text-zinc-200',
+            isActive ? 'text-white font-semibold' : 'text-zinc-400 font-medium hover:text-zinc-200',
             'flex flex-col items-center justify-center gap-1.5 transition-all duration-200 py-1',
           ].join(' ')
         }
@@ -194,9 +194,9 @@ export function SubNavLink({ name, to }: SubmenuItem) {
       className={({ isActive }) =>
         [
           isActive
-            ? 'text-neutral-900 dark:text-neutral-100 bg-neutral-50 dark:bg-neutral-950 border-neutral-200 dark:border-neutral-800'
-            : 'text-neutral-500 border-transparent',
-          ' border-t border-l border-r -mb-px flex items-center gap-3 py-1 px-4 rounded-t transition-colors',
+            ? 'text-zinc-900 dark:text-zinc-100 border-zinc-900 dark:border-zinc-100'
+            : 'text-zinc-500 dark:text-zinc-400 border-transparent hover:text-zinc-900 dark:hover:text-zinc-200',
+          'border-b-2 -mb-px flex items-center gap-2 py-2.5 px-3 text-sm font-medium whitespace-nowrap transition-colors',
         ].join(' ')
       }
     >

@@ -19,7 +19,7 @@ export function useTaskFilters(tasks: TaskCardProps[]) {
                 task.id.toLowerCase().includes(search.toLowerCase());
             const matchesStatus = selectedStatus === 'all' || task.status === selectedStatus;
             const matchesProject = selectedProject === 'all' || task.project === selectedProject;
-            const matchesAssignee = selectedAssignee === 'all' || task.assignee?.name === selectedAssignee;
+            const matchesAssignee = selectedAssignee === 'all' || task.assignees?.some(a => a.name === selectedAssignee);
             const matchesPriority = selectedPriority === 'all' || task.priority === selectedPriority;
 
             return matchesSearch && matchesStatus && matchesProject && matchesAssignee && matchesPriority;
@@ -40,8 +40,8 @@ export function useTaskFilters(tasks: TaskCardProps[]) {
         return result;
     }, [tasks, search, selectedStatus, selectedProject, selectedAssignee, selectedPriority, sortBy]);
 
-    const projects = useMemo(() => ['all', ...new Set(tasks.map(t => t.project))], [tasks]);
-    const assignees = useMemo(() => ['all', ...new Set(tasks.filter(t => t.assignee).map(t => t.assignee!.name))], [tasks]);
+    const projects = useMemo(() => ['all', ...unique(tasks.map(t => t.project))], [tasks]);
+    const assignees = useMemo(() => ['all', ...unique(tasks.flatMap(t => t.assignees?.map(a => a.name) || []))], [tasks]);
     const priorities: (TaskPriority | 'all')[] = ['all', 'low', 'medium', 'high', 'urgent'];
 
     return {
@@ -64,4 +64,8 @@ export function useTaskFilters(tasks: TaskCardProps[]) {
         assignees,
         priorities
     };
+}
+
+function unique(list: string[]) {
+    return list.filter((item, index) => list.indexOf(item) === index);
 }

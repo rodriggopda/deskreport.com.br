@@ -2,27 +2,33 @@ import { Page } from '../../components/layout/page';
 import { Topbar } from '../../components/layout/topbar';
 import { useParams } from 'react-router-dom';
 import { Plus } from 'lucide-react';
-import { STATUS_CONFIG, PRIORITY_CONFIG, TaskCardProps } from './tasks-data';
+import { STATUS_CONFIG, PRIORITY_CONFIG, TaskCardProps, TaskStatus } from './tasks-data';
 import { useTaskStore } from './use-task-store';
 import { useTaskFilters } from './use-task-filters';
 import { TaskFiltersComponent } from './task-filters-component';
 import { TaskDetailDrawer } from './task-detail-drawer';
 import { Button } from '../../components/ui/button';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useTenantStore } from '../../store';
 import { TaskCard } from './components/task-card';
 import { DragDropProvider, useDroppable } from '@dnd-kit/react';
+import { AgentsBar } from './components/agents-bar';
 
 export function TaskBoards() {
   const { company_id, project_id } = useParams();
   const cId = company_id || '4go';
   const pId = project_id || 'deskreport';
 
-  const { tasks } = useTaskStore();
-  const [selectedTask, setSelectedTask] = useState<TaskCardProps | null>(null);
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const { tasks, updateTask, fetchTasks } = useTaskStore();
 
-  const [target, setTarget] = useState();
+  useEffect(() => {
+    if (company_id) fetchTasks();
+  }, [company_id, fetchTasks]);
+
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [newTaskStatus, setNewTaskStatus] = useState<TaskStatus | undefined>();
+  const selectedTask = useMemo(() => tasks.find((t) => t.id === selectedTaskId) || null, [tasks, selectedTaskId]);
 
   const { projects: storeProjects } = useTenantStore();
   const getProjectName = (id: string) => storeProjects.find((p) => p.id === id)?.name || id;
@@ -85,18 +91,18 @@ export function TaskBoards() {
       }));
     }
     if (groupBy === 'project') {
-      const uniqueProjects = Array.from(new Set(finalTasksFiltered.map((t) => t.project)));
+      const uniqueProjects = unique(finalTasksFiltered.map((t) => t.project));
       return uniqueProjects.map((p) => ({ id: p, title: getProjectName(p), color: 'text-zinc-500' }));
     }
     if (groupBy === 'assignee') {
-      const uniqueAssignees = Array.from(new Set(finalTasksFiltered.flatMap((t) => t.assignees?.map((a) => a.name) || [])));
+      const uniqueAssignees = unique(finalTasksFiltered.flatMap((t) => t.assignees?.map((a) => a.name) || []));
       return [
         ...uniqueAssignees.map((a) => ({ id: a, title: a, color: 'text-zinc-500' })),
         { id: 'unassigned', title: 'Sem responsável', color: 'text-zinc-400' },
       ];
     }
     return [];
-  }, [groupBy]);
+  }, [groupBy, finalTasksFiltered, storeProjects]);
 
   const clearFilters = () => {
     setSearch('');
@@ -118,6 +124,17 @@ export function TaskBoards() {
     }
     return [];
   };
+
+  function openTask(task: TaskCardProps) {
+    setSelectedTaskId(task.id);
+    setIsDetailOpen(true);
+  }
+
+  function openNewTask(status?: TaskStatus) {
+    setSelectedTaskId(null);
+    setNewTaskStatus(status);
+    setIsDetailOpen(true);
+  }
 
   return (
     <Page navigation={navigation}>
@@ -146,10 +163,7 @@ export function TaskBoards() {
           <Button
             size='md'
             className='gap-1.5'
-            onClick={() => {
-              setSelectedTask(null);
-              setIsDetailOpen(true);
-            }}
+            onClick={() => openNewTask()}
           >
             <Plus size={12} />
             Tarefa
@@ -157,18 +171,33 @@ export function TaskBoards() {
         </div>
       </Topbar>
 
+      <AgentsBar />
+
       <div className='flex-1 overflow-x-auto transition-colors selection:bg-blue-100 selection:text-blue-900'>
         <div className='flex h-full items-start'>
           <DragDropProvider
             onDragEnd={(event) => {
-              if (event.canceled) return;
-              setTarget(event.operation?.target?.id);
+              if (event.canceled || groupBy !== 'status') return;
+
+              const sourceId = event.operation.source?.id;
+              const targetColumnId = event.operation.target?.id;
+              if (!sourceId || !targetColumnId) return;
+
+              const task = tasks.find((t) => t.id === sourceId);
+              if (!task || task.status === targetColumnId) return;
+
+              updateTask(task.id, { status: targetColumnId as TaskStatus });
             }}
           >
             {dynamicColumns.map((column) => (
-              <BoardColumn column={column} key={column.id} counterTasks={getTasksForColumn(column.id).length}>
+              <BoardColumn
+                column={column}
+                key={column.id}
+                counterTasks={getTasksForColumn(column.id).length}
+                onAdd={() => openNewTask(groupBy === 'status' ? (column.id as TaskStatus) : undefined)}
+              >
                 {getTasksForColumn(column.id).map((task) => (
-                  <TaskCard task={task} key={task.id} />
+                  <TaskCard task={task} key={task.id} projectName={getProjectName(task.project)} onClick={() => openTask(task)} />
                 ))}
               </BoardColumn>
             ))}
@@ -191,9 +220,10 @@ export function TaskBoards() {
         isOpen={isDetailOpen}
         onClose={() => {
           setIsDetailOpen(false);
-          setSelectedTask(null);
+          setSelectedTaskId(null);
         }}
         defaultProject={project_id !== 'all' ? project_id : undefined}
+        defaultStatus={newTaskStatus}
       />
     </Page>
   );
@@ -203,10 +233,12 @@ function BoardColumn({
   column,
   children,
   counterTasks,
+  onAdd,
 }: {
   column: { id: string; title: string; color: string };
   children: React.ReactNode;
   counterTasks: number;
+  onAdd: () => void;
 }) {
   const { ref } = useDroppable({ id: column.id });
   return (
@@ -214,36 +246,37 @@ function BoardColumn({
       id={column.id}
       ref={ref}
       key={column.id}
-      className='w-[300px] min-w-[300px] shrink-0 h-full flex flex-col border-r border-zinc-200 dark:border-zinc-800/80 last:border-r-0'
+      className='w-[310px] min-w-[310px] shrink-0 h-full flex flex-col border-r border-zinc-200 dark:border-zinc-800 last:border-r-0 bg-zinc-50/40 dark:bg-zinc-950/40'
     >
-      <div className='px-4 py-3 bg-zinc-50/50 dark:bg-zinc-950/20 border-b border-zinc-200 dark:border-zinc-800/60 sticky top-0 z-10 backdrop-blur-sm'>
+      <div className='px-4 py-3 bg-white/80 dark:bg-zinc-900/80 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-10 backdrop-blur-sm'>
         <div className='flex items-center justify-between group/header'>
           <div className='flex items-center gap-2'>
-            <div className={`w-2 h-2 rounded-full ${column.color.replace('text-', 'bg-')} ring-4 ${column.color.replace('text-', 'ring-')}/10`} />
-            <h3 className='font-bold text-zinc-900 dark:text-zinc-100 text-[13px] tracking-tight'>{column.title}</h3>
-            <span className='text-[10px] font-black text-zinc-400 dark:text-zinc-500 ml-1'>{counterTasks}</span>
+            <div className={`w-2 h-2 rounded-full ${column.color.replace('text-', 'bg-')}`} />
+            <h3 className='font-semibold text-zinc-900 dark:text-zinc-100 text-xs'>{column.title}</h3>
+            <span className='text-xs font-medium text-zinc-400 dark:text-zinc-500 px-1.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800'>{counterTasks}</span>
           </div>
-          <Button variant='ghost' size='icon' className='h-6 w-6 text-zinc-400 opacity-0 group-hover/header:opacity-100 transition-opacity'>
+          <Button variant='ghost' size='icon' className='h-6 w-6 text-zinc-400 opacity-0 group-hover/header:opacity-100 transition-opacity' onClick={onAdd}>
             <Plus size={14} />
           </Button>
         </div>
       </div>
 
-      <div className='flex-1 space-y-2 overflow-y-auto px-2.5 py-2 bg-zinc-50/10 dark:bg-transparent'>
+      <div className='flex-1 space-y-2.5 overflow-y-auto p-3'>
         {children}
 
         <Button
           variant='ghost'
-          className=' w-full py-4 text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-all group border border-dashed border-transparent hover:border-zinc-200 dark:hover:border-zinc-800 mt-2'
-          onClick={() => {
-            // setSelectedTask(null);
-            // setIsDetailOpen(true);
-          }}
+          className='w-full py-3 text-zinc-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all group border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl mt-2'
+          onClick={onAdd}
         >
-          <Plus size={14} className='group-hover:rotate-90 transition-transform' />
-          <span className='text-[12px] font-bold'>Adicionar item</span>
+          <Plus size={14} />
+          <span className='text-xs font-medium'>Nova tarefa</span>
         </Button>
       </div>
     </div>
   );
+}
+
+function unique(list: string[]) {
+  return list.filter((item, index) => list.indexOf(item) === index);
 }

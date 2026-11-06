@@ -1,10 +1,11 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { signIn } from '../../lib/auth-client';
 import { Button } from '../../components/ui/button';
 
 export function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,7 +24,9 @@ export function Login() {
 
       if (error) throw new Error(error.message || 'Erro ao entrar');
       if (data) {
-        navigate('/select-organization');
+        // Volta para onde o AuthGuard barrou, ex.: /cli/auth vindo do terminal
+        const from = location.state?.from;
+        navigate(from?.pathname === '/cli/auth' ? from.pathname + from.search : '/select-organization');
       }
     } catch (err: any) {
       setError(err.message || 'Ocorreu um erro');

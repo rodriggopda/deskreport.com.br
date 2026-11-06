@@ -54,7 +54,10 @@ export function SecurityHub() {
         query: { organizationId: activeOrganizationId },
       });
       if (data?.members) {
-        setMembers(data.members);
+        const humanMembers = data.members.filter(
+          (m: any) => !m.userId?.startsWith('agent-user-') && !m.user?.email?.endsWith('@agents.deskreport.com.br')
+        );
+        setMembers(humanMembers);
       }
     } catch (e) {
       console.error(e);
@@ -114,9 +117,9 @@ export function SecurityHub() {
   return (
     <div className='space-y-8 animate-slide-up pb-10'>
       {/* HEADER INFORMATIVO */}
-      <div className='mb-8 border-b border-neutral-200 dark:border-neutral-800 pb-6'>
-        <h2 className='text-2xl font-semibold text-neutral-900 dark:text-white flex items-center gap-2 mb-2'>Usuários e Segurança</h2>
-        <p className='text-sm text-neutral-500 max-w-2xl'>
+      <div className='mb-8 border-b border-zinc-200 dark:border-zinc-800 pb-6'>
+        <h2 className='text-xl font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 mb-2'>Usuários e Segurança</h2>
+        <p className='text-sm text-zinc-500 dark:text-zinc-400 max-w-2xl'>
           Gerencie os membros da equipe, configure perfis de permissão ou monitore as atividades de cada usuário no sistema.
         </p>
       </div>

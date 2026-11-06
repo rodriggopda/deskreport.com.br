@@ -9,6 +9,7 @@ import { Login } from './pages/auth/login';
 import { Register } from './pages/auth/register';
 import { SetupOrganization } from './pages/auth/setup-organization';
 import { SelectOrganization } from './pages/auth/select-organization';
+import { CliAuth } from './pages/auth/cli-auth';
 import { Layout } from './components/layout';
 import Settings from './pages/settings';
 import { TaskList } from './pages/tasks/list';
@@ -45,6 +46,14 @@ export const router = createBrowserRouter([
     element: (
       <AuthGuard>
         <SelectOrganization />
+      </AuthGuard>
+    ),
+  },
+  {
+    path: '/cli/auth',
+    element: (
+      <AuthGuard>
+        <CliAuth />
       </AuthGuard>
     ),
   },

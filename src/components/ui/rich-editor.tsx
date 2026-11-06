@@ -1,7 +1,6 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
-import Link from '@tiptap/extension-link';
 import { Bold, Italic, List, ListOrdered, Quote, Code } from 'lucide-react';
 import { Button } from './button';
 
@@ -15,12 +14,11 @@ interface RichEditorProps {
 export function RichEditor({ content, onChange, placeholder, minHeight = '150px' }: RichEditorProps) {
     const editor = useEditor({
         extensions: [
-            StarterKit,
+            StarterKit.configure({
+                link: { openOnClick: false },
+            }),
             Placeholder.configure({
                 placeholder: placeholder || 'Comece a escrever...',
-            }),
-            Link.configure({
-                openOnClick: false,
             }),
         ],
         content,

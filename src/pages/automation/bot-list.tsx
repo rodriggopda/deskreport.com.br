@@ -56,7 +56,7 @@ export default function BotList() {
               <p className='text-zinc-500 dark:text-zinc-400 mt-1'>Crie e gerencie fluxos de conversação inteligentes.</p>
             </div>
             <NavLink
-              to="/automation/builder/new"
+              to={companyUrl('automation/builder/new')}
               className={buttonVariants('primary', 'md', 'gap-2')}
             >
               <Plus size={18} />
@@ -107,7 +107,7 @@ export default function BotList() {
                     {bot.active ? <Pause size={20} fill='currentColor' /> : <Play size={20} fill='currentColor' />}
                   </Button>
                   <NavLink
-                    to={`/automation/builder/${bot.id}`}
+                    to={companyUrl('automation/builder/' + bot.id)}
                     className={buttonVariants('ghost', 'icon', 'h-10 w-10 text-zinc-500')}
                   >
                     <Edit2 size={20} />
@@ -132,7 +132,7 @@ export default function BotList() {
               <h4 className='text-zinc-900 dark:text-zinc-100 font-bold'>Criar novo bot do zero</h4>
               <p className='text-zinc-500 text-sm mt-1 max-w-xs'>Comece a automatizar sua operação com inteligência artificial hoje mesmo.</p>
               <NavLink
-                to="/automation/builder/new"
+                to={companyUrl('automation/builder/new')}
                 className='mt-6 inline-flex items-center gap-2 text-indigo-600 font-bold hover:underline'
               >
                 Iniciar agora

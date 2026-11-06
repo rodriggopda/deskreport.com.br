@@ -2,6 +2,7 @@ import { Settings, Send, Smile, Paperclip, Search } from 'lucide-react';
 import customers from '../../api/customers.json';
 import { Message } from '../../components/chat/message';
 import { useParams, NavLink } from 'react-router-dom';
+import { useTenant } from '../../hooks/useTenant';
 import { ContactCard } from '../../components/chat/contact-card';
 import { Topbar } from '../../components/layout/topbar';
 import { Page } from '../../components/layout/page';
@@ -9,10 +10,11 @@ import type { Contact } from '../../models/contact';
 
 export default function ChatBox() {
   const params = useParams();
+  const { companyUrl } = useTenant();
   const activeChatId = params['chatid'];
 
   const navigation = [
-    { name: 'Conversas', to: '/chat/conversations' },
+    { name: 'Conversas', to: companyUrl('chat/conversations') },
   ]
 
   function displayCustomerFromActiveChatId(): Contact | undefined {
@@ -41,7 +43,7 @@ export default function ChatBox() {
             <div className='p-2 space-y-0.5'>
               {customers.data.map((customer) => (
                 <NavLink
-                  to={'/chat/conversations/' + customer.id}
+                  to={companyUrl('chat/conversations/' + customer.id)}
                   key={customer.id}
                   className={({ isActive }) =>
                     `flex items-center gap-3 py-3 px-3 rounded-lg transition-all border border-transparent ${isActive

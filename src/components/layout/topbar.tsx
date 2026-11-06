@@ -54,11 +54,13 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
     smartHeader = true;
   }
 
+  const showToolbar = !!children || !!toolbarOptions;
+
   return (
     <>
       {smartHeader ? (
-        <div className='toolbar bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors'>
-          <div className='pt-2 dark:border-neutral-800 w-full flex items-center justify-between px-4'>
+        <div className='bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-800 transition-colors'>
+          <div className='h-14 w-full flex items-center justify-between px-4'>
             <div className='flex items-center gap-1 w-full'>
               <div>
                 <span>Desk</span>
@@ -67,19 +69,19 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
 
               {!isOrganizationsRoute && (
                 <>
-                  <ChevronRight size={16} strokeWidth={2} className='text-neutral-400 mx-1' />
+                  <ChevronRight size={16} strokeWidth={2} className='text-zinc-400 mx-1' />
                   <Dropdown
                     options={organizations}
                     value={currentCompany || ''}
                     onChange={handleCompanyChange}
                   />
-                  <ChevronRight size={16} strokeWidth={2} className='text-neutral-400 mx-1' />
+                  <ChevronRight size={16} strokeWidth={2} className='text-zinc-400 mx-1' />
                   <h1 className='items-center whitespace-nowrap font-semibold'>
                     {title || ''}
                   </h1>
                   {isTasksRoute && (
                     <>
-                      <ChevronRight size={16} strokeWidth={2} className='text-neutral-400 mx-1' />
+                      <ChevronRight size={16} strokeWidth={2} className='text-zinc-400 mx-1' />
                       <Dropdown
                         options={projects}
                         value={project_id || 'deskreport'}
@@ -106,25 +108,19 @@ export function Topbar({ title, children, toolbarOptions, inputSearch, smartHead
           </div>
         </div>
       ) : null}
-      {(!isOrganizationsRoute || navigation.length > 0) && (
-        <div className='toolbar bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors'>
-          <div className='border-b border-neutral-200 dark:border-neutral-800 w-full flex items-center justify-between px-4'>
-            <div className='flex items-center gap-3 w-full'>
-              <div className='pt-2 flex w-full text-sm'>
-                {
-                  navigation.map((subitem) => (
-                    <SubNavLink key={subitem.to} name={subitem.name} to={subitem.to} />
-                  ))
-                }
-              </div>
-            </div>
+      {navigation.length > 0 && (
+        <div className='bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800 px-4 transition-colors'>
+          <div className='flex items-center gap-1 w-full overflow-x-auto'>
+            {navigation.map((subitem) => (
+              <SubNavLink key={subitem.to} name={subitem.name} to={subitem.to} />
+            ))}
           </div>
-          {children ? (
-            <Toolbar inputSearch={inputSearch} toolbarOptions={toolbarOptions}>
-              {children}
-            </Toolbar>
-          ) : null}
         </div>
+      )}
+      {showToolbar && (
+        <Toolbar inputSearch={inputSearch} toolbarOptions={toolbarOptions}>
+          {children}
+        </Toolbar>
       )}
     </>
   );

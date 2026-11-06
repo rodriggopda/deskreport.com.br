@@ -1,0 +1,8 @@
+# pack-refs with: peeled fully-peeled sorted 
+46028a57d7b70b92f435bcdabb9dd5e597ffaf07 refs/remotes/origin/develop
+c437594167c166f75d60d41a90f4c1edb585efb6 refs/remotes/origin/feat/github-projects-integration
+b87e61a640ab3c0cb319d78f28f2a86873a59434 refs/remotes/origin/feat/task-drawer
+45241f3c9b9b7f956c74670bf26489a2aa4869ed refs/remotes/origin/feat/task-management-ui
+43eb93d027d0149ea3d50efc643eafac6e8ec508 refs/remotes/origin/feature/management-expansion-tasks-teams
+af510301dff400c277d36d0a2b043611ea9e647a refs/remotes/origin/feature/ui-standardization
+a8aa351ba3caa7b156bb9783f3d5821cca0a8b03 refs/remotes/origin/main

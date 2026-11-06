@@ -21,6 +21,7 @@ export type TaskCardProps = {
   status: TaskStatus;
   priority: TaskPriority;
   createdAt: string;
+  updatedAt?: string;
   assigneeIds?: string[] | null;
   teamId?: string | null;
   comments?: TaskComment[];
@@ -35,6 +36,8 @@ export type TaskCardProps = {
   };
   tags?: { label: string; color: string }[];
   description?: string;
+  tokensUsed?: number;
+  tokenBudget?: number;
 }
 
 export const STATUS_CONFIG: Record<TaskStatus, { label: string; color: string }> = {

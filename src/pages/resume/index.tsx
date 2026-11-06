@@ -104,33 +104,34 @@ export default function Resume() {
     <Page navigation={[]}>
       <Topbar title='Início' inputSearch='off' />
 
-      <div className='max-w-6xl mx-auto px-6 py-10 space-y-12'>
-        {/* Header Section */}
-        <div>
-          <h1 className='text-4xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight'>
-            {getGreeting()}, <span className='text-blue-600 dark:text-blue-500'>{name}</span>.
-          </h1>
-          <p className='text-zinc-500 dark:text-zinc-400 mt-2 text-lg font-medium'>
-            Aqui está o que precisa da sua atenção hoje para manter tudo na linha.
-          </p>
-        </div>
-
-        {loading ? (
-          <div className='space-y-12'>
-            <Skeleton className='h-96 w-full rounded-3xl' />
-            <Skeleton className='h-[500px] w-full rounded-3xl' />
+      <div className='flex-1 overflow-y-auto'>
+        <div className='max-w-6xl mx-auto p-6 space-y-6'>
+          <div>
+            <h1 className='text-xl font-semibold text-zinc-900 dark:text-zinc-100'>
+              {getGreeting()}, <span className='text-blue-600 dark:text-blue-500'>{name}</span>.
+            </h1>
+            <p className='text-sm text-zinc-500 dark:text-zinc-400 mt-1'>
+              Aqui está o que precisa da sua atenção hoje para manter tudo na linha.
+            </p>
           </div>
-        ) : homeData ? (
-          <>
-            <ChecklistCard items={homeData.checklist} />
-            <RadarCard 
-              atRiskProjects={homeData.radar.at_risk_projects} 
-              delayedProjects={homeData.radar.delayed_projects} 
-              upcomingTasks={homeData.radar.upcoming_tasks}
-              overdueCount={homeData.radar.overdue_count}
-            />
-          </>
-        ) : null}
+
+          {loading ? (
+            <div className='space-y-6'>
+              <Skeleton className='h-96 w-full rounded-xl' />
+              <Skeleton className='h-[500px] w-full rounded-xl' />
+            </div>
+          ) : homeData ? (
+            <>
+              <ChecklistCard items={homeData.checklist} />
+              <RadarCard 
+                atRiskProjects={homeData.radar.at_risk_projects} 
+                delayedProjects={homeData.radar.delayed_projects} 
+                upcomingTasks={homeData.radar.upcoming_tasks}
+                overdueCount={homeData.radar.overdue_count}
+              />
+            </>
+          ) : null}
+        </div>
       </div>
     </Page>
   );

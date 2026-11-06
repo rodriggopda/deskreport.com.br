@@ -4,13 +4,18 @@ import { useParams } from 'react-router-dom';
 import { Download, Upload, FileJson, FileSpreadsheet, Trash2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useTaskStore } from './use-task-store';
 import { Button } from '../../components/ui/button';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 export default function TaskDataManagement() {
     const { company_id, project_id } = useParams();
     const cId = company_id || '4go';
     const pId = project_id || 'deskreport';
-    const { tasks, setTasks } = useTaskStore();
+    const { tasks, setTasks, fetchTasks } = useTaskStore();
+
+    useEffect(() => {
+        if (company_id) fetchTasks();
+    }, [company_id, fetchTasks]);
+
     const [status, setStatus] = useState<{ type: 'success' | 'error' | 'idle', message: string }>({ type: 'idle', message: '' });
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -35,7 +40,7 @@ export default function TaskDataManagement() {
     const exportToCsv = () => {
         if (tasks.length === 0) return;
 
-        const headers = ['id', 'title', 'project', 'status', 'priority', 'createdAt', 'assignee', 'tags'];
+        const headers = ['id', 'title', 'project', 'status', 'priority', 'createdAt', 'assignees', 'tags'];
         const csvRows = [
             headers.join(','),
             ...tasks.map(task => [
@@ -45,7 +50,7 @@ export default function TaskDataManagement() {
                 task.status,
                 task.priority,
                 task.createdAt,
-                task.assignee ? task.assignee.name : '',
+                task.assignees ? `"${task.assignees.map(a => a.name).join('|')}"` : '',
                 task.tags ? `"${task.tags.map(t => t.label).join('|')}"` : ''
             ].join(','))
         ];

@@ -1,9 +1,13 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useParams } from 'react-router-dom';
 import { Navbar } from './navbar';
 import { InternalChatSidebar } from './internal-chat-sidebar';
 import { useEffect } from 'react';
+import { useAgentsSocket } from '../../pages/tasks/use-agents';
 
 export function Layout() {
+  const { company_id } = useParams();
+  useAgentsSocket(company_id || '');
+
   useEffect(() => {
     if (window) {
       Notification.requestPermission().then((result) => {

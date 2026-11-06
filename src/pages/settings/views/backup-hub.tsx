@@ -1,15 +1,24 @@
 import { Download, Upload, ShieldAlert, CheckCircle2 } from 'lucide-react';
 import { Button } from '../../../components/ui/button';
 import { useState } from 'react';
-import { api, apiBase } from '../../../api/fetcher';
+import { authClient } from '../../../lib/auth-client';
+import { useTenant } from '../../../hooks/useTenant';
+import { apiBase } from '../../../api/fetcher';
 
 export function BackupHub() {
+    const { company_id } = useTenant();
     const [status, setStatus] = useState<{ type: 'idle' | 'loading' | 'success' | 'error', message?: string }>({ type: 'idle' });
 
     const handleExport = async () => {
         setStatus({ type: 'loading', message: 'Preparando backup...' });
         try {
-            const data = await api.get(`${apiBase}/backup/export`);
+            const { data, error } = await authClient.$fetch(`${apiBase}/backup/export`, {
+                headers: { 'x-organization-id': company_id || '' }
+            });
+            if (error || !data) {
+                setStatus({ type: 'error', message: 'Erro ao exportar backup.' });
+                return;
+            }
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -35,8 +44,12 @@ export function BackupHub() {
         reader.onload = async (e) => {
             try {
                 const content = JSON.parse(e.target?.result as string);
-                const response = await api.post(`${apiBase}/backup/import`, content);
-                if (response.ok) {
+                const { error } = await authClient.$fetch(`${apiBase}/backup/import`, {
+                    method: 'POST',
+                    body: JSON.stringify(content),
+                    headers: { 'x-organization-id': company_id || '' }
+                });
+                if (!error) {
                     setStatus({ type: 'success', message: 'Dados importados com sucesso!' });
                 } else {
                     setStatus({ type: 'error', message: 'Erro ao importar dados.' });
@@ -52,11 +65,11 @@ export function BackupHub() {
     return (
         <div className="space-y-12 animate-slide-up pb-10">
             {/* HEADER INFORMATIVO */}
-            <div className="mb-8 border-b border-neutral-200 dark:border-neutral-800 pb-6">
-                <h2 className="text-2xl font-semibold text-neutral-900 dark:text-white flex items-center gap-2 mb-2">
+            <div className="mb-8 border-b border-zinc-200 dark:border-zinc-800 pb-6">
+                <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 mb-2">
                     Backup e Exportação
                 </h2>
-                <p className="text-sm text-neutral-500 max-w-2xl">
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-2xl">
                     Gerencie a segurança dos seus dados. Exporte todo o conteúdo da sua organização para um backup local ou restaure dados de um arquivo anterior.
                 </p>
             </div>

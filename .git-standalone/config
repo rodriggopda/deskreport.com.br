@@ -1,0 +1,23 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "origin"]
+	url = git@github.com:rodriggopda/deskreport.com.br.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "main"]
+	remote = origin
+	merge = refs/heads/main
+[remote "synctime"]
+	url = git@github.com:rodriggopda/synctime.com.br.git
+	fetch = +refs/heads/*:refs/remotes/synctime/*
+[remote "upstream"]
+	url = git@gitlab.com:rodriggopda/synctime.com.br.git
+	fetch = +refs/heads/*:refs/remotes/upstream/*
+[branch "develop"]
+	remote = origin
+	merge = refs/heads/develop
+[branch "v0.0.1"]
+	remote = origin
+	merge = refs/heads/main

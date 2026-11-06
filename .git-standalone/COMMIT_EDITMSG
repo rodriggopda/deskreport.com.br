@@ -1,0 +1,36 @@
+project base
+
+# Conflicts:
+#	README.md
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# Author:    Rodrigo Andrade <rodrigo@Rodrigos-iMac.local>
+#
+# interactive rebase in progress; onto e8cceb1
+# Last command done (1 command done):
+#    pick 247f6d6 # project base
+# Next commands to do (38 remaining commands):
+#    pick 6fd0477 # chat screen
+#    pick bef440c # page scrol to bottom
+# You are currently rebasing branch 'main' on 'e8cceb1'.
+#
+# Changes to be committed:
+#	new file:   .eslintrc.cjs
+#	new file:   .gitignore
+#	new file:   index.html
+#	new file:   package.json
+#	new file:   pnpm-lock.yaml
+#	new file:   postcss.config.js
+#	new file:   public/vite.svg
+#	new file:   src/App/index.css
+#	new file:   src/App/index.tsx
+#	new file:   src/assets/react.svg
+#	new file:   src/main.tsx
+#	new file:   src/vite-env.d.ts
+#	new file:   tailwind.config.js
+#	new file:   tsconfig.json
+#	new file:   tsconfig.node.json
+#	new file:   vite.config.ts
+#
